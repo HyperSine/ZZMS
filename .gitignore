@@ -1,0 +1,11 @@
+/nbproject/
+/wz/
+/build/
+/dist/
+/日誌/
+/build.xml
+/manifest.mf
+/*.jar
+/setting.ini
+/recvops.properties
+/sendops.properties

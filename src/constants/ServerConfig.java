@@ -18,7 +18,7 @@ public class ServerConfig {
     public static String IP = "127.0.0.1";
     public static boolean LOG_SHARK = false;
     public static int CHANNEL_MAX_CHAR_VIEW = 20;
-    public static String EVENTS = ""/* + "AutomatedEvent,"*/ + "PinkZakumEntrance,PVP,CygnusBattle,ScarTarBattle,BossBalrog_EASY,BossBalrog_NORMAL,HorntailBattle,Nibergen,PinkBeanBattle,ZakumBattle,NamelessMagicMonster,Dunas,Dunas2,2095_tokyo,ZakumPQ,LudiPQ,KerningPQ,ProtectTylus,WitchTower_EASY,WitchTower_Med,WitchTower_Hard,Vergamot,ChaosHorntail,ChaosZakum,CoreBlaze,BossQuestEASY,BossQuestMed,BossQuestHARD,BossQuestHELL,BossQuestCHAOS,Ravana_EASY,Ravana_HARD,Ravana_MED,GuildQuest,Aufhaven,Dragonica,Rex,MonsterPark,KentaPQ,ArkariumBattle,AswanOffSeason,HillaBattle,The Dragon Shout,VonLeonBattle,Ghost,OrbisPQ,Romeo,Juliet,Pirate,Amoria,Ellin,CWKPQ,DollHouse,Kenta,Prison,Azwan,HenesysPQ,jett2ndjob,ATT_Wall_War,ATT_Hook_Shot,SimpleZakum";
+    public static String EVENTS = ""/* + "AutomatedEvent,"*/ + "PinkZakumEntrance,PVP,CygnusBattle,ScarTarBattle,BossBalrog_EASY,BossBalrog_NORMAL,HorntailBattle,Nibergen,PinkBeanBattle,ZakumBattle,NamelessMagicMonster,Dunas,Dunas2,2095_tokyo,ZakumPQ,LudiPQ,KerningPQ,ProtectTylus,WitchTower_EASY,WitchTower_Med,WitchTower_Hard,Vergamot,ChaosHorntail,ChaosZakum,CoreBlaze,BossQuestEASY,BossQuestMed,BossQuestHARD,BossQuestHELL,BossQuestCHAOS,Ravana_EASY,Ravana_HARD,Ravana_MED,GuildQuest,Aufhaven,Dragonica,Rex,MonsterPark,KentaPQ,ArkariumBattle,AswanOffSeason,HillaBattle,The Dragon Shout,VonLeonBattle,Ghost,OrbisPQ,Romeo,Juliet,Pirate,Amoria,Ellin,CWKPQ,DollHouse,Kenta,Prison,Azwan,HenesysPQ,jett2ndjob,ATT_Wall_War,ATT_Hook_Shot,SimpleZakum,DarkHillaBattle";
 
     /*Anti-Sniff*/
     public static boolean USE_FIXED_IV = false;
@@ -84,7 +84,8 @@ public class ServerConfig {
         EVENT55("Azwan"),
         EVENT56("ATT_Wall_War"),
         EVENT57("ATT_Hook_Shot"),
-        EVENT58("SimpleZakum");
+        EVENT58("SimpleZakum"),
+        EVENT59("DarkHillaBattle");
         private final String name;
 
         Events(String name) {

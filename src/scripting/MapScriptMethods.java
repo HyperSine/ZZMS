@@ -660,7 +660,7 @@ public class MapScriptMethods {
                 } //TODOO find out which one it really is, lol
                 break;
             case "cygnus_Summon": {
-                c.getPlayer().getMap().startMapEffect("好久沒有人來過我這兒了。而且也沒有人能從我這活著出去！", 5120043);
+                c.getPlayer().getMap().startMapEffect("好久沒有人來我這兒了。而且也沒有人能從我這活著走出去！", 5120043);
                 break;
             }
             case "iceman_Boss": {

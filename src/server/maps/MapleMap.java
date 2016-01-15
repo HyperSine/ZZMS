@@ -704,25 +704,25 @@ public final class MapleMap {
         } else if ((mobid == 9420544 || mobid == 9420549) && mapid == 551030200 && monster.getEventInstance() != null && monster.getEventInstance().getName().contains(getEMByMap().getName())) {
             doShrine(getAllReactor().isEmpty());
         } else if (mobid == 8820001 && mapid == 270050100) {
-            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "Oh, the exploration team who has defeated Pink Bean with undying fervor! You are the true victors of time!"));
+            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "遠征隊歷經艱辛，終於打敗了品克繽，你們是楓之谷的英雄！"));
             if (speedRunStart > 0) {
                 type = ExpeditionType.Pink_Bean;
             }
             doShrine(true);
         } else if (mobid == 8850011 && mapid == 274040200) {
-            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "To you whom have defeated Empress Cygnus in the future, you are the heroes of time!"));
+            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "遠征隊歷經艱辛，終於打敗了西格諾斯，你們是楓之谷的英雄！"));
             if (speedRunStart > 0) {
                 type = ExpeditionType.Cygnus;
             }
             doShrine(true);
         } else if (mobid == 8870000 && mapid == 262030300) { //hilla
-            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "Hilla is dead."));
+            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "希拉已經被打敗。"));
             if (speedRunStart > 0) {
                 type = ExpeditionType.Hilla;
             }
             doShrine(true);
         } else if (mobid == 8870100 && mapid == 262031300) { //hilla
-            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "Dark Hilla is dead."));
+            World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, "黑暗希拉已經被打敗。"));
             if (speedRunStart > 0) {
                 type = ExpeditionType.Hilla;
             }

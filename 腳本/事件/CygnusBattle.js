@@ -1,22 +1,20 @@
 function init() {
-    em.setProperty("leader", "true");
-    em.setProperty("state", "0");
+	em.setProperty("state", "0");
+	em.setProperty("leader", "true");
 }
 
 function setup(eim, leaderid) {
-    em.setProperty("leader", "true");
-    var eim = em.newInstance("Cygnus");
-    var map = eim.setInstanceMap(271040100);
-    map.resetFully();
-
-    var mob1 = em.getMonster(8850011);
-    eim.registerMonster(mob1);
-    map.spawnMonsterOnGroundBelow(mob1, new java.awt.Point(-363, 100));
-
-    em.setProperty("state", "1");
-
-    eim.startEventTimer(3600000); // 1 hr
-    return eim;
+	em.setProperty("state", "1");
+	em.setProperty("leader", "true");
+	var eim = em.newInstance("Cygnus" + leaderid);
+	var map = eim.setInstanceMap(271040100);
+	map.resetFully(false);
+	map.setSpawns(false);
+	var mob1 = em.getMonster(8850011);
+	eim.registerMonster(mob1);
+	map.spawnMonsterOnGroundBelow(mob1, new java.awt.Point(-363, 100));
+	eim.startEventTimer(3600000); // 1 hr
+	return eim;
 }
 
 function playerEntry(eim, player) {
@@ -37,7 +35,6 @@ function scheduledTimeout(eim) {
 function changedMap(eim, player, mapid) {
     if (mapid != 271040100) {
         eim.unregisterPlayer(player);
-
         if (eim.disposeIfPlayerBelow(0, 0)) {
             em.setProperty("state", "0");
             em.setProperty("leader", "true");
@@ -65,7 +62,6 @@ function monsterValue(eim, mobId) {
 
 function playerExit(eim, player) {
     eim.unregisterPlayer(player);
-
     if (eim.disposeIfPlayerBelow(0, 0)) {
         em.setProperty("state", "0");
         em.setProperty("leader", "true");
@@ -84,6 +80,7 @@ function clearPQ(eim) {
 }
 
 function allMonstersDead(eim) {
+
 }
 
 function leftParty (eim, player) {}

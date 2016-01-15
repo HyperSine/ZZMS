@@ -257,9 +257,7 @@ public class MobPacket {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SPAWN_MONSTER_CONTROL.getValue());
-
         mplew.write(aggro ? 2 : 1);
-
         mplew.writeInt(life.getObjectId());
         mplew.write(1);// 1 = Control normal, 5 = Control none?
         mplew.writeInt(life.getId());//idk?

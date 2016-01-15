@@ -1,5 +1,5 @@
 function init() {
-em.setProperty("state", "0");
+	em.setProperty("state", "0");
 	em.setProperty("leader", "true");
 }
 

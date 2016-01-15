@@ -2,7 +2,7 @@ var status, select;
 
 function start() {
     status = 0;
-    cm.sendSimple("Hello! Having fun exploring Maple World?\r\n\r\n#b#L0# End conversation.#l\r\n#b#L1#Exchange for  Surprise Style Stamp.#l\r\n#L2#Exchange for  Mystical Surprise Style Box.#l\r\n#L3# Receive level 150 Sengoku Accessory Recipe.#l\r\n#L4# Exchange unusable [Explorer Warrior, Dawn Warrior]Mastery Book. #l\r\n#L5# Exchange unusable [Battle Mage] Mastery Book. #l\r\n#L6# Exchange unusable [Resistance, Aran] Mastery Book.#l\r\n#L7# Exchange unusable Circulator.\r\n(You can perform exchanges until 12/31.)#l");
+    cm.sendSimple("Hello！在楓之谷世界玩得愉快嗎?\r\n\r\n#b#L0# 結束對話。#l\r\n#b#L1#Exchange for  Surprise Style Stamp.#l\r\n#L2#Exchange for  Mystical Surprise Style Box.#l\r\n#L3# Receive level 150 Sengoku Accessory Recipe.#l\r\n#L4# Exchange unusable [Explorer Warrior, Dawn Warrior]Mastery Book. #l\r\n#L5# Exchange unusable [Battle Mage] Mastery Book. #l\r\n#L6# Exchange unusable [Resistance, Aran] Mastery Book.#l\r\n#L7# Exchange unusable Circulator.\r\n(You can perform exchanges until 12/31.)#l");
 }
 
 function action(mode, type, selection) {

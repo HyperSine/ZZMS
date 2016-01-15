@@ -23,15 +23,15 @@ function start() {
         return;
     }
     if (cm.getParty() === null) {
-        cm.sendOk("要組1人以上的隊伍,才能入場.");
+        cm.sendOk("要組1人或以上的隊伍,才能入場。");
         cm.dispose();
         return;
     } else if (!cm.isLeader()) {
-        cm.sendOk("只有隊長才可以申請入場.");
+        cm.sendOk("只有隊長才可以申請入場。");
         cm.dispose();
         return;
     }
-    cm.sendSimple("#e<Boss: 希拉>#n\r\n準備好擊敗希拉, 成功真正解放阿斯旺嗎? 若遠征隊員在其他區域,請大家集合一起吧..\r\n#b\r\n#L0# 申請<Boss: 希拉> 的入場.#l");
+    cm.sendSimple("#e<Boss: 希拉>#n\r\n準備好擊敗希拉, 成功真正解放阿斯旺嗎? 若遠征隊員在其他區域,請大家集合一起吧。\r\n#b\r\n#L0# 申請<Boss: 希拉> 的入場.#l");
 }
 
 function action(mode, type, selection) {

@@ -877,7 +877,12 @@ public class CField {
     }
 
     public static byte[] stopClock() {
-        return getPacketFromHexString(Integer.toHexString(SendPacketOpcode.STOP_CLOCK.getValue()) + " 00");
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.STOP_CLOCK.getValue());
+        mplew.write(0);
+
+        return mplew.getPacket();
     }
 
     public static byte[] showAriantScoreBoard() {

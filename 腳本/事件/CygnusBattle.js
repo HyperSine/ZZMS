@@ -80,7 +80,13 @@ function clearPQ(eim) {
 }
 
 function allMonstersDead(eim) {
-
+	var state = em.getProperty("state");
+	if (state.equals("1")) {
+		em.setProperty("state", "2");
+	} else if (state.equals("2")) {
+		em.setProperty("state", "3");
+	}
+	eim.stopEventTimer();
 }
 
 function leftParty (eim, player) {}

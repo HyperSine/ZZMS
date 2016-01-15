@@ -1,4 +1,4 @@
-/*
+﻿/*
  *	远征任务：希拉 - 170 级困难模式
  */
 
@@ -68,6 +68,7 @@ function allMonstersDead(eim) {
     } else if (state.equals("2")) {
         em.setProperty("state", "3");
     }
+    eim.stopEventTimer();
 }
 
 function playerRevive(eim, player) {

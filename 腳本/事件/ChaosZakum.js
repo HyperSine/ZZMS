@@ -73,6 +73,7 @@ function allMonstersDead(eim) {
 	} else if (em.getProperty("state").equals("2")) {
 		em.setProperty("state", "3");
 	}
+	eim.stopEventTimer();
 }
 
 function leftParty (eim, player) {}

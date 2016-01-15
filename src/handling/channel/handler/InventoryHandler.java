@@ -5094,6 +5094,12 @@ public class InventoryHandler {
 
                 break;
             }
+            case 5044005: {
+                slea.readByte();
+                int toMapId = slea.readInt();
+                MapleMap moveTo = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(toMapId);
+                c.getPlayer().changeMap(moveTo, moveTo.getPortal(0));
+            }
             default:
                 if (itemId / 10000 == 512) {
                     String msg = ii.getMsg(itemId);

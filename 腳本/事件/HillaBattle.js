@@ -10,14 +10,12 @@ function init() {
 function setup(eim, leaderid) {
     em.setProperty("state", "1");
     em.setProperty("leader", "true");
-    var eim = em.newInstance("Hillah_120");
+    var eim = em.newInstance("Hillah" + leaderid);
     var map = eim.setInstanceMap(262030300); //设置活动脚本的地图
     map.resetFully(false); //重置地图
     map.setSpawns(false);
     var mob = em.getMonster(8870000); //希拉 - 120级
-    var modified = em.newMonsterStats();
-    //modified.setOMp(mob.getMobMaxMp());
-    //modified.setOHp(mob.getMobMaxHp());
+    //var modified = em.newMonsterStats();
     eim.registerMonster(mob);
     map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(134, 196));
     eim.startEventTimer(2700000); //45分钟
@@ -68,6 +66,7 @@ function allMonstersDead(eim) {
     } else if (state.equals("2")) {
         em.setProperty("state", "3");
     }
+    eim.stopEventTimer();
 }
 
 function playerRevive(eim, player) {

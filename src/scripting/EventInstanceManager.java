@@ -138,10 +138,13 @@ public class EventInstanceManager {
     }
 
     public void stopEventTimer() {
-        eventTime = 0;
-        timeStarted = 0;
-        if (eventTimer != null) {
-            eventTimer.cancel(false);
+        this.eventTime = 0L;
+        this.timeStarted = 0L;
+        if (this.eventTimer != null) {
+            this.eventTimer.cancel(false);
+        }
+        for(MapleCharacter chr : getPlayers()) {
+            chr.getClient().getSession().write(CField.stopClock());
         }
     }
 

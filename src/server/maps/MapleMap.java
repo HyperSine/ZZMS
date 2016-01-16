@@ -65,6 +65,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import scripting.EventManager;
+import scripting.NPCConversationManager;
+import scripting.NPCScriptManager;
 import server.MapleCarnivalFactory;
 import server.MapleCarnivalFactory.MCSkill;
 import server.MapleInventoryManipulator;
@@ -105,7 +107,8 @@ import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.PartyPacket;
 import tools.packet.JobPacket.PhantomPacket;
 import tools.packet.provider.SpecialEffectType;
-
+import scripting.EventInstanceManager;
+        
 public final class MapleMap {
 
     /*
@@ -732,53 +735,48 @@ public final class MapleMap {
                 type = ExpeditionType.Von_Leon;
             }
             doShrine(true);
-        } else if (mobid == 8800002 && mapid == 280030100) {
+        } else if (mobid == 8800002 && mapid == 280030100) {     //残暴炎魔
 //            FileoutputUtil.log(FileoutputUtil.Zakum_Log, MapDebug_Log());
             if (speedRunStart > 0) {
                 type = ExpeditionType.Zakum;
             }
             doShrine(true);
-        } else if (mobid == 8800102 && mapid == 280030000) {
+            EventManager em = getEMByMap();
+            for(EventInstanceManager eim : em.getInstances()){
+                eim.stopEventTimer();
+            }
+        } else if (mobid == 8800102 && mapid == 280030000) {       //混沌残暴炎魔
             //FileoutputUtil.log(FileoutputUtil.Zakum_Log, MapDebug_Log());
             if (speedRunStart > 0) {
                 type = ExpeditionType.Chaos_Zakum;
             }
-
             doShrine(true);
-            /*} else if (mobid >= 9400903 && mobid <= 9400910) {
-             boolean makeZakReal = true;
-             final Collection<MapleMonster> monsters = getAllMonstersThreadsafe();
-
-             for (final MapleMonster mons : monsters) {
-             if (mons.getId() >= 9400903 && mons.getId() <= 9400910) {
-             makeZakReal = false;
-             break;
-             }
-             }
-             if (makeZakReal) {
-             for (final MapleMapObject object : monsters) {
-             final MapleMonster mons = ((MapleMonster) object);
-             if (mons.getId() == 9400900) {
-             final Point pos = mons.getTruePosition();
-             this.killAllMonsters(true);
-             spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(9400900), pos);
-             break;
-             }
-             }
-             }*/
-        } else if (mobid >= 8800003 && mobid <= 8800010) {
+            EventManager em = getEMByMap();
+            for(EventInstanceManager eim : em.getInstances()){
+                eim.stopEventTimer();
+            }
+        } else if(mobid == 8800022 && mapid == 280030200){    //简单炎魔
+            //FileoutputUtil.log(FileoutputUtil.Zakum_Log, MapDebug_Log());
+            if (speedRunStart > 0) {
+                type = ExpeditionType.Simple_Zakum;
+            }
+            doShrine(true);
+            EventManager em = getEMByMap();
+            for(EventInstanceManager eim : em.getInstances()){
+                eim.stopEventTimer();
+            }
+        } else if (mobid >= 8800003 && mobid <= 8800010) {   // 如果是残暴炎魔手臂
             boolean makeZakReal = true;
             final Collection<MapleMonster> monsters = getAllMonstersThreadsafe();
 
-            for (final MapleMonster mons : monsters) {
-                if (mons.getId() >= 8800003 && mons.getId() <= 8800010) {
+            for (final MapleMonster mons : monsters) {   
+                if (mons.getId() >= 8800003 && mons.getId() <= 8800010) {  // If there are any Zakum Arms existing, set makeZakReal false, which means Zakum is still a fake monster in Clients.
                     makeZakReal = false;
                     break;
                 }
             }
             if (makeZakReal) {
-                for (final MapleMapObject object : monsters) {
-                    final MapleMonster mons = ((MapleMonster) object);
+                for (final MapleMonster mons : monsters) {
                     if (mons.getId() == 8800000) {
                         final Point pos = mons.getTruePosition();
                         this.killAllMonsters(true);
@@ -787,12 +785,12 @@ public final class MapleMap {
                     }
                 }
             }
-        } else if (mobid >= 8800103 && mobid <= 8800110) {
+        } else if (mobid >= 8800103 && mobid <= 8800110) {   // 如果是混沌残暴炎魔手臂
             boolean makeZakReal = true;
             final Collection<MapleMonster> monsters = getAllMonstersThreadsafe();
 
             for (final MapleMonster mons : monsters) {
-                if (mons.getId() >= 8800103 && mons.getId() <= 8800110) {
+                if (mons.getId() >= 8800103 && mons.getId() <= 8800110) {   // If there are any Zakum Arms existing, set makeZakReal false, which means Zakum is still a fake monster in Clients.
                     makeZakReal = false;
                     break;
                 }
@@ -807,12 +805,13 @@ public final class MapleMap {
                     }
                 }
             }
-        } else if (mobid >= 8800023 && mobid <= 8800030) {
+            
+        } else if (mobid >= 8800023 && mobid <= 8800030) {    // 如果是简单炎魔手臂
             boolean makeZakReal = true;
             final Collection<MapleMonster> monsters = getAllMonstersThreadsafe();
 
             for (final MapleMonster mons : monsters) {
-                if (mons.getId() >= 8800103 && mons.getId() <= 8800110) {
+                if (mons.getId() >= 8800023 && mons.getId() <= 8800030) {   // If there are any Zakum Arms existing, set makeZakReal false, which means Zakum is still a fake monster in Clients.
                     makeZakReal = false;
                     break;
                 }
@@ -822,6 +821,7 @@ public final class MapleMap {
                     if (mons.getId() == 8800020) {
                         final Point pos = mons.getTruePosition();
                         this.killAllMonsters(true);
+                        MapleMonster mob = MapleLifeFactory.getMonster(8800020);
                         spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(8800020), pos);
                         break;
                     }
@@ -1535,9 +1535,9 @@ public final class MapleMap {
 
             spawnMonster(part, -2);
         }
-        if (squadSchedule != null) {
-            cancelSquadSchedule(false);
-        }
+        //if (squadSchedule != null) {
+        //    cancelSquadSchedule(false);
+        //}
     }
         
     public final void spawnZakum(final int x, final int y) {
@@ -1559,9 +1559,9 @@ public final class MapleMap {
 
             spawnMonster(part, -2);
         }
-        if (squadSchedule != null) {
-            cancelSquadSchedule(false);
-        }
+        //if (squadSchedule != null) {
+        //    cancelSquadSchedule(false);
+        //}
     }
 
     public final void spawnChaosZakum(final int x, final int y) {
@@ -1583,9 +1583,9 @@ public final class MapleMap {
 
             spawnMonster(part, -2);
         }
-        if (squadSchedule != null) {
-            cancelSquadSchedule(false);
-        }
+        //if (squadSchedule != null) {
+         //   cancelSquadSchedule(false);
+       // }
     }
 
     public final void spawnFakeMonsterOnGroundBelow(final MapleMonster mob, final Point pos) {
@@ -2470,10 +2470,27 @@ public final class MapleMap {
         if (sqd == null) {
             return;
         }
-        final int mode = (mapid == 280030000 ? 1 : (mapid == 280030001 ? 2 : (mapid == 240060200 || mapid == 240060201 ? 3 : 0)));
+        final int mode;//final int mode = (mapid == 280030000 ? 1 : (mapid == 280030001 ? 2 : (mapid == 240060200 || mapid == 240060201 ? 3 : 0)));
         //chaos_horntail message for horntail too because it looks nicer
+        switch(mapid){      //根据地图判断出于什么boss模式
+            case 280030000:
+                mode = 1;
+                break;
+            case 280030100:
+                mode = 2;
+                break;
+            case 240060200:
+                mode = 3;
+                break;
+            case 240060201:
+                mode = 3;
+                break;
+            default:
+                mode = 0;
+                break;
+        }
         final EventManager em = getEMByMap();
-        if (sqd != null && em != null && getCharactersSize() > 0) {
+        if (em != null && getCharactersSize() > 0) {
             final String leaderName = sqd.getLeaderName();
             final String state = em.getProperty("state");
             final Runnable run;

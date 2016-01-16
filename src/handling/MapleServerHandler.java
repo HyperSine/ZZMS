@@ -1275,8 +1275,8 @@ public class MapleServerHandler extends IoHandlerAdapter {
             case OS_INFORMATION:
                 System.out.println(c.getSessionIPAddress());
                 break;
-//            case BUFF_RESPONSE://wat does it do?
-//                break;
+            case BUFF_RESPONSE:
+                break;
             case BUTTON_PRESSED:
                 break;
             case CASSANDRAS_COLLECTION:

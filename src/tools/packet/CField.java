@@ -2887,12 +2887,16 @@ public class CField {
         mplew.writeInt(0);
         mplew.write(0);
         mplew.writeInt(0);
-        if (mist.getSourceSkill().getId() == 33111013 || mist.getSourceSkill().getId() == 33121012 || mist.getSourceSkill().getId() == 33121016 || mist.getSourceSkill().getId() == 35121052) {
-            mplew.write(0);
+        if(mist.getSourceSkill() != null) {
+            if (mist.getSourceSkill().getId() == 33111013 || mist.getSourceSkill().getId() == 33121012 || mist.getSourceSkill().getId() == 33121016 || mist.getSourceSkill().getId() == 35121052) {
+                mplew.write(0);
+            } else {
+                mplew.writeInt(0);
+            }
+            
         } else {
             mplew.writeInt(0);
         }
-
         return mplew.getPacket();
     }
 

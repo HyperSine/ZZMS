@@ -1045,12 +1045,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }
         BuffTimer.schedule(cancelTask, duration);
-        if (con.isShowInfo()) {
-            String bfn = "";
-            for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
-                bfn += "[" + z.getKey().name() + "] ";
+        if(con != null){
+            if (con.isShowInfo()) {
+                String bfn = "";
+                for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
+                    bfn += "[" + z.getKey().name() + "] ";
+                }
+                con.showMessage(10, "開始 => 怪物施放狀態: 持續時間[" + duration + "] 開始時間[" + System.currentTimeMillis() + "] 狀態效果:" + bfn);
             }
-            con.showMessage(10, "開始 => 怪物施放狀態: 持續時間[" + duration + "] 開始時間[" + System.currentTimeMillis() + "] 狀態效果:" + bfn);
         }
     }
 

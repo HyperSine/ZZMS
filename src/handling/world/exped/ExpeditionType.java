@@ -13,7 +13,8 @@ public enum ExpeditionType {
     Cygnus(18, 2009, 170, 200),
     Arkarium(18, 2010, 120, 200),
     Hilla(6, 2011, 70, 120),
-    Chaos_Pink_Bean(30, 2012, 170, 200);
+    Chaos_Pink_Bean(30, 2012, 170, 200),
+    Simple_Zakum(30, 2013, 50, 200);
 
     public int maxMembers, maxParty, exped, minLevel, maxLevel;
 

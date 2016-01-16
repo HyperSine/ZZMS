@@ -138,10 +138,10 @@ public class EventInstanceManager {
     }
 
     public void stopEventTimer() {
-        this.eventTime = 0L;
-        this.timeStarted = 0L;
-        if (this.eventTimer != null) {
-            this.eventTimer.cancel(false);
+        eventTime = 0;
+        timeStarted = 0;
+        if (eventTimer != null) {
+            eventTimer.cancel(false);
         }
         for(MapleCharacter chr : getPlayers()) {
             chr.getClient().getSession().write(CField.stopClock());
@@ -412,7 +412,7 @@ public class EventInstanceManager {
         }
         byte ret;
         try {
-            ret = ((Double) em.getIv().invokeFunction("playerDisconnected", this, chr)).byteValue();
+            ret = (String.valueOf(em.getIv().invokeFunction("playerDisconnected", this, chr)).getBytes())[0];
         } catch (NoSuchMethodException | ScriptException e) {
             ret = 0;
         }
@@ -459,7 +459,7 @@ public class EventInstanceManager {
             return;
         }
         try {
-            int inc = ((Double) em.getIv().invokeFunction("monsterValue", this, mob.getId())).intValue();
+            int inc = Integer.parseInt(String.valueOf(em.getIv().invokeFunction("monsterValue", this, mob.getId())));
             if (disposed || chr == null) {
                 return;
             }

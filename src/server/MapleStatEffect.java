@@ -2449,8 +2449,8 @@ public class MapleStatEffect implements Serializable {
                 applyto.getMap().broadcastMessage(applyto, BuffPacket.giveForeignBuff(applyto.getId(), maskedStatups == null ? localstatups : maskedStatups, this), false);
                 break;
             case 31011001: {
-                // set exceed to 0
-                applyto.getClient().getSession().write(JobPacket.AvengerPacket.cancelExceed());
+                applyto.setExceed((short) 0);// set exceed to 0, it is very important, in server the value of exceed must be set 0 once skill 31011001 is used.
+                applyto.getClient().getSession().write(JobPacket.AvengerPacket.cancelExceed());  // here and the below are used to tell clients that the exceed should be set 0.
                 applyto.addHP((int) ((applyto.getStat().getCurrentMaxHp() * (level / 100.0D)) * (getX() / 100.0D)));
                 break;
             }

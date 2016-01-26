@@ -1,4 +1,4 @@
-//副本開關 開啟、true 關閉、false
+﻿//副本開關 開啟、true 關閉、false
 var open = true;
 //副本腳本名
 var name = ["HillaBattle", "DarkHillaBattle"];

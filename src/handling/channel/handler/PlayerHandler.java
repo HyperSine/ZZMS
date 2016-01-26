@@ -1284,7 +1284,7 @@ public class PlayerHandler {
             }
             if (MapleJob.is惡魔復仇者(chr.getJob())) {
                 int exceedMax = chr.getSkillLevel(31220044) > 0 ? 18 : 20;
-                chr.showInfo("Info", false, "exceedMax;" + exceedMax);
+                //chr.showInfo("Info", false, "exceedMax;" + exceedMax);
                 if (chr.getExceed() + 1 > exceedMax) {
                     chr.setExceed((short) exceedMax);
                 } else {

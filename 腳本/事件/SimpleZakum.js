@@ -6,11 +6,11 @@ em.setProperty("state", "0");
 function setup(eim, leaderid) {
 	em.setProperty("state", "1");
 	em.setProperty("leader", "true");
-    var eim = em.newInstance("ZakumBattle" + leaderid);
+    var eim = em.newInstance("SimpleZakum" + leaderid);
     eim.setProperty("zakSummoned", "0");
     eim.setInstanceMap(280030200).resetFully();
 //    eim.schedule("checkStart", 1200000); // 20 min
-    eim.startEventTimer(3000000); //50 minutes
+    eim.startEventTimer(1800000); //30 minutes
     return eim;
 }
 

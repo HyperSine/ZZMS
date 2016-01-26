@@ -456,7 +456,7 @@ public class DamageParse {
             player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
 
-        if (effect.getBulletCount() > 1) {
+        if (effect != null && effect.getBulletCount() > 1) {
             if ((attack.hits > effect.getBulletCount()) || (attack.targets > effect.getMobCount())) {
                 player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
                 System.out.println("Return 9");

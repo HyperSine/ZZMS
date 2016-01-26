@@ -15,7 +15,6 @@ function setup(eim, leaderid) {
     map.resetFully(false); //重置地图
     map.setSpawns(false);
     var mob = em.getMonster(8870000); //希拉 - 120级
-    //var modified = em.newMonsterStats();
     eim.registerMonster(mob);
     map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(134, 196));
     eim.startEventTimer(2700000); //45分钟

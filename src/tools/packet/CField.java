@@ -1097,11 +1097,12 @@ public class CField {
         mplew.write(chr.getLevel());
         mplew.writeMapleAsciiString(chr.getName());
         MapleQuestStatus ultExplorer = chr.getQuestNoAdd(MapleQuest.getInstance(111111));
-        if ((ultExplorer != null) && (ultExplorer.getCustomData() != null)) {
-            mplew.writeMapleAsciiString(ultExplorer.getCustomData());
-        } else {
-            mplew.writeMapleAsciiString("");
-        }
+        //if ((ultExplorer != null) && (ultExplorer.getCustomData() != null)) {
+        //    mplew.writeMapleAsciiString(ultExplorer.getCustomData());
+        //} else {
+        //    mplew.writeMapleAsciiString("");
+        //}
+        mplew.writeMapleAsciiString((ultExplorer != null) && (ultExplorer.getCustomData() != null) ? ultExplorer.getCustomData() : "");
         if (chr.getGuildId() <= 0) {
             mplew.writeZeroBytes(8);
         } else {
@@ -1116,10 +1117,10 @@ public class CField {
                 mplew.writeZeroBytes(8);
             }
         }
-        mplew.write(0);
+        mplew.writeShort(0);
         mplew.writeInt(0);
         mplew.writeInt(0);//179Change
-
+        mplew.writeInt(1);
         /////////////////////// for BuffStat
 
         PacketHelper.addSpawnPlayerBuffStat(mplew, chr);

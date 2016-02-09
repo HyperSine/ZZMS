@@ -1177,7 +1177,9 @@ public final class MapleMap {
         mapobjectlocks.get(MapleMapObjectType.REACTOR).readLock().lock();
         try {
             for (MapleMapObject obj : mapobjects.get(MapleMapObjectType.REACTOR).values()) {
-                ((MapleReactor) obj).forceHitReactor(null, state);
+                for (MapleCharacter chr : this.getCharacters()){
+                ((MapleReactor) obj).forceHitReactor(chr, state);
+                }
             }
         } finally {
             mapobjectlocks.get(MapleMapObjectType.REACTOR).readLock().unlock();
@@ -2735,6 +2737,9 @@ public final class MapleMap {
             case 272020110:
             case 272030400:
                 em = "ArkariumBattle";
+                break;
+            case 300030310:
+                em = "FairyBossBattle";
                 break;
             case 955000100:
             case 955000200:

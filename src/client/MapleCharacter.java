@@ -186,8 +186,11 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
     private final List<MapleProcess> Process = new LinkedList();
     private boolean skipOnceChat = true;
     private Pair<MapScriptType, String> mapScript = new Pair<>(MapScriptType.UNK, "");
+    private int mod = 0;
+    public int qcount;
     public int 卡圖 = 0;
-
+    private List<MapleSummon> linksummon = new ArrayList();
+    
     private MapleCharacter(final boolean ChannelServer) {
         setStance(0);
         setPosition(new Point(0, 0));
@@ -11221,5 +11224,105 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(ItemLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public final MaplePet getSummonedPet(final int index) {
+        for (final MaplePet pet : getSummonedPets()) {
+            if (pet.getSummonedValue() - 1 == index) {
+                return pet;
+            }
+        }
+        return null;
+    }
+    
+    public void addLinksummon(MapleSummon x) {
+        this.linksummon.add(x);
+    }
+    
+    public void handleAccurateRocket(List<Integer> Oid, int skillId) { //處理追縱火箭
+        Skill skill = SkillFactory.getSkill(skillId);
+        if (getSkillLevel(skill) > 0) {
+            MapleStatEffect effect = skill.getEffect(getSkillLevel(skill));
+            if (effect != null) {
+                getMap().broadcastMessage(this, SkillPacket.AccurateRocket(this, skillId, Oid, 0, 3, 4, false), true);
+            }
+        }
+    }
+    
+    public void handleMesosbomb(int skillId, int delay) { //處理楓幣炸彈
+        MapleMapItem mapitem;
+        List<MapleMapObject> mesos = new ArrayList();
+        List<MapleMapObject> items = this.getMap().getItemsInRange(old, 70000.0D);//地圖上的道具
+        List<MapleMapObject> mons = this.getMap().getMonstersInRange(old, 60000.0D);//地圖上的怪物
+        if (mons.size() > 0) {
+            for (MapleMapObject obj : items) {
+                mapitem = (MapleMapItem) obj;
+                if (mapitem.getMeso() > 0 && mapitem.getOwner() == this.getId()) {
+                    mesos.add(mapitem);
+                    this.getMap().broadcastMessage(CField.removeItemFromMap(mapitem.getObjectId(), 0, this.getId()), mapitem.getPosition());
+                    this.getMap().removeMapObject(obj); //標記
+                }
+            }
+            if (mesos.size() > 0) {
+                this.getMap().broadcastMessage(SkillPacket.getMesosBomb(this, skillId, mesos, mons, delay));
+            }
+        }
+        this.client.getSession().write(CWvsContext.enableActions());
+    }
+
+    public void updateQuiverKartrige(int mode, boolean isfirst) { // 更新魔幻箭筒
+        Skill skill2 = SkillFactory.getSkill(3121016);
+        MapleStatEffect effect = skill2.getEffect(getTotalSkillLevel(skill2));
+        if (!isfirst) {
+            MapleStatEffect effec = new MapleStatEffect();
+            effec.applyQuiverKartrige(this);
+        }
+        if (this.getSkillLevel(3121016) > 0) {
+            if (this.getBuffedValue(MapleBuffStat.QUIVER_KARTRIGE) == 3) {
+                this.qcount = effect.getZ();
+            } else {
+                this.qcount = effect.getY();
+            }
+        } else {
+            this.qcount = 10;
+        }
+        this.getClient().getSession().write(SkillPacket.showQuiverKartrigeEffect(this.getId(), mode, qcount, false));
+        this.getMap().broadcastMessage(this, SkillPacket.showQuiverKartrigeEffect(this.getId(), mode, qcount, true), false);
+        this.getMap().broadcastMessage(this, SkillPacket.showQuiverKartrigeEffect2(this.getId()), false);
+    }
+    
+    public void handleQuiverKartrige(MapleCharacter player, int oid) {
+        int mode = player.getBuffedValue(MapleBuffStat.QUIVER_KARTRIGE);
+        Skill skill1 = SkillFactory.getSkill(3101009);
+        Skill skill2 = SkillFactory.getSkill(3121016);
+        int chance = 0;
+        player.setmod(mode);
+        MapleStatEffect effect2 = skill2.getEffect(getTotalSkillLevel(skill2));
+        MapleStatEffect effect1 = skill2.getEffect(getTotalSkillLevel(skill1));
+        int skillid = effect2 == null ? 3120017 : 3120017;
+        switch (mode) {
+            case 1:
+            case 2:
+                chance = effect2 != null ? effect2.getW() : effect1.getW();
+                break;
+            case 3:
+                chance = effect2 != null ? effect2.getU() : effect1.getU();
+                break;
+        }
+        if (Randomizer.nextInt(100) < 100 - chance) {
+            return;
+        }
+
+        player.getClient().getSession().write(BuffPacket.getQuiverKartrigecount(qcount--, mode - 1));
+        if (mode == 3) {
+            player.getMap().broadcastMessage(SkillPacket.showQuiverKartrigeAction(player.getId(), skillid, oid));
+        }
+        if (qcount <= 0) {
+            updateQuiverKartrige(mode, false);
+        }
+    }
+    
+    public void setmod(int x) {
+        this.mod = x;
     }
 }

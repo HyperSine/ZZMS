@@ -19,7 +19,8 @@ public class ServerConfig {
     public static boolean LOG_SHARK = false;
     public static int CHANNEL_MAX_CHAR_VIEW = 20;
     public static String EVENTS = ""/* + "AutomatedEvent,"*/ + "PinkZakumEntrance,PVP,CygnusBattle,ScarTarBattle,BossBalrog_EASY,BossBalrog_NORMAL,HorntailBattle,Nibergen,PinkBeanBattle,ZakumBattle,NamelessMagicMonster,Dunas,Dunas2,2095_tokyo,ZakumPQ,LudiPQ,KerningPQ,ProtectTylus,WitchTower_EASY,WitchTower_Med,WitchTower_Hard,Vergamot,ChaosHorntail,ChaosZakum,CoreBlaze,BossQuestEASY,BossQuestMed,BossQuestHARD,BossQuestHELL,BossQuestCHAOS,Ravana_EASY,Ravana_HARD,Ravana_MED,GuildQuest,Aufhaven,Dragonica,Rex,MonsterPark,KentaPQ,ArkariumBattle,AswanOffSeason,HillaBattle,The Dragon Shout,VonLeonBattle,Ghost,OrbisPQ,Romeo,Juliet,Pirate,Amoria,Ellin,CWKPQ,DollHouse,Kenta,Prison,Azwan,HenesysPQ,jett2ndjob,ATT_Wall_War,ATT_Hook_Shot,SimpleZakum,DarkHillaBattle,FairyBossBattle";
-
+    public static int MAX_DAMAGE = 50000000;
+    
     /*Anti-Sniff*/
     public static boolean USE_FIXED_IV = false;
     public static final byte[] Static_LocalIV = new byte[]{0x47, 0x71, 0x1A, 0x2C};

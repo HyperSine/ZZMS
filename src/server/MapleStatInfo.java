@@ -73,6 +73,15 @@ public enum MapleStatInfo {
     soulmpCon(0),
     fixdamage(0), //Fixed damage dealt upon using skill
     forceCon(0), //Fury Cost
+    gauge(0),
+    hcCooltime(0),
+    hcHp(0),
+    hcProp(0),
+    hcReflect(0),
+    hcSubProp(0),
+    hcSubTime(0),
+    hcSummonHp(0),
+    hcTime(0),
     MDF(0),
     powerCon(0), //Surplus Energy Cost
     hp(0), //Restore HP/Heal

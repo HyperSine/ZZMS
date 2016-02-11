@@ -33,6 +33,7 @@ import tools.Pair;
 import tools.data.LittleEndianAccessor;
 import tools.packet.CField;
 import tools.packet.CWvsContext;
+import tools.packet.SkillPacket;
 
 public class DamageParse {
 
@@ -140,6 +141,18 @@ public class DamageParse {
         double maxDamagePerHit = 0.0D;
         for (AttackPair oned : attack.allDamage) {
             MapleMonster monster = map.getMonsterByOid(oned.objectid);
+            if (player.isShowInfo()) {
+                player.showMessage(6, "[攻擊]怪物:" + monster);
+            }
+            if (player.getBuffedValue(MapleBuffStat.QUIVER_KARTRIGE) != null && attack.skill != 95001000 && attack.skill != 3101009 && attack.skill != 3120017) {
+                player.handleQuiverKartrige(player, monster.getObjectId());
+            }
+            if (attack.skill == 65111007 || attack.skill == 31221014) {
+                if (monster != null && effect != null && effect.makeChanceResult()) {
+                    //TODO 修复灵魂吸取 效果
+                    player.getMap().broadcastMessage(player, SkillPacket.DrainSoul(player, monster.getObjectId(), null, 2, effect.getBulletCount(), attack.skill, 0, true), true);
+                }
+            }
             if ((monster != null) && (monster.getLinkCID() <= 0)) {
                 totDamageToOneMonster = 0;
                 hpMob = monster.getMobMaxHp();
@@ -455,8 +468,15 @@ public class DamageParse {
         if ((attack.real) && (GameConstants.getAttackDelay(attack.skill, theSkill) >= 100)) {
             player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
-
-        if (effect != null && effect.getBulletCount() > 1) {
+        
+        if (effect == null) {
+            if (player.isShowErr()) {
+                player.showInfo("魔法攻擊", true, "effect == null - " + (effect == null));
+            }
+            return;
+        }
+        
+        if (effect.getBulletCount() > 1) {
             if ((attack.hits > effect.getBulletCount()) || (attack.targets > effect.getMobCount())) {
                 player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
                 System.out.println("Return 9");

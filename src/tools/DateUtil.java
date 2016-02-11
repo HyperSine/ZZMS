@@ -52,5 +52,10 @@
      String time = new SimpleDateFormat("yyyy-MM-dd-HH").format(new Date()).replace("-", "");
      return Integer.valueOf(time);
    }
+   
+   public static int getTime(long realTimestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmm");
+        return Integer.valueOf(sdf.format(realTimestamp));
+    }
  }
 

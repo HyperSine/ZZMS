@@ -950,7 +950,7 @@ public class PacketHelper {
         //mplew.writeLong(equip.getInventoryId()); //some tracking ID
         boolean hasUniqueId = (equip.getUniqueId() > 0) && (!ItemConstants.類型.結婚戒指(equip.getItemId())) && (equip.getItemId() / 10000 != 166);
         
-        if (!hasUniqueId) 
+        if (!hasUniqueId) // 参考国服src124代码，反正这儿有用了，我也不知道为什么有用。成功解决点装38问题
         {
             mplew.writeLong(equip.getInventoryId());
         }
@@ -971,7 +971,7 @@ public class PacketHelper {
         mplew.writeShort(equip.getSoulEnchanter());//魂武器 : 0
         mplew.writeShort(equip.getSoulPotential());//item.getItemId()) ? equip.getPotential7() : equip.getPotential7() <= 0 ? 0 : 0
 
-        mplew.writeInt(0);//equip.getMaxDamage() : 0//突破傷害上限
+        mplew.writeInt(equip.getMaxDamage());//equip.getMaxDamage() : 0//突破傷害上限
         mplew.writeLong(getTime(-2));
     }
 

@@ -27,7 +27,8 @@ import tools.Pair;
 import tools.packet.CField;
 
 public class GameConstants {
-
+    
+    public static final int ITEM_TITLE = 124000;
     public static final List<MapleMapObjectType> rangedMapobjectTypes = Collections.unmodifiableList(Arrays.asList(
             MapleMapObjectType.ITEM,
             MapleMapObjectType.MONSTER,
@@ -386,6 +387,8 @@ public class GameConstants {
                 return 35111004;
             case 35121011:
                 return 35121009;
+            case 31221014:
+                return 31221001;
             case 32001007:
             case 32001008:
             case 32001009:
@@ -3570,7 +3573,7 @@ public class GameConstants {
             case IDA_SPECIAL_BUFF_5:
             case IDA_SPECIAL_BUFF_6:
             case IDA_SPECIAL_BUFF_7:
-            case IDA_SPECIAL_BUFF_8:
+            case QUIVER_KARTRIGE:
             case RAINING_MINES:
             case IDA_SPECIAL_BUFF_9:
             case IGNORE_MOB_DAM_R:
@@ -3612,7 +3615,7 @@ public class GameConstants {
             case IDA_MOVE_BUFF6:
             case IDA_MOVE_BUFF7:
             case XENON_FLY:
-            case IDA_SPECIAL_BUFF_8:
+            case QUIVER_KARTRIGE:
             case IDA_MOVE_BUFF8:
             case RAINING_MINES:
             case IDA_MOVE_BUFF9:
@@ -4052,6 +4055,32 @@ public class GameConstants {
                 return true;
         }
         return false;
+    }
+    public static int getMountSkill(int sourceid, MapleCharacter chr) {
+        switch (sourceid) {
+            case 33001007:
+                switch (chr.getIntNoRecord(111112)) {
+                    case 20:
+                        return 33001007;
+                    case 30:
+                        return 33001008;
+                    case 40:
+                        return 33001009;
+                    case 50:
+                        return 33001010;
+                    case 60:
+                        return 33001011;
+                    case 70:
+                        return 33001012;
+                    case 80:
+                        return 33001013;
+                    case 90:
+                        return 33001014;
+                    case 100:
+                        return 33001015;
+                }
+        }
+        return sourceid;
     }
 
     //questID; FAMILY USES 19000x, MARRIAGE USES 16000x, EXPED USES 16010x

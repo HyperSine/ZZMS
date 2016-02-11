@@ -1117,17 +1117,16 @@ public class CField {
                 mplew.writeZeroBytes(8);
             }
         }
-        mplew.writeShort(0);
+        mplew.write(0);  
         mplew.writeInt(0);
         mplew.writeInt(0);//179Change
-        mplew.writeInt(1);
         /////////////////////// for BuffStat
 
         PacketHelper.addSpawnPlayerBuffStat(mplew, chr);
 
         int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
 
-        mplew.writeZeroBytes(8);
+        mplew.writeZeroBytes(8);   //可能需要删除
         mplew.write(1);
         mplew.writeInt(CHAR_MAGIC_SPAWN);//1
 
@@ -1142,6 +1141,7 @@ public class CField {
         mplew.writeShort(0);
         int buffSrc = chr.getBuffSource(MapleBuffStat.MONSTER_RIDING);
         if (buffSrc > 0) {
+            //addMountId(mplew, chr, buffSrc);
             Item c_mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -118);
             Item mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -18);
             if ((GameConstants.getMountItem(buffSrc, chr) == 0) && (c_mount != null) && (chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -119) != null)) {
@@ -1153,7 +1153,8 @@ public class CField {
             }
             mplew.writeInt(buffSrc);
         } else {
-            mplew.writeLong(0L);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
         }
         mplew.write(1);
         mplew.writeInt(CHAR_MAGIC_SPAWN);//4
@@ -1171,49 +1172,57 @@ public class CField {
         mplew.writeZeroBytes(10);
         mplew.write(1);
         mplew.writeInt(CHAR_MAGIC_SPAWN);//8
-
+        
+        //if (chr.getBuffedValue(MapleBuffStat.XENON_FLY) != null) {   //可能需要这段代码
+        //    mplew.writeZeroBytes(4);
+        //}
+        
         ///////////////////////// End for BuffStat
         mplew.writeShort(chr.getJob());
         mplew.writeShort(chr.getSubcategory());
         mplew.writeInt(0);//[33 01 00 00]
         PacketHelper.addCharLook(mplew, chr, true, false);
         if (MapleJob.is神之子(chr.getJob())) {
-            PacketHelper.addCharLook(mplew, chr, true, false);
+            PacketHelper.addCharLook(mplew, chr, true, true);   //第四个参数应该和上一个反过来
         }
 
-        PacketHelper.UnkFunctin6(mplew);
+        PacketHelper.UnkFunctin6(mplew);  //可能多余
 
         mplew.writeInt(0);
         mplew.writeInt(0);
-
+        
         if ((chr.getBuffedValue(MapleBuffStat.SOARING) != null) && (buffSrc > 0)) {//妮娜的魔法阵 1C 7B 1D 00 //5C 58 8A 00
             addMountId(mplew, chr, buffSrc);
             mplew.writeInt(chr.getId());
-            mplew.writeInt(0);
+            mplew.writeInt(0);   
         } else {
             mplew.writeInt(0);
             mplew.writeInt(0);
             int size = 0;
             mplew.writeInt(size);
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {  //可能多余
                 mplew.writeInt(0);
                 mplew.writeInt(0);
             }
         }
 
-        mplew.writeInt(chr.getItemEffect());//[76 72 4C 00] - 撥水柱特效
         mplew.writeInt(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //Valentine Effect
+        mplew.writeInt(chr.getItemEffect());//[76 72 4C 00] - 撥水柱特效
+        mplew.writeInt(0);
         mplew.writeInt(chr.getTitleEffect());//[51 75 38 00] - 與風暴同在
+        //mplew.writeInt(0); // 可能需要
+        //mplew.writeInt(0); // 可能需要
         mplew.writeInt(chr.getDamageSkin());//數據1：[0C 00 00 00] 數據2：[09 04 00 00]傷害字型
+        //mplew.writeInt(0);
         mplew.writeInt(0);
         mplew.writeInt(0);
         mplew.writeInt(0);
         mplew.writeInt(0);
-        mplew.writeInt(0);
-        mplew.writeShort(-1);
-        mplew.writeMapleAsciiString("");
-        mplew.writeMapleAsciiString("");
-        mplew.writeShort(-1);
+        mplew.writeShort(-1);  //Short改为Int
+        mplew.writeMapleAsciiString("");  //可能要变动
+        mplew.writeMapleAsciiString("");  //可能要变动
+        mplew.writeShort(-1);   //可能要变动
+        //mplew.write(0);
         mplew.writeShort(-1);
         mplew.write(0);
         mplew.writeInt(GameConstants.getInventoryType(chr.getChair()) == MapleInventoryType.SETUP ? chr.getChair() : 0);
@@ -1227,13 +1236,31 @@ public class CField {
         mplew.write(chr.getStance());
         mplew.writeShort(chr.getFH());
 
-        mplew.write(chr.getPets().size() > 0); // 寵物數量
+        /*mplew.write(chr.getPets().size() > 0); // 寵物數量
         for (MaplePet pet : chr.getPets()) {
             if (pet.getSummoned()) {
                 mplew.writeInt(chr.getPetIndex(pet));
                 PetPacket.addPetInfo(mplew, chr, pet, false);
             }
+        }*/
+        
+        for (int i = 0 ; i <= 3 ; i++) { // 寵物
+            MaplePet pet = chr.getSummonedPet(i);
+            mplew.write(pet != null);
+            if (pet == null) {
+                break;
+            }
+            mplew.writeInt(i);
+            PetPacket.addPetInfo(mplew, chr, pet, false);
         }
+        
+        
+        /*for (MaplePet pet : chr.getPets()) {
+            if (pet != null && (pet.getSummoned())) {
+                PetPacket.addPetInfo(mplew, chr, pet, true);
+            }
+        }*/
+        
         mplew.write(chr.getHaku() != null && MapleJob.is陰陽師(chr.getJob()));
         if (chr.getHaku() != null && MapleJob.is陰陽師(chr.getJob())) {
             MapleHaku haku = chr.getHaku();
@@ -1282,7 +1309,8 @@ public class CField {
             mplew.writeInt(0);
         }
         mplew.writeInt(chr.getMount().getItemId());//骑宠id
-
+        //mplew.writeZeroBytes(5);//  可能需要加5个00
+        
         if (MapleJob.is凱撒(chr.getJob())) {
             String x = chr.getOneInfo(12860, "extern");
             mplew.writeInt(x == null ? 0 : Integer.parseInt(x));
@@ -1292,7 +1320,7 @@ public class CField {
             mplew.write(x == null ? 0 : Integer.parseInt(x));
         }
 
-        mplew.write(0);
+        mplew.write(0);    //可能这5个00位置和上面弄反了
         mplew.writeInt(0);
 
         //PacketHelper.addFarmInfo(mplew, chr.getClient(), 0);
@@ -1305,16 +1333,16 @@ public class CField {
             mplew.writeMapleAsciiString("");
         }
         mplew.write(1);
-        if (false) {
+        /*if (false) {    //这儿完全不会被执行，我很奇怪为什么要这么写
             int v87 = 0;
             mplew.writeInt(v87);
             for (int i = 0; i < v87; i++) {
                 mplew.writeInt(0);
             }
-        }
+        }*/
         boolean v90 = false;
         mplew.write(v90);
-        if (v90) {
+        /*if (v90) {          //这儿完全不会被执行，因为v90值为false，我很奇怪为什么要这么写
             boolean v91 = false;
             mplew.write(v91);
             if (v91) {
@@ -1323,9 +1351,9 @@ public class CField {
                 mplew.writeShort(0);
                 mplew.writeShort(0);
             }
-        }
+        }*/
 
-        mplew.write(0); // for
+        mplew.write(0); // for      // 34 "00"
         mplew.writeInt(0); // for
         mplew.writeInt(0); // for
 
@@ -1339,8 +1367,18 @@ public class CField {
         mplew.writeInt(0);
 
         mplew.writeInt(0); // for
-
         return mplew.getPacket();
+        
+        /*mplew.writeInt(0);
+        if (MapleJob.is幻獸師(chr.getJob())) {
+            mplew.writeZeroBytes(8);
+        }
+        mplew.writeLong(0); //v116
+        mplew.writeLong(0); //121+
+        mplew.writeShort(0);//121+
+        mplew.writeLong(0); //122+
+        mplew.write(0);     //122+
+        return mplew.getPacket();*/
     }
 
     public static byte[] removePlayerFromMap(int cid) {
@@ -5183,7 +5221,37 @@ public class CField {
     }
 
     public static class EffectPacket {
+        
+        public static byte[] showBuffEffect(boolean self, MapleCharacter chr, int skillid, SpecialEffectType effect, int playerLevel, int skillLevel, byte direction) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
+            if (!self && chr != null) {
+                mplew.writeShort(SendPacketOpcode.SHOW_FOREIGN_EFFECT.getValue());
+                mplew.writeInt(chr.getId());
+            } else {
+                mplew.writeShort(SendPacketOpcode.SHOW_SPECIAL_EFFECT.getValue());
+            }
+            mplew.write(effect.getValue());
+            mplew.writeShort(0);
+            mplew.writeInt(skillid);
+            mplew.write(0);
+            mplew.write(playerLevel - 1);
+            mplew.write(skillLevel);
+            if (direction != 3) {
+                mplew.write(direction);
+                if (!self && chr != null) {
+                    switch (skillid) {
+                        case 65121052:
+                            mplew.writeInt(chr.getTruePosition().x);
+                            mplew.writeInt(chr.getTruePosition().y);
+                            mplew.write(1);
+                    }
+                }
+            }
+
+            return mplew.getPacket();
+        }
+        
         public static byte[] showEffect(MapleCharacter chr, SpecialEffectType effect, int[] value, String[] str, Map<Integer, Integer> items) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
             if (chr == null) {
@@ -5772,6 +5840,18 @@ public class CField {
         mplew.writeInt(cid);
         mplew.writeInt(0);
         mplew.write(0);
+
+        return mplew.getPacket();
+    }
+    
+    public static byte[] CurentMapWarp(Point pos) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.CURRENT_MAP_WARP.getValue());
+        mplew.write(0);
+        mplew.write(2);
+        mplew.writeInt(6850036);
+        mplew.writePos(pos);
 
         return mplew.getPacket();
     }

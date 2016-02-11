@@ -493,6 +493,10 @@ public class Equip extends Item implements Serializable {
     public void setKarmaCount(byte karmaCount) {
         this.karmaCount = karmaCount;
     }
+    
+    public int getMaxDamage() {
+        return ItemConstants.類型.武器(getItemId()) ? ItemConstants.getMaxDamageLimitBreak(getItemId()) : 0;
+    }
 
     public byte getEnhance() {
         return enhance;

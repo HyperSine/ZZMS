@@ -2907,6 +2907,10 @@ public final class MapleMap {
     public List<MapleMapObject> getItemsInRange(Point from, double rangeSq) {
         return getMapObjectsInRange(from, rangeSq, Arrays.asList(MapleMapObjectType.ITEM));
     }
+    
+    public List<MapleMapObject> getMonstersInRange(Point from, double rangeSq) {
+        return getMapObjectsInRange(from, rangeSq, Arrays.asList(MapleMapObjectType.MONSTER));
+    }
 
     public final List<MapleMapObject> getMapObjectsInRange(final Point from, final double rangeSq, final List<MapleMapObjectType> MapObject_types) {
         final List<MapleMapObject> ret = new ArrayList<>();

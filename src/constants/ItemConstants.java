@@ -1556,4 +1556,18 @@ public class ItemConstants {
         }
         return gm.isStaff();
     }
+    
+    public static int getMaxDamageLimitBreak(int itemId) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        return ServerConfig.MAX_DAMAGE - (ii.getLimitBreak(itemId) > 0 ? ii.getLimitBreak(itemId) : 999999);
+    }
+
+    public static int getEffectItemID(int itemId) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        Map<String, Integer> stats = ii.getEquipStats(itemId);
+        if (stats.containsKey("effectItemID")) {
+            return stats.get("effectItemID");
+        }
+        return 0;
+    }
 }

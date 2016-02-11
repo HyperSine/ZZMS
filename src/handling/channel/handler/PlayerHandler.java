@@ -12,6 +12,7 @@ import database.DatabaseConnection;
 import handling.RecvPacketOpcode;
 import handling.channel.ChannelServer;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -54,10 +56,13 @@ import tools.packet.CWvsContext;
 import tools.packet.JobPacket;
 import tools.packet.JobPacket.AngelicPacket;
 import tools.packet.MobPacket;
+import tools.packet.SkillPacket;
 import tools.packet.provider.SpecialEffectType;
 
 public class PlayerHandler {
-
+    
+    public static int fox = 0;
+    
     public static int isFinisher(int skillid) {
         switch (skillid) {
             case 1101012:
@@ -140,7 +145,8 @@ public class PlayerHandler {
             return;
         }
         if (itemId == 0) {
-            chr.setTitleEffect(0);  //  chr.getQuestRemove(MapleQuest.getInstance(GameConstants.ITEM_TITLE));
+            chr.setTitleEffect(0);  
+            chr.getQuestRemove(MapleQuest.getInstance(GameConstants.ITEM_TITLE));
         } else {
             Item toUse = chr.getInventory(MapleInventoryType.SETUP).findById(itemId);
             if ((toUse == null) || (toUse.getItemId() != itemId) || (toUse.getQuantity() < 1)) {
@@ -149,7 +155,7 @@ public class PlayerHandler {
             }
             if (itemId / 10000 == 370) {
                 chr.setTitleEffect(itemId);
-             //   chr.getQuestNAdd(MapleQuest.getInstance(GameConstants.ITEM_TITLE)).setCustomData(String.valueOf(itemId));
+                chr.getQuestNAdd(MapleQuest.getInstance(GameConstants.ITEM_TITLE)).setCustomData(String.valueOf(itemId));
             }
         }
         chr.getMap().broadcastMessage(chr, CField.showTitle(chr.getId(), itemId), false);
@@ -885,8 +891,10 @@ public class PlayerHandler {
         }
         if (skillid == 23111008) {
             skillid += Randomizer.nextInt(2);
+        } else if (skillid == 5210015) {
+            skillid += Randomizer.nextInt(4);
         }
-        int xy1 = 0;
+        /*int xy1 = 0;
         int xy2 = 0;
         if (skillid == 65111100) {
             xy1 = slea.readShort();
@@ -905,8 +913,8 @@ public class PlayerHandler {
             c.getSession().write(CField.EffectPacket.showRechargeEffect());
             c.getSession().write(CWvsContext.enableActions());
             return;
-        }
-        if (skillid >= 100000000) {
+        }*/
+        if (MapleJob.is神之子(skillid / 10000)) {  //skillid >= 100000000
             slea.readByte(); //zero
         }
         int skillLevel = slea.readByte();
@@ -989,6 +997,147 @@ public class PlayerHandler {
         final EnumMap<MapleBuffStat, Integer> stat = new EnumMap<>(MapleBuffStat.class);
 
         switch (skillid) {
+            case 1221016: // 守護者精神
+                Rectangle bounds = effect.calculateBoundingBox(chr.getOldPosition(), chr.isFacingLeft());
+                List<MapleCharacter> chrs = chr.getMap().getCharactersIntersect(bounds);
+                for (MapleCharacter obj : chrs) {
+                    if (obj.getParty().getId() == chr.getParty().getId() && !obj.isAlive() && obj.getId() != chr.getId()) {
+                        obj.getStat().setHp(obj.getStat().getCurrentMaxHp(), obj);
+                        obj.setStance(0);
+                        effect.applyTo(chr, obj, true, null, effect.getDuration());
+                        effect.applyTo(chr);
+                        return;
+                    }
+                }
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 12111022: // 漩渦
+                Point pos = slea.readPos();
+                slea.skip(3);
+                mob = chr.getMap().getMonsterByOid(slea.readInt());
+                effect.applySummonEffect(chr, true, pos, effect.getDuration(), mob.getId());
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 12001028: // 火步行
+                c.getSession().write(SkillPacket.FireStep());
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 12101025: // 火球連結
+                pos = slea.readPos();
+                Point pos2 = slea.readPos();
+                slea.skip(1);
+                int s = slea.readByte();
+                c.getSession().write(SkillPacket.ConveyTo());
+                if (s == 1) {
+                    c.getSession().write(CField.CurentMapWarp(pos));
+                }
+                break;
+            case 20031210: // 審判
+                c.getSession().write(JobPacket.PhantomPacket.gainCardStack(chr, 0, 24120002, 2, 1, 10));
+                effect.applyTo(c.getPlayer(), slea.readPos());
+                break;
+            case 31221001: // 盾牌追擊
+            case 65111100: // 靈魂探求者
+                List<Integer> mobIds = new ArrayList();
+                slea.skip(4);
+                byte number_of_mobs = slea.readByte();
+                for (int i = 0; i < number_of_mobs; i++) {
+                    mobIds.add(slea.readInt());
+                }
+                chr.getMap().broadcastMessage(chr, SkillPacket.DrainSoul(chr, 0, mobIds, 2, effect.getBulletCount(), skillid == 31221001 ? 31221014 : 65111007, slea.readShort(), false), true);
+                break;
+            case 9001020:
+            case 9101020:
+            case 31111003: // 血腥烏鴉
+                number_of_mobs = slea.readByte();
+                slea.skip(3);
+                for (int i = 0; i < number_of_mobs; i++) {
+                    int mobId = slea.readInt();
+
+                    mob = chr.getMap().getMonsterByOid(mobId);
+                    if (mob == null) {
+                        continue;
+                    }
+                    mob.switchController(chr, mob.isControllerHasAggro());
+                    mob.applyStatus(chr, new MonsterStatusEffect(MonsterStatus.STUN, 1, skillid, null, false), false, effect.getDuration(), true, effect);
+                }
+
+                chr.getMap().broadcastMessage(chr, CField.EffectPacket.showBuffEffect(false, chr, skillid, SpecialEffectType.LOCAL_SKILL, chr.getLevel(), skillLevel, slea.readByte()), chr.getTruePosition());
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 30001061: // 捕獲
+                mobID = slea.readInt();
+                mob = chr.getMap().getMonsterByOid(mobID);
+                if (mob != null) {
+                    boolean success = (mob.getHp() <= mob.getMobMaxHp() / 2L) && (mob.getId() >= 9304000) && (mob.getId() < 9305000);
+                    chr.getMap().broadcastMessage(chr, CField.EffectPacket.showBuffEffect(false, chr, skillid, SpecialEffectType.LOCAL_SKILL, chr.getLevel(), skillLevel, (byte) (success ? 1 : 0)), chr.getTruePosition());
+                    if (success) {
+                        chr.getQuestNAdd(MapleQuest.getInstance(GameConstants.JAGUAR)).setCustomData(String.valueOf((mob.getId() - 9303999) * 10));
+                        chr.getMap().killMonster(mob, chr, true, false, (byte) 1);
+                        chr.cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
+                        c.getSession().write(SkillPacket.updateJaguar(chr));
+                    } else {
+                        chr.dropMessage(5, "怪物體力過高，補抓失敗。");
+                    }
+                }
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 30001062: // 獵人的呼喚
+                chr.dropMessage(5, "沒有能被召喚的怪物，請先補抓怪物。");
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 20040216: // 光蝕
+            case 20040217: // 暗蝕
+            case 20040219: // 平衡
+            case 20040220: // 平衡
+            case 20041239: // 光/暗黑模式轉換
+                chr.changeLuminousMode(skillid);
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 25100009: //小狐仙精通
+                slea.skip(1);
+                int tt = slea.readInt();
+                c.getSession().write(SkillPacket.隱月小狐仙(c.getPlayer().getId(), 25100010, tt, false));
+                fox = 50;
+                break;
+            case 25120110: //火狐精通
+                slea.skip(1);
+                int ftt = slea.readInt();
+                c.getSession().write(SkillPacket.隱月小狐仙(c.getPlayer().getId(), 25120115, ftt, false));
+                fox = 100;
+                break;
+            case 36001005: // 追縱火箭
+                byte mobCount = slea.readByte();
+                List<Integer> Oid = new ArrayList();
+                for (int i = 0; i < mobCount; i++) {
+                    Oid.add(slea.readInt());
+                }
+                if (chr.isShowInfo()) {
+                    chr.dropMessage(5, "追縱火箭 - " + " oldId: " + Oid + " 技能ID: " + skillid);
+                }
+                chr.handleAccurateRocket(Oid, skillid);
+                break;
+            case 4211006: // 楓幣炸彈
+                byte level = slea.readByte();
+                int Delay = slea.readShort();
+                chr.handleMesosbomb(skillid, Delay);
+                break;
+            case 3101009: // 魔幻箭筒
+                MapleStatEffect eff = new MapleStatEffect();
+                eff.applyQuiverKartrige(chr);
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 4341003:
+                chr.setKeyDownSkill_Time(0L);
+                chr.getMap().broadcastMessage(chr, CField.skillCancel(chr, skillid), false);
+                break;
+            case 2121052: // 藍焰斬
+                bounds = effect.calculateBoundingBox(chr.getOldPosition(), chr.isFacingLeft());
+                List<MapleMapObject> mons = chr.getMap().getMapObjectsInRect(bounds, Collections.singletonList(MapleMapObjectType.MONSTER));
+                if (!mons.isEmpty()) {
+                    chr.getMap().broadcastMessage(SkillPacket.getTrialFlame(chr.getId(), mons.get(0).getObjectId()));
+                }
+                break;
             case 11101120:
             case 11101220:
             case 11101121:
@@ -1009,6 +1158,40 @@ public class PlayerHandler {
                     }
                 }
                 break;
+            case 33101005: // 咆哮
+                mobID = chr.getFirstLinkMid();
+                mob = chr.getMap().getMonsterByOid(mobID);
+                chr.setKeyDownSkill_Time(0L);
+                chr.getMap().broadcastMessage(chr, CField.skillCancel(chr, skillid), false);
+                if (mob != null) {
+                    boolean success = (mob.getStats().getLevel() < chr.getLevel()) && (mob.getId() < 9000000) && (!mob.getStats().isBoss());
+                    if (success) {
+                        chr.getMap().broadcastMessage(MobPacket.suckMonster(mob.getObjectId(), chr.getId()));
+                        chr.getMap().killMonster(mob, chr, false, false, (byte) -1);
+                    } else {
+                        chr.dropMessage(5, "The monster has too much physical strength, so you cannot catch it.");
+                    }
+                } else {
+                    chr.dropMessage(5, "No monster was sucked. The skill failed.");
+                }
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 110001500: // 解除模式
+                stat.clear();
+                c.getSession().write(JobPacket.BeastTamerPacket.ModeCancel());
+                c.getSession().write(CWvsContext.enableActions());
+                break;
+            case 110001501: // 召喚熊熊
+            case 110001502: // 召喚雪豹
+            case 110001503: // 召喚雀鷹
+            case 110001504: // 召喚貓咪
+                slea.skip(3);
+                stat.clear();
+                stat.put(MapleBuffStat.ANIMAL_SELECT, skillid - 110001500);
+                chr.setBuffedValue(MapleBuffStat.ANIMAL_SELECT, skillid - 110001500);
+                c.getSession().write(CWvsContext.BuffPacket.giveBuff(skillid, 2100000000, stat, null, chr));
+                c.getSession().write(CWvsContext.enableActions());
+                break;
             case 32001003:
             case 32111012:
             case 32101003:
@@ -1027,10 +1210,10 @@ public class PlayerHandler {
             case 1121001:
             case 1221001:
             case 1321001:
-            case 9001020:
+            /*case 9001020:
             case 9101020:
             case 31111003:
-                byte number_of_mobs = slea.readByte();
+                number_of_mobs = slea.readByte();
                 slea.skip(3);
                 for (int i = 0; i < number_of_mobs; i++) {
                     int mobId = slea.readInt();
@@ -1119,9 +1302,9 @@ public class PlayerHandler {
                 chr.setBuffedValue(MapleBuffStat.ANIMAL_SELECT, skillid - 110001500);
                 c.getSession().write(CWvsContext.BuffPacket.giveBuff(skillid, 2100000000, stat, null, chr));
                 c.getSession().write(CWvsContext.enableActions());
-                break;
+                break;*/
             default:
-                Point pos = null;
+                pos = null;
                 if ((slea.available() == 5L) || (slea.available() == 7L)) {
                     pos = slea.readPos();
                 }
@@ -1138,14 +1321,47 @@ public class PlayerHandler {
                         c.getSession().write(CWvsContext.enableActions());
                         return;
                     }
-                    if (effect.isHide() && chr.isHidden()) {
+                    /*if (effect.isHide() && chr.isHidden()) {
                         chr.cancelEffect(effect, false, -1);
                         c.getSession().write(CWvsContext.enableActions());
                         return;
-                    }
+                    }*/
 //                     System.err.println("pos " + pos);
 //                     System.err.println("effect " + effect.getSourceId());
-                    effect.applyTo(c.getPlayer(), pos);
+                    if (effect.getSourceId() == 5321004) {
+                        effect.applyTo(chr, pos);
+                        effect = SkillFactory.getSkill(5320011).getEffect(skillLevel);
+                        if (pos != null) {
+                            pos.x -= 90;
+                        }
+                        if (effect == null) {
+                            break;
+                        }
+                        effect.applyTo(chr, pos);
+                    } else if (effect.is集合船员()) {
+                        effect.applyTo(chr, pos);
+                        List skillIds = new ArrayList();
+                        for (int i = 5210015; i <= 5210018; i++) {
+                            if (i != effect.getSourceId()) {
+                                skillIds.add(i);
+                            }
+                        }
+                        skillid = ((Integer) skillIds.get(Randomizer.nextInt(skillIds.size())));
+                        effect = SkillFactory.getSkill(skillid).getEffect(skillLevel);
+                        if (pos != null) {
+                            pos.x -= 90;
+                        }
+                        if (effect != null) {
+                            effect.applyTo(chr, pos);
+                        }
+                    } else {
+                        if (effect.isHide() && chr.isHidden()) {
+                            chr.cancelEffect(effect, false, -1);
+                            c.getSession().write(CWvsContext.enableActions());
+                            return;
+                        }
+                        effect.applyTo(c.getPlayer(), pos);
+                    }
                 }
         }
         if (MapleJob.is天使破壞者(chr.getJob())) {
@@ -1253,10 +1469,12 @@ public class PlayerHandler {
     public static void closeRangeAttack(LittleEndianAccessor slea, MapleClient c, final MapleCharacter chr, final boolean energy) {
         AttackInfo attack = DamageParse.parseDmgM(slea, chr);
         if (attack == null) {
+            chr.dropMessage(5, "攻擊出現錯誤。");
             c.getSession().write(CWvsContext.enableActions());
             return;
         }
         final boolean mirror = chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null;
+        boolean hasMoonBuff = chr.getBuffedValue(MapleBuffStat.SOLUNA_EFFECT) != null;
         double maxdamage = chr.getStat().getCurrentMaxBaseDamage();
         Item shield = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -10);
         int attackCount = (shield != null) && (shield.getItemId() / 10000 == 134) ? 2 : 1;

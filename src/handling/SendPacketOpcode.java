@@ -164,8 +164,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     STEEL_SKILL_CHECK((short) 0x4B),
     
     // 0x4C
-    // 0x4D
     
+    CONVEY_TO((short) 0x4D),
     // 名聲回覆[完成]
     FAME_RESPONSE((short) 0x4E),
     // 顯示角色狀態信息[完成]
@@ -589,7 +589,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
 
     // 離開遊戲[完成]
     EXIT_GAME((short) 0x140),
-    
+    // 火步行[未知]
+    FIRE_STEP((short) 0x141),
     // 0x136
     // 0x137
     // 0x138

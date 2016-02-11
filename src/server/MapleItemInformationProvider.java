@@ -2106,4 +2106,11 @@ public class MapleItemInformationProvider {
         androidType.put(itemId, type);
         return type;
     }
+    
+    public int getLimitBreak(int itemId) {
+        if ((getEquipStats(itemId) == null) || (!getEquipStats(itemId).containsKey("limitBreak"))) {
+            return 999999;
+        }
+        return (getEquipStats(itemId).get("limitBreak"));
+    }
 }

@@ -730,7 +730,7 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     //功能不知道                    [IDA找的-182]
     IDA_UNK_BUFF13(335),
     //IDA特殊Buff                   [IDA找的-182]
-    IDA_SPECIAL_BUFF_8(336),
+    QUIVER_KARTRIGE(336),
     //IDA特殊Buff                   [IDA找的-182]
     IDA_SPECIAL_BUFF_6(337),
     
@@ -792,6 +792,8 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     // 369
     // 370
     // 371
+    火焰屏障(370),
+    暗影僕從(371),
     // 372
     // 373
     
@@ -854,34 +856,34 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     // 402
     
     //IDA特殊Buff                       [IDA找的-182]
-    IDA_SPECIAL_BUFF_4(403),
+    IDA_SPECIAL_BUFF_4(402),
     
     // 404
     
     //依古尼斯咆哮-迴避提升               [完成-182]
-    PROP(405),
+    PROP(404),
     
     // 406
     
     //召喚美洲豹                         [完成-182]
-    SUMMON_JAGUAR(407),
+    SUMMON_JAGUAR(406),
     //自由精神                           [完成-182]
-    SPIRIT_OF_FREEDOM(408),    
+    SPIRIT_OF_FREEDOM(407),    
     //功能不知道                         [IDA找的-182]
-    IDA_UNK_BUFF1(409),
+    IDA_UNK_BUFF1(408),
     
     // 410
     
     //功能不知道                        [IDA找的-182]
-    IDA_UNK_BUFF2(411),    
+    IDA_UNK_BUFF2(410),    
     //光環效果                          [完成-182]
-    NEW_AURA(412),
+    NEW_AURA(411),
     //黑暗閃電                          [完成-182]
-    DARK_SHOCK(413),
+    DARK_SHOCK(412),
     //戰鬥精通                          [完成-182]
-    BATTLE_MASTER(414),
+    BATTLE_MASTER(413),
     //死神契約                          [完成-182]
-    GRIM_CONTRACT(415), 
+    GRIM_CONTRACT(414), 
     
     // 416
     // 417
@@ -892,41 +894,48 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     // 419
     
     //神盾系統                          [完成-182]
-    AEGIS_SYSTEM(420),    
+    AEGIS_SYSTEM(419),    
     //索魂精通                          [完成-182]   
-    SOUL_SEEKER(421),
+    SOUL_SEEKER(420),
     //小狐仙                            [完成-182]
-    FOX_SPIRITS(422),
+    FOX_SPIRITS(421),
     //暗影蝙蝠                          [完成-182]
-    SHADOW_BAT(423),
+    SHADOW_BAT(422),
     
     // 424
     
     //燎原之火                          [完成-182]
-    IGNITE(425),
+    IGNITE(424),
     
     //能量獲得                          [完成-182]
-    ENERGY_CHARGE(426, true),
+    ENERGY_CHARGE(425, true),
     //預設Buff-3                        [完成-182]
-    DEFAULTBUFF3(428, true),
+    DEFAULTBUFF3(427, true),
     //預設Buff-4                        [完成-182]
-    DEFAULTBUFF4(433, true),
+    //皮卡啾攻擊                        [完成-182]
+    PINK_BEAN_ATTACK(430),
+    //皮卡啾未知                        [完成-182]
+    PINK_BEAN_UNK(431),
+    
+    DEFAULTBUFF4(432, true),
+    
+    PINK_BEAN_YOYO(433),
     //預設Buff-5                        [完成-182]
-    DEFAULTBUFF5(441, true),
+    DEFAULTBUFF5(442, true),
     //衝鋒_速度                         [完成-182]
-    DASH_SPEED(442, true),    
+    DASH_SPEED(443, true),    
     //衝鋒_跳躍                         [完成-182]
-    DASH_JUMP(443, true),
+    DASH_JUMP(444, true),
     //怪物騎乘                          [完成-182]
-    MONSTER_RIDING(444, true),//+16
+    MONSTER_RIDING(445, true),//+16
     //最終極速                          [完成-182]
-    SPEED_INFUSION(445, true),//+16
+    SPEED_INFUSION(447, true),//+16
     //指定攻擊(無盡追擊)                 [完成-182]
-    HOMING_BEACON(446, true),
+    HOMING_BEACON(448, true),
     //預設Buff-1                        [完成-182]
-    DEFAULTBUFF1(447, true),
+    DEFAULTBUFF1(449, true),
     //預設Buff-2                        [完成-182]
-    DEFAULTBUFF2(448, true),
+    DEFAULTBUFF2(450, true),
     
     
     //-----------------[已停用的Buff]

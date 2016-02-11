@@ -29,6 +29,7 @@ import server.StructFamiliar;
 import server.life.PlayerNPC;
 import server.stores.HiredMerchant;
 import server.stores.MaplePlayerShopItem;
+import tools.DateUtil;
 import tools.HexTool;
 import tools.Pair;
 import tools.StringUtil;
@@ -3934,7 +3935,32 @@ public class CWvsContext {
     }
 
     public static class BuffPacket {
-
+        
+        public static byte[] getQuiverKartrigecount(int count, int mode) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+            switch (mode) {
+                case 1:
+                    count = 10000 * count;
+                    break;
+                case 2:
+                    count = 130040 + count * 100;
+                    break;
+                case 3:
+                    count = 160000 + count;
+                    break;
+            }
+            mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
+            PacketHelper.writeSingleMask(mplew, MapleBuffStat.QUIVER_KARTRIGE);
+            mplew.writeInt(count);
+            mplew.writeInt(3101009);
+            mplew.writeInt(DateUtil.getTime(System.currentTimeMillis()));
+            mplew.writeZeroBytes(5);
+            mplew.writeInt(mode);
+            mplew.writeLong(0);
+            mplew.writeInt(0);
+            mplew.writeInt(0);
+            return mplew.getPacket();
+        }
         public static byte[] giveSoulGauge(int count, int skillid) {
             MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

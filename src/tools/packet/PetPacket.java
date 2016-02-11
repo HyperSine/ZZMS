@@ -186,8 +186,8 @@ public class PetPacket {
         mplew.writeShort(pet.getFh());
         mplew.writeInt(-1);
         mplew.writeShort(100);
-        mplew.write(0);
-        mplew.write(0);
+        //mplew.write(0);  // not need
+        //mplew.write(0);  // not need
     }
 
     public static void addPet(MaplePacketLittleEndianWriter mplew, MapleCharacter chr, MaplePet pet) {

@@ -1211,6 +1211,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
                 PlayersHandler.reviveAzwan(slea, c);
                 break;
             case PLAYER_UPDATE:
+                PlayerHandler.PlayerUpdate(c.getPlayer());
                 break;
             case INNER_CIRCULATOR:
                 InventoryHandler.useInnerCirculator(slea, c);

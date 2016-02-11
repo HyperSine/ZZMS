@@ -1103,6 +1103,7 @@ public class DamageParse {
                 || ret.skill == 42120003) {
             lea.skip(1);
         }
+        
         lea.skip(GameConstants.isEnergyBuff(ret.skill) ? 1 : 2);
         lea.readInt(); // nSkillCRC
         lea.readByte();
@@ -1129,6 +1130,8 @@ public class DamageParse {
             case 31001000:
             case 31101000:
             case 31111005:
+            case 31201001:   //  蝙蝠群，该技能会多出4个00，加上这个以消除数据偏差。
+            case 31211001:   //  噬魂爆發，该技能会多出4个00，加上这个以消除数据偏差。
             case 32121003:
             case 36121000:
             case 36101001:

@@ -856,34 +856,34 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     // 402
     
     //IDA特殊Buff                       [IDA找的-182]
-    IDA_SPECIAL_BUFF_4(402),
+    IDA_SPECIAL_BUFF_4(403),
     
     // 404
     
     //依古尼斯咆哮-迴避提升               [完成-182]
-    PROP(404),
+    PROP(405),
     
     // 406
     
     //召喚美洲豹                         [完成-182]
-    SUMMON_JAGUAR(406),
+    SUMMON_JAGUAR(407),
     //自由精神                           [完成-182]
-    SPIRIT_OF_FREEDOM(407),    
+    SPIRIT_OF_FREEDOM(408),    
     //功能不知道                         [IDA找的-182]
-    IDA_UNK_BUFF1(408),
+    IDA_UNK_BUFF1(409),
     
     // 410
     
     //功能不知道                        [IDA找的-182]
-    IDA_UNK_BUFF2(410),    
+    IDA_UNK_BUFF2(411),    
     //光環效果                          [完成-182]
-    NEW_AURA(411),
+    NEW_AURA(412),
     //黑暗閃電                          [完成-182]
-    DARK_SHOCK(412),
+    DARK_SHOCK(413),
     //戰鬥精通                          [完成-182]
-    BATTLE_MASTER(413),
+    BATTLE_MASTER(414),
     //死神契約                          [完成-182]
-    GRIM_CONTRACT(414), 
+    GRIM_CONTRACT(415), 
     
     // 416
     // 417
@@ -894,48 +894,48 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     // 419
     
     //神盾系統                          [完成-182]
-    AEGIS_SYSTEM(419),    
+    AEGIS_SYSTEM(420),    
     //索魂精通                          [完成-182]   
-    SOUL_SEEKER(420),
+    SOUL_SEEKER(421),
     //小狐仙                            [完成-182]
-    FOX_SPIRITS(421),
+    FOX_SPIRITS(422),
     //暗影蝙蝠                          [完成-182]
-    SHADOW_BAT(422),
+    SHADOW_BAT(423),
     
     // 424
     
     //燎原之火                          [完成-182]
-    IGNITE(424),
+    IGNITE(425),
     
     //能量獲得                          [完成-182]
-    ENERGY_CHARGE(425, true),
+    ENERGY_CHARGE(426, true),
     //預設Buff-3                        [完成-182]
-    DEFAULTBUFF3(427, true),
+    DEFAULTBUFF3(428, true),
     //預設Buff-4                        [完成-182]
     //皮卡啾攻擊                        [完成-182]
     PINK_BEAN_ATTACK(430),
     //皮卡啾未知                        [完成-182]
     PINK_BEAN_UNK(431),
     
-    DEFAULTBUFF4(432, true),
+    DEFAULTBUFF4(433, true),
     
     PINK_BEAN_YOYO(433),
     //預設Buff-5                        [完成-182]
-    DEFAULTBUFF5(442, true),
+    DEFAULTBUFF5(441, true),
     //衝鋒_速度                         [完成-182]
-    DASH_SPEED(443, true),    
+    DASH_SPEED(442, true),    
     //衝鋒_跳躍                         [完成-182]
-    DASH_JUMP(444, true),
+    DASH_JUMP(443, true),
     //怪物騎乘                          [完成-182]
-    MONSTER_RIDING(445, true),//+16
+    MONSTER_RIDING(444, true),//+16
     //最終極速                          [完成-182]
-    SPEED_INFUSION(447, true),//+16
+    SPEED_INFUSION(445, true),//+16
     //指定攻擊(無盡追擊)                 [完成-182]
-    HOMING_BEACON(448, true),
+    HOMING_BEACON(446, true),
     //預設Buff-1                        [完成-182]
-    DEFAULTBUFF1(449, true),
+    DEFAULTBUFF1(447, true),
     //預設Buff-2                        [完成-182]
-    DEFAULTBUFF2(450, true),
+    DEFAULTBUFF2(448, true),
     
     
     //-----------------[已停用的Buff]

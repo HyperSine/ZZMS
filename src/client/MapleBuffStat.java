@@ -877,7 +877,7 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     //功能不知道                        [IDA找的-182]
     IDA_UNK_BUFF2(411),    
     //光環效果                          [完成-182]
-    NEW_AURA(412),
+    NEW_AURA(412),   
     //黑暗閃電                          [完成-182]
     DARK_SHOCK(413),
     //戰鬥精通                          [完成-182]
@@ -908,34 +908,34 @@ public enum MapleBuffStat implements Serializable, Buffstat {
     IGNITE(425),
     
     //能量獲得                          [完成-182]
-    ENERGY_CHARGE(426, true),
+    ENERGY_CHARGE(426, true),  
     //預設Buff-3                        [完成-182]
-    DEFAULTBUFF3(428, true),
+    DEFAULTBUFF3(428, true), 
     //預設Buff-4                        [完成-182]
     //皮卡啾攻擊                        [完成-182]
     PINK_BEAN_ATTACK(430),
     //皮卡啾未知                        [完成-182]
     PINK_BEAN_UNK(431),
     
-    DEFAULTBUFF4(433, true),
+    DEFAULTBUFF4(433, true),  
     
-    PINK_BEAN_YOYO(433),
-    //預設Buff-5                        [完成-182]
-    DEFAULTBUFF5(441, true),
-    //衝鋒_速度                         [完成-182]
-    DASH_SPEED(442, true),    
-    //衝鋒_跳躍                         [完成-182]
-    DASH_JUMP(443, true),
-    //怪物騎乘                          [完成-182]
-    MONSTER_RIDING(444, true),//+16
-    //最終極速                          [完成-182]
-    SPEED_INFUSION(445, true),//+16
-    //指定攻擊(無盡追擊)                 [完成-182]
-    HOMING_BEACON(446, true),
-    //預設Buff-1                        [完成-182]
-    DEFAULTBUFF1(447, true),
-    //預設Buff-2                        [完成-182]
-    DEFAULTBUFF2(448, true),
+    //PINK_BEAN_YOYO(433),
+    //預設Buff-5                        [完成-183]
+    DEFAULTBUFF5(442, true),   
+    //衝鋒_速度                         [完成-183]
+    DASH_SPEED(443, true),    
+    //衝鋒_跳躍                         [完成-183]
+    DASH_JUMP(444, true),   
+    //怪物騎乘                          [完成-183]
+    MONSTER_RIDING(445, true),//+16   
+    //最終極速                          [完成-183]
+    SPEED_INFUSION(446, true),//+16  
+    //指定攻擊(無盡追擊)                 [完成-183]
+    HOMING_BEACON(447, true),   
+    //預設Buff-1                        [完成-183]
+    DEFAULTBUFF1(448, true),  
+    //預設Buff-2                        [完成-183]
+    DEFAULTBUFF2(449, true), 
     
     
     //-----------------[已停用的Buff]

@@ -986,7 +986,7 @@ public class PacketHelper {
         if ((chr.getPlayerShop() != null) && (chr.getPlayerShop().isOwner(chr)) && (chr.getPlayerShop().getShopType() != 1) && (chr.getPlayerShop().isAvailable())) {
             addInteraction(mplew, chr.getPlayerShop());
         } else {
-            mplew.write(0);
+            mplew.writeInt(0);   //write改为writeInt
         }
     }
 

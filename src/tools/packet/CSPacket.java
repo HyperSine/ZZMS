@@ -21,6 +21,7 @@ import tools.HexTool;
 import tools.Pair;
 import tools.data.MaplePacketLittleEndianWriter;
 import static tools.packet.PacketHelper.addExpirationTime;
+import java.util.Collection;
 
 public class CSPacket {
 
@@ -57,13 +58,162 @@ public class CSPacket {
 
     public static byte[] warpCSInfo(MapleClient c) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
         mplew.writeShort(SendPacketOpcode.CS_INFO.getValue());
-        mplew.write(HexTool.getByteArrayFromHexString(c.getChannelServer().getShopPack()));
+        
+        CashItemFactory cif = CashItemFactory.getInstance();
+        
+        /*int[] unk_cashSize = new int[]{110100044, 110100045, 110100047,110100054, 110100056, 110100063, 110100075};
+        mplew.writeInt(unk_cashSize.length);
+        for (int i = 0 ; i < unk_cashSize.length ; i++) {
+            mplew.writeInt(unk_cashSize[i]);
+        }*/
+        mplew.writeInt(0);
+        Collection<CashItemInfo.CashModInfo> AllModItems = cif.getAllModInfo();
+        //AllModItems.clear();
+        mplew.writeShort(AllModItems.size());
+        AllModItems.stream().forEach((cmi) -> { // 是控制商城商品用的
+            addModCashItemInfo(mplew, cmi);
+        });
+        /*mplew.writeShort(3);
+        mplew.write(HexTool.getByteArrayFromHexString("CC 84 91 06 00 10 00 00 00 00 00 00 A0"));
+        mplew.write(HexTool.getByteArrayFromHexString("00 0E 27 07 08 00 00 00 00 00 00 00 FF"));
+        mplew.write(HexTool.getByteArrayFromHexString("81 A4 BF 07 00 04 00 00 00 00 00 00 01"));*/
+        mplew.writeShort(0);
+        /*int boxSize = 0;
+        mplew.writeInt(boxSize);
+        for (int i = 0 ; i < boxSize ; i++) { // 是可使用的箱子還是時尚隨機箱子還是什麼的, 反正跟顯示商品無關
+            mplew.writeInt(0); // 隨機箱子道具ID
+            int size = 0;
+            mplew.writeInt(size); // 隨機箱子可開出的道具的個數
+            for (int j = 0 ; j < size ; j++) {
+                mplew.writeInt(0); // 隨機箱子可開出的道具的SN?反正不是道具ID
+            }
+        }
+        
+        int unkSize1 = 0;
+        mplew.writeInt(unkSize1);
+        for (int i = 0 ; i < unkSize1 ; i++) { // 估計是設定選中對應券預覽時設定的顯示券
+            mplew.writeInt(i);
+            mplew.writeInt(0); // 道具SN[F7 A4 98 00] [F8 A4 98 00]
+            mplew.writeInt(0); // 道具ID[96 95 4E 00閃亮髮型卷] [C8 9D 4E 00閃亮整型卷]
+            mplew.writeLong(0); // [00 A0 C1 29 E5 82 CE 01]
+            mplew.writeLong(0); // [00 80 39 0F 01 93 CE 01]
+            mplew.writeInt(0); // [00 00 00 00]
+            mplew.writeInt(0); // [05 00 00 00]
+            mplew.writeInt(0); // [00 00 00 00]
+            mplew.writeInt(0); // [14 00 00 00]
+            mplew.writeInt(0); // [1E 00 00 00]
+            mplew.writeInt(0); // [28 00 00 00]
+            mplew.writeInt(0); // [32 00 00 00]
+        }
+
+        List<CashItem> menuItems = cif.getMenuItems();
+        mplew.writeInt(menuItems.size());
+        for (CashItem menuitem : menuItems) { // 主頁推薦商品
+            mplew.write(menuitem.getFlag());
+            mplew.writeInt(menuitem.getSN()); // 道具SN[A8 72 F8 08] [04 A3 BD 0A] [2E 0E 27 07]
+        }
+
+        mplew.writeInt(0);
+        mplew.writeInt(3);
+        mplew.write(HexTool.getByteArrayFromHexString("02 00 3F 3F 29 00 3F 3F 3F 20 3F 3F 3F 20 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 20 3F 3F 3F 20 3F 3F 3F 3F 20 2D 2D 2D 2D 2D 3E 20 3F 3F 05 00 3F 3F 3F 20 3F 13 00 3F 3F 3F 3F 3F 21 20 3F 3F 3F 20 3F 3F 3F 20 3F 3F 3F 21 03 00 3F 3F 3F 20 00 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 21 20 3F 3F 20 3F 3F 20 3F 3F 3F 3F 3F 3F 7E"));
+        mplew.writeZeroBytes(1093);*/
+        mplew.write(HexTool.getByteArrayFromHexString("1B 00 00 00 4C 6D 54 00 06 00 00 00 19 63 3D 01 02 63 3D 01 05 63 3D 01 06 63 3D 01 0A 63 3D 01 0C 63 3D 01 64 6D 54 00 00 00 00 00 54 6D 54 00 0C 00 00 00 19 D8 C9 0A 1A D8 C9 0A 1B D8 C9 0A 1C D8 C9 0A 1D D8 C9 0A 1E D8 C9 0A 1F D8 C9 0A 20 D8 C9 0A 23 D8 C9 0A 30 D8 C9 0A 61 D8 C9 0A 62 D8 C9 0A 6C 6D 54 00 05 00 00 00 7B D7 C9 0A 7C D7 C9 0A 7D D7 C9 0A 7E D7 C9 0A 7F D7 C9 0A 55 6D 54 00 09 00 00 00 AC 2F 31 01 AD 2F 31 01 AE 2F 31 01 AF 2F 31 01 B0 2F 31 01 B1 2F 31 01 B7 85 FF 02 B8 85 FF 02 B9 85 FF 02 6D 6D 54 00 05 00 00 00 84 D7 C9 0A 85 D7 C9 0A 86 D7 C9 0A 87 D7 C9 0A 88 D7 C9 0A 5D 6D 54 00 05 00 00 00 3D 63 3D 01 3E 63 3D 01 3F 63 3D 01 40 63 3D 01 41 63 3D 01 4E 6D 54 00 06 00 00 00 6B D7 C9 0A 6C D7 C9 0A 6D D7 C9 0A 6E D7 C9 0A 6F D7 C9 0A 70 D7 C9 0A 66 6D 54 00 00 00 00 00 56 6D 54 00 08 00 00 00 CE 2E 31 01 CF 2E 31 01 D0 2E 31 01 D1 2E 31 01 D2 2E 31 01 D3 2E 31 01 D4 2E 31 01 D5 2E 31 01 5E 6D 54 00 03 00 00 00 91 F6 41 01 92 F6 41 01 93 F6 41 01 4F 6D 54 00 06 00 00 00 91 F6 41 01 92 F6 41 01 93 F6 41 01 94 F6 41 01 95 F6 41 01 96 F6 41 01 6F 6D 54 00 00 00 00 00 5F 6D 54 00 05 00 00 00 71 2F 31 01 72 2F 31 01 73 2F 31 01 74 2F 31 01 75 2F 31 01 48 6D 54 00 05 00 00 00 D4 2F 31 01 D5 2F 31 01 D6 2F 31 01 D7 2F 31 01 D8 2F 31 01 60 6D 54 00 04 00 00 00 6D 2F 31 01 6E 2F 31 01 6F 2F 31 01 70 2F 31 01 50 6D 54 00 06 00 00 00 61 D7 C9 0A 62 D7 C9 0A 63 D7 C9 0A 64 D7 C9 0A 65 D7 C9 0A 66 D7 C9 0A 49 6D 54 00 06 00 00 00 03 63 3D 01 04 63 3D 01 07 63 3D 01 08 63 3D 01 09 63 3D 01 0B 63 3D 01 51 6D 54 00 06 00 00 00 AE D7 C9 0A AF D7 C9 0A B0 D7 C9 0A B1 D7 C9 0A B2 D7 C9 0A B3 D7 C9 0A 71 6D 54 00 00 00 00 00 59 6D 54 00 06 00 00 00 6A 63 3D 01 6B 63 3D 01 6C 63 3D 01 6D 63 3D 01 6E 63 3D 01 6F 63 3D 01 4A 6D 54 00 05 00 00 00 4F 63 3D 01 50 63 3D 01 51 63 3D 01 52 63 3D 01 53 63 3D 01 62 6D 54 00 06 00 00 00 5C D7 C9 0A 60 D7 C9 0A 5D D7 C9 0A 5E D7 C9 0A 5B D7 C9 0A 5F D7 C9 0A 6A 6D 54 00 00 00 00 00 5A 6D 54 00 03 00 00 00 85 F6 41 01 86 F6 41 01 84 F6 41 01 4B 6D 54 00 07 00 00 00 F0 2F 31 01 F1 2F 31 01 F2 2F 31 01 F3 2F 31 01 F4 2F 31 01 F5 2F 31 01 F6 2F 31 01 53 6D 54 00 06 00 00 00 9F 2F 31 01 A0 2F 31 01 A1 2F 31 01 A2 2F 31 01 A3 2F 31 01 A4 2F 31 01 02 00 00 00 00 00 00 00 F7 A4 98 00 96 95 4E 00 00 A0 C1 29 E5 82 CE 01 00 80 39 0F 01 93 CE 01 00 00 00 00 05 00 00 00 00 00 00 00 14 00 00 00 1E 00 00 00 28 00 00 00 32 00 00 00 01 00 00 00 F8 A4 98 00 C8 9D 4E 00 00 A0 C1 29 E5 82 CE 01 00 80 39 0F 01 93 CE 01 00 00 00 00 05 00 00 00 00 00 00 00 14 00 00 00 1E 00 00 00 28 00 00 00 32 00 00 00 0D 00 00 00 00 35 0E 27 07 00 B7 C1 59 08 00 02 A3 BD 0A 00 03 A3 BD 0A 02 2E 0E 27 07 02 02 0E 27 07 02 34 0E 27 07 02 A5 A4 BF 07 02 2D 2B C1 07 02 05 3B 58 08 02 80 D1 F0 08 02 20 58 F2 08 02 E3 CE 5C 08 00 00 00 00 03 00 00 00 02 00 3F 3F 29 00 3F 3F 3F 20 3F 3F 3F 20 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 20 3F 3F 3F 20 3F 3F 3F 3F 20 2D 2D 2D 2D 2D 3E 20 3F 3F 05 00 3F 3F 3F 20 3F 13 00 3F 3F 3F 3F 3F 21 20 3F 3F 3F 20 3F 3F 3F 20 3F 3F 3F 21 03 00 3F 3F 3F 20 00 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 3F 20 3F 3F 3F 21 20 3F 3F 20 3F 3F 20 3F 3F 3F 3F 3F 3F 7E"));
+        mplew.write(HexTool.getByteArrayFromHexString("CC 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 55 12 38 12 00 00 00 80 DB 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 50 12 38 12 00 00 00 80 EA 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 5F 12 38 12 00 00 00 80 E1 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 5A 12 38 12 00 00 00 80 D8 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 59 12 38 12 00 00 00 80 E7 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 24 12 38 12 00 00 00 80 F6 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 23 12 38 12 00 00 00 80 ED 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 2E 12 38 12 00 00 00 80 73 0D 00 00 64 00 65 00 73 00 63 00 00 00 00 00 2D 12 38 12 00 00 00 80 F3 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 28 12 38 12 00 00 00 80 02 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 37 12 38 12 00 00 00 80 F9 0B 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 32 12 38 12 00 00 00 80 D6 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 31 12 38 12 00 00 00 80 FF 0B 00 00 64 00 65 00 73 00 63 00 00 00 00 00 3C 12 38 12 00 00 00 80 0E 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 3B 12 38 12 00 00 00 80 05 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 06 12 38 12 00 00 00 80 E2 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 05 12 38 12 00 00 00 80 0B 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 00 12 38 12 00 00 00 80 1A 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 0F 12 38 12 00 00 00 80 11 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 0A 12 38 12 00 00 00 80 EE 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 09 12 38 12 00 00 00 80 17 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 14 12 38 12 00 00 00 80 20 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 13 12 38 12 00 00 00 80 29 0C 00 00 0E 5C BD 89 F8 66 00 00 00 00 00 00 1E 12 38 12 00 00 00 80 1D 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 1D 12 38 12 00 00 00 80 FA 07 00 00 64 00 65 00 73 00 63 00 00 00 00 00 18 12 38 12 00 00 00 80 26 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 E7 1D 38 12 00 00 00 80 35 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 E2 1D 38 12 00 00 00 80 2C 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 E1 1D 38 12 00 00 00 80 DE 08 00 00 64 00 65 00 73 00 63 00 00 00 00 00 EC 1D 38 12 00 00 00 80 32 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 EB 1D 38 12 00 00 00 80 41 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 F6 1D 38 12 00 00 00 80 38 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 F5 1D 38 12 00 00 00 80 A2 0E 00 00 64 00 65 00 73 00 63 00 00 00 00 00 F0 1D 38 12 00 00 00 80 3E 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 FF 1D 38 12 00 00 00 80 4D 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 FA 1D 38 12 00 00 00 80 44 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 F9 1D 38 12 00 00 00 80 AE 0E 00 00 64 00 65 00 73 00 63 00 00 00 00 00 C4 1D 38 12 00 00 00 80 4A 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 C3 1D 38 12 00 00 00 80 59 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 CE 1D 38 12 00 00 00 80 50 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 CD 1D 38 12 00 00 00 80 4A 09 00 00 64 00 65 00 73 00 63 00 00 00 00 00 C8 1D 38 12 00 00 00 80 56 0C 00 00 64 00 65 00 73 00 63 00 00 00 00 00 D7 1D 38 12 00 00 00 80 62 0C 00 00 6E 00 61 00 6D 00 65 00 00 00 00 00 D2 1D 38 12 00 00 00 80 6C 0B 00 00 37 00 31 90 74 5E E5 65 18 8A 00 00 D1 1D 38 12 00 00 00 80 00 00 01 00 81 3D 4D 00 51 FE 8F 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF FF FF FF FF FF FF FF FF 0E 00 00 00 7B 9E 33 01 7B 9E 33 01 00 00 00 00 18 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 01 00 00 00 00 E1 CB 57 00 00 00 00 3C 00 00 00 00 00 00 00 02 00 00 00 01 FA AE 4F 00 2B 00 15 4D 4C 00 16 4D 4C 00 17 4D 4C 00 1D 4C 4C 00 7F 4C 4C 00 41 4B 4C 00 42 4B 4C 00 43 4B 4C 00 44 4B 4C 00 45 4B 4C 00 48 4B 4C 00 49 4B 4C 00 4A 4B 4C 00 4B 4B 4C 00 4D 4B 4C 00 50 4B 4C 00 54 4B 4C 00 56 4B 4C 00 57 4B 4C 00 58 4B 4C 00 5B 4B 4C 00 6B 4B 4C 00 6E 4B 4C 00 82 4B 4C 00 88 4B 4C 00 91 4B 4C 00 0B 4C 4C 00 0C 4C 4C 00 0D 4C 4C 00 7D 4C 4C 00 80 4C 4C 00 81 4C 4C 00 82 4C 4C 00 96 4C 4C 00 97 4C 4C 00 98 4C 4C 00 9F 4B 4C 00 F6 4B 4C 00 F7 4B 4C 00 F8 4B 4C 00 53 4C 4C 00 54 4C 4C 00 55 4C 4C 00 01 EB AE 4F 00 29 00 5D 11 10 00 EB 5F 10 00 0F FB 19 00 E7 72 4C 00 FE D3 10 00 2D 54 0F 00 DF FA 19 00 26 73 0F 00 C9 53 0F 00 CA 53 0F 00 24 99 0F 00 25 73 0F 00 82 F8 10 00 7F 03 11 00 83 F8 10 00 80 03 11 00 CA 4A 0F 00 59 71 0F 00 60 98 0F 00 D7 D0 10 00 F6 82 10 00 19 5C 10 00 58 BF 0F 00 5A 95 4E 00 5B 95 4E 00 31 9D 4E 00 32 9D 4E 00 F5 A0 4E 00 39 99 4E 00 64 9D 4E 00 65 9D 4E 00 66 9D 4E 00 67 9D 4E 00 68 9D 4E 00 69 9D 4E 00 6A 9D 4E 00 6B 9D 4E 00 82 3A 54 00 04 3F 4D 00 F1 7B 4D 00 80 64 4D 00 00 00 00 00 00"));
+        //mplew.write(HexTool.getByteArrayFromHexString(c.getChannelServer().getShopPack()));
 
         return mplew.getPacket();
     }
-
+    
+    public static void addModCashItemInfo(MaplePacketLittleEndianWriter mplew, CashItemInfo.CashModInfo item) {
+        int flags = item.flags;
+        mplew.writeInt(item.sn); // 商品SN
+        mplew.writeInt(flags); // 商品FLAG
+        mplew.writeInt(0); // Unk
+        if ((flags & 0x1) != 0) {
+            mplew.writeInt(item.itemid);
+        }
+        if ((flags & 0x2) != 0) {
+            mplew.writeShort(item.count);
+        }
+        if ((flags & 0x10) != 0) {          //confirmed-183.2   表明商品的优先度，可以控制商品在人气度排名下的顺序，当priority一样时，按id大小顺序排列，小的在前
+            mplew.write(item.priority);
+        }
+        if ((flags & 0x4) != 0) {
+            mplew.writeInt(item.discountPrice);
+        }
+        if ((flags & 0x8) != 0) {
+            mplew.write(item.unk_1 - 1);
+        }
+        if ((flags & 0x20) != 0) {
+            mplew.writeShort(item.period);
+        }
+        if ((flags & 0x20000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x40000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x40) != 0) {
+            mplew.writeInt(0);
+        }
+        if ((flags & 0x80) != 0) {
+            mplew.writeInt(item.meso);
+        }
+        if ((flags & 0x100) != 0) {            // FF-不可买 0-可以买 1-不可买 2-不可买
+            mplew.write(item.unk_2 - 1);
+        }
+        if ((flags & 0x200) != 0) {
+            mplew.write(item.gender);
+        }
+        if ((flags & 0x400) != 0) {
+            mplew.write(item.showUp != 0 ? 1 : 0);
+        }
+        if ((flags & 0x800) != 0) {      //confirmed-183.2     控制商品的标识。  0-New 1-Sale 2-Hot 3-Event 其他数字-无标示   对应Commodity.img.xml中的Class属性
+            mplew.write(item.mark);
+        }
+        if ((flags & 0x1000) != 0) {
+            mplew.write(item.unk_3 - 1);
+        }
+        if ((flags & 0x2000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x4000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x8000) != 0) {
+            mplew.writeShort(0);
+        }
+        if ((flags & 0x10000) != 0) {
+            List pack = CashItemFactory.getInstance().getPackageItems(item.sn);
+            if (pack == null) {
+                mplew.write(0);
+            } else {
+                mplew.write(pack.size());
+                pack.stream().forEach((pack1) -> {
+                    mplew.writeInt((Integer) pack1);
+                });
+            }
+        }
+        
+        if ((flags & 0x80000) != 0) { // 開始販售時間[完成]
+            mplew.writeInt(2016020300); // 2016020300
+        }
+        
+        if ((flags & 0x100000) != 0) { // 結束販售時間[完成]
+            mplew.writeInt(2016020300); // 2016020324
+        }
+        
+        if ((flags & 0x4000000) != 0) { // [完成]
+            mplew.write(0); 
+        }        
+        
+        /*if (((flags & 0x80000) == 0) || (((flags & 0x100000) == 0)
+                || ((flags & 0x200000) != 0))) {
+            mplew.write(0);
+        }*/
+    }
+    
     public static byte[] CS_Picture_Item() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -1213,17 +1363,18 @@ public class CSPacket {
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
         mplew.write(Operation_Code + 18);
         mplew.write(err);
-        // 1: Request timed out.\r\nPlease try again.
-        // 3: You don't have enough cash.
-        // 4: You can't buy someone a cash item gift if you're under 14.
-        // 5: You have exceeded the allotted limit of price\r\nfor gifts.
-        // 10: Please check and see if you have exceeded\r\nthe number of cash items you can have.
-        // 11: Please check and see\r\nif the name of the character is wrong,\r\nor if the item has gender restrictions.
-        // 44/69: You have reached the daily maximum \r\npurchase limit for the Cash Shop.
-        // 22: Due to gender restrictions, the coupon \r\nis unavailable for use.
-        // 17: This coupon was already used.
-        // 16: This coupon has expired.
-        // 18: This coupon can only be used at\r\nNexon-affiliated Internet Cafe's.\r\nPlease use the Nexon-affiliated Internet Cafe's.
+        // 1: Request timed out.\r\nPlease try again.                                                                                     -TMS183.2 confirmed.
+        // 3: You don't have enough cash.                                                                                                 -TMS183.2 confirmed.
+        // 4: You can't buy someone a cash item gift if you're under 14.                                                                  -TMS183.2 confirmed.
+        // 5: You have exceeded the allotted limit of price\r\nfor gifts.                                                                 -TMS183.2 confirmed.
+        // 10: Please check and see if you have exceeded\r\nthe number of cash items you can have.                                        -TMS183.2 confirmed.
+        // 11: Please check and see\r\nif the name of the character is wrong,\r\nor if the item has gender restrictions.                  -TMS183.2 confirmed.
+        // 44: 該優惠券的每個賬號\r\n已超過使用限制次數.\r\n詳細內容請參考優惠券的說明.                                                       -TMS183.2 confirmed.
+        // 69: 在這個世界沒有販賣.                                                                                                         -TMS183.2 confirmed.
+        // 22: 此優待券為專用道具。\r\n因此無法贈送。                                                                                       -TMS183.2 confirmed.
+        // 17: 只能在網咖使用的優惠券。\r\n\請在網咖使用。                                                                                  -TMS183.2 confirmed.
+        // 16: 此序號已被使用過。                                                                                                          -TMS183.2 confirmed.
+        // 18: Premium高級服務專用會員卡\r\n已經使用過的會員卡。                                                                            -TMS183.2 confirmed.
         // 19: This coupon is a Nexon-affiliated Internet Cafe-only coupon,\r\nand it had already been used.
         // 20: This coupon is a Nexon-affiliated Internet Cafe-only coupon,\r\nand it had already been expired.
         // 14: Please check and see if \r\nthe coupon number is right.
@@ -1236,10 +1387,10 @@ public class CSPacket {
         // 29: Items are not available for purchase\r\n at this hour.
         // 30: The item is out of stock, and therefore\r\nnot available for sale.
         // 31: You have exceeded the spending limit of NX.
-        // 32: You do not have enough mesos.
+        // 32: 請確認第二組密碼\r\n再重試。                                                                                               -TMS183.2 confirmed.
         // 33: The Cash Shop is unavailable\r\nduring the beta-test phase.\r\nWe apologize for your inconvenience.
-        // 34: Check your PIC password and\r\nplease try again.
-        // 37: Please verify your 2nd password and\r\ntry again.
+        // 34: Check your PIC password and\r\nplease try again.                                                                      -TMS183.2未知，在简体系统下显示乱码。
+        // 37: Please verify your 2nd password and\r\ntry again.                                                                     -TMS183.2 not confirmed. It shows that "Unknown Error occured."
         // 21: This is the NX coupon number.\r\nRegister your coupon at www.nexon.net.
         // 38: This coupon is only available to the users buying cash item for the first time.
         // 39: You have already applied for this.

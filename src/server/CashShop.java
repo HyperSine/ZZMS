@@ -46,9 +46,9 @@ public class CashShop implements Serializable {
         return inventory;
     }
 
-    public Item findByCashId(int cashId) {
+    public Item findByCashId(int cashUniqueId) {    //这儿应该是指现金商品的UniqueId，原来写的是cashid，指代不明
         for (Item item : inventory) {
-            if (item.getUniqueId() == cashId) {
+            if (item.getUniqueId() == cashUniqueId) {
                 return item;
             }
         }

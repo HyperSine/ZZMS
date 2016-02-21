@@ -247,10 +247,10 @@ public class GameConstants {
     public static boolean isExceedAttack(int id) {
         switch (id) {
             case 31011000: // 超越 : 十文字斬
-            case 31010004:
-            case 31010005:
-            case 31010006:
-            case 31010007:
+            case 31011004:
+            case 31011005:
+            case 31011006:
+            case 31011007:
             case 31201000: // 超越：惡魔風暴
             case 31201007:
             case 31201008:
@@ -511,6 +511,11 @@ public class GameConstants {
             case 131001003:
             case 131001013:
                 return 131001000;
+            case 31011004:
+            case 31011005:
+            case 31011006:
+            case 31011007:
+                return 31011000;
         }
         return id;
     }

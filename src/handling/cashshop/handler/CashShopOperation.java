@@ -29,6 +29,7 @@ import server.CashItemInfo;
 import server.CashShop;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
+import server.Randomizer;
 import server.quest.MapleQuest;
 import tools.FileoutputUtil;
 import tools.Triple;
@@ -42,7 +43,7 @@ public class CashShopOperation {
     public static void LeaveCS(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
-
+        
         try {
 
             World.ChannelChange_Data(new CharacterTransfer(chr), chr.getId(), c.getChannel());
@@ -107,7 +108,7 @@ public class CashShopOperation {
         c.getSession().write(CSPacket.showNXMapleTokens(c.getPlayer()));
     }
 
-    public static void loadCashShop(MapleClient c) {
+    /*public static void loadCashShop(MapleClient c) {
         c.getSession().write(CSPacket.loadCategories(c));
         String head = "E2 02";
         c.getSession().write(CField.getPacketFromHexString(head + " 04 01 09 00 09 3D 00 40 A5 3D 00 38 6D 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 1B E5 F5 05 30 71 54 00 01 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 B8 0B 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 40 36 59 61 3A CF 01 00 00 A0 83 2A 3B CF 01 84 03 00 00 00 00 00 00 01 00 00 00 01 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 3D 00 40 A5 3D 00 E4 DE 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 0F E4 F5 05 E2 E7 8A 00 01 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00 40 38 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 30 2A 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00 00 10 E4 F5 05 79 3D 4D 00 01 00 00 00 40 38 00 00 30 2A 00 00 00 00 00 00 0C 00 00 00 5A 00 00 00 02 00 00 00 BC E1 F5 05 FF 61 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 00 09 3D 00 40 A5 3D 00 E4 DE 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 13 E4 F5 05 E4 E7 8A 00 01 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00 20 67 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 58 4D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00 00 14 E4 F5 05 7A 3D 4D 00 01 00 00 00 20 67 00 00 58 4D 00 00 00 00 00 00 0C 00 00 00 5A 00 00 00 02 00 00 00 BC E1 F5 05 FF 61 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 00 09 3D 00 40 A5 3D 00 E4 DE 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 0A E4 F5 05 79 3D 4D 00 01 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 E0 2E 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 40 36 59 61 3A CF 01 80 69 07 83 2A 3B CF 01 10 27 00 00 00 00 00 00 0B 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 3D 00 40 A5 3D 00 E4 DE 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 73 E2 F5 05 64 3F 4D 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 5D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 C0 5D 00 00 00 00 00 00 0B 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 3D 00 40 A5 3D 00 A0 E1 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 7F E2 F5 05 93 E7 8A 00 01 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00 B8 3D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 40 50 3D 41 30 CE 01 00 80 05 BB 46 E6 17 02 00 32 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 09 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00 74 E2 F5 05 64 3F 4D 00 00 00 00 00 E0 2E 00 00 AC 26 00 00 00 00 00 00 05 00 00 00 5A 00 00 00 02 00 00 00 06 2D 9A 00 9C 62 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 71 E2 F5 05 F8 62 54 00 01 00 00 00 D8 0E 00 00 54 0B 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 00 09 3D 00 40 A5 3D 00 A0 E1 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 80 E2 F5 05 94 E7 8A 00 01 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00 98 6C 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 40 50 3D 41 30 CE 01 00 80 05 BB 46 E6 17 02 28 55 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 04 00 00 00 75 E2 F5 05 64 3F 4D 00 00 00 00 00 C0 5D 00 00 D4 49 00 00 00 00 00 00 0A 00 00 00 5A 00 00 00 02 00 00 00 06 2D 9A 00 9C 62 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 09 2D 9A 00 9D 62 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 71 E2 F5 05 F8 62 54 00 01 00 00 00 D8 0E 00 00 54 0B 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 02 00 00 00 00 09 3D 00 40 A5 3D 00 48 DF 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 71 E2 F5 05 F8 62 54 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 D8 0E 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 D8 0E 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 18 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 3D 00 40 A5 3D 00 48 DF 0F 00 55 00 68 74 74 70 3A 2F 2F 6E 78 63 61 63 68 65 2E 6E 65 78 6F 6E 2E 6E 65 74 2F 73 70 6F 74 6C 69 67 68 74 2F 32 38 36 2F 30 30 45 53 33 2D 64 62 33 63 63 36 64 38 2D 32 36 31 62 2D 34 35 36 30 2D 38 33 31 33 2D 62 30 36 61 66 62 66 30 66 34 39 34 2E 6A 70 67 7E E2 F5 05 E6 62 54 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 8C 0A 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 8C 0A 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
@@ -115,7 +116,7 @@ public class CashShopOperation {
         c.getSession().write(CField.getPacketFromHexString(head + " 06 01 05 C0 C6 2D 00 E0 14 2E 00 15 54 10 00 00 00 9C F1 FA 02 58 95 4E 00 01 00 00 00 04 00 00 00 00 00 00 00 32 00 00 00 E4 0C 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 E4 0C 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 11 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 E0 14 2E 00 16 54 10 00 00 00 C9 F1 FA 02 35 9D 4E 00 01 00 00 00 04 00 00 00 00 00 00 00 32 00 00 00 E4 0C 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 E4 0C 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 77 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 E0 14 2E 00 C4 90 0F 00 00 00 BF C3 C9 01 84 E7 4C 00 01 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 AC 26 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 AC 26 00 00 00 00 00 00 01 00 00 00 1E 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 24 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 E0 14 2E 00 7C 6A 0F 00 00 00 87 2C 9A 00 AC AE 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 22 00 00 00 48 0D 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 48 0D 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 23 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 E0 14 2E 00 D4 B7 0F 00 00 00 D9 FE FD 02 A0 A6 4F 00 01 00 00 00 00 00 00 00 00 00 00 00 32 00 00 00 30 75 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 30 75 00 00 00 00 00 00 23 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 DA 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
         c.getSession().write(CField.getPacketFromHexString(head + " 09 01 01 C0 C6 2D 00 00 63 2E 00 B0 08 10 00 00 00 18 E3 F5 05 A8 69 52 00 01 00 00 00 05 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 01 00 00 00 00 00 00 00 01 00 00 00 1E 00 00 00 01 01 01 01 01 02 00 00 00 65 01 00 00 32 00 00 00 0A 00 31 4D 53 35 34 30 31 30 30 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
         c.getSession().write(CField.getPacketFromHexString(head + " 08 01 05 C0 C6 2D 00 F0 3B 2E 00 C4 90 0F 00 00 00 BF C3 C9 01 84 E7 4C 00 01 00 00 00 04 00 00 00 00 00 00 00 0F 00 00 00 AC 26 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 AC 26 00 00 00 00 00 00 01 00 00 00 1E 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 24 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 74 E0 0F 00 00 00 7C FE FD 02 81 3A 54 00 01 00 00 00 04 00 00 00 00 00 00 00 02 00 00 00 A0 0F 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 A0 0F 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 B8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 E8 07 10 00 00 00 40 FE FD 02 70 13 54 00 01 00 00 00 04 00 00 00 00 00 00 00 01 00 00 00 F4 01 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 F4 01 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 8E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 10 E0 0F 00 00 00 3D FE FD 02 D0 FD 54 00 01 00 00 00 04 00 00 00 00 00 00 00 04 00 00 00 24 13 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 24 13 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 77 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C0 C6 2D 00 F0 3B 2E 00 74 E0 0F 00 00 00 35 FE FD 02 80 3A 54 00 01 00 00 00 04 00 00 00 00 00 00 00 03 00 00 00 B8 0B 00 00 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 00 80 22 D6 94 EF C4 01 00 80 05 BB 46 E6 17 02 B8 0B 00 00 00 00 00 00 01 00 00 00 5A 00 00 00 01 00 01 00 01 00 00 00 01 00 02 00 00 00 F2 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-    }
+    }*/
 
     public static void CSUpdate(final MapleClient c) {
         doCSPackets(c);
@@ -481,30 +482,72 @@ public class CashShopOperation {
             c.getSession().write(CSPacket.showBoughtCSQuestItem(item.getPrice(), (short) item.getCount(), pos, item.getId()));
         } else if (action == 49) {
             c.getSession().write(CSPacket.updatePurchaseRecord());
-        } else if (action == 58) { //get item from csinventory
-            //uniqueid, 00 01 01 00, type->position(short)
-//            Item item = c.getPlayer().getCashInventory().findByCashId((int) slea.readLong());
-////            Item item = MapleItemInformationProvider.getInstance().getEquipById(item);
-//            if (item != null && item.getQuantity() > 0 && MapleInventoryManipulator.checkSpace(c, item.getItemId(), item.getQuantity(), item.getOwner())) {
-//                Item item_ = item.copy();
-//                short pos = MapleInventoryManipulator.addbyItem(c, item_, true);
-//                if (pos >= 0) {
-//                    if (item_.getPet() != null) {
-//                        item_.getPet().setInventoryPosition(pos);
-//                        c.getPlayer().addPet(item_.getPet());
-//                    }
-//                    c.getPlayer().getCashInventory().removeFromInventory(item);
-//                    c.getSession().write(CSPacket.confirmFromCSInventory(item_, pos));
-//                } else {
-//                    c.getSession().write(CSPacket.sendCSFail(0xB1));
-//                }
-//            } else {
-//                c.getSession().write(CSPacket.sendCSFail(0xB1));
-//            }
-        } else if (action == 63) { // 商城隨機箱開啟
+        } else if (action == 58) {                                    //丢弃商品
+            String secondPassword = slea.readMapleAsciiString();
+            c.loginData(c.getAccountName());
+            if (!c.CheckSecondPassword(secondPassword)) {
+                c.getSession().write(CSPacket.sendCSFail(32));      // 2nd password error
+                doCSPackets(c);
+                return;
+            }
+            byte type = slea.readByte();
+            int abandonItemUniqueID = (int) slea.readLong();
+            Item abandonItem = null;
+            if(type == 0) {
+                abandonItem = c.getPlayer().getCashInventory().findByCashId(abandonItemUniqueID);
+            } else {
+                c.getSession().write(CWvsContext.broadcastMsg(1, "不支持從背包丟棄物品。"));
+                c.getSession().write(CWvsContext.enableActions());
+                doCSPackets(c);
+                return;
+            }
+        
+            if(abandonItem == null) {
+                c.getSession().write(CWvsContext.broadcastMsg(1, "找不到該物品。請聯繫管理員。"));
+                c.getSession().write(CWvsContext.enableActions());
+                doCSPackets(c);
+                return;
+            }
             
-        } else if (action == 91) { // Open random box.
+            if(type == 0) {
+                c.getPlayer().getCashInventory().removeFromInventory(abandonItem);
+            } else {
+                
+                //c.getPlayer().getInventory(MapleInventoryType.getByType(type)).removeItem(abandonItem.getPosition());
+                
+            }
+            c.getSession().write(CSPacket.cashItemDelete(abandonItemUniqueID));
+            
+        } else if (action == 63) { // 商城隨機箱開啟
             final int uniqueid = (int) slea.readLong();
+            Item boxItem = c.getPlayer().getCashInventory().findByCashId(uniqueid);
+            
+            if ((boxItem == null) || (!CashItemFactory.getInstance().getRandomItemInfo().containsKey(boxItem.getItemId()))) {
+                c.getSession().write(CWvsContext.broadcastMsg(1, "打開箱子失敗，服務器找不到對應的道具信息。"));
+                c.getSession().write(CWvsContext.enableActions());
+                doCSPackets(c);
+                return;
+            }
+            List boxItemSNs = CashItemFactory.getInstance().getRandomItemInfo().get(boxItem.getItemId());
+            if (boxItemSNs.isEmpty()) {
+                c.getSession().write(CWvsContext.broadcastMsg(1, "打開箱子失敗，服務器找不到對應的道具信息。"));
+                c.getSession().write(CWvsContext.enableActions());
+                doCSPackets(c);
+                return;
+            }
+            
+            int snCS = ((Integer) boxItemSNs.get(Randomizer.nextInt(boxItemSNs.size())));
+            CashItemInfo cItem = CashItemFactory.getInstance().getItem(snCS);
+            if (cItem != null) {
+                Item itemz = c.getPlayer().getCashInventory().toItem(cItem);
+                if ((itemz != null) && (itemz.getUniqueId() > 0) && (itemz.getItemId() == cItem.getId()) && (itemz.getQuantity() == cItem.getCount())) {
+                    chr.getCashInventory().addToInventory(itemz);
+                    c.getSession().write(CSPacket.showBoughtCSItem(itemz, cItem.getSN(), c.getAccID()));
+                    c.getPlayer().getCashInventory().removeFromInventory(boxItem);
+                }
+            }
+        } else if (action == 91) { // Open random box.
+            //final int uniqueid = (int) slea.readLong();
 
             //c.getSession().write(CSPacket.sendRandomBox(uniqueid, new Item(1302000, (short) 1, (short) 1, (short) 0, 10), (short) 0));
             //} else if (action == 99) { //buy with mesos
@@ -527,7 +570,33 @@ public class CashShopOperation {
             } else {
                 c.getSession().write(CSPacket.sendCSFail(0));
             }
-        } else {
+        } else if (action == 31) {          //卖出商品
+            slea.skip(1);
+            int type = slea.readByte() + 1;
+            String secondPassword = slea.readMapleAsciiString();
+            c.loginData(c.getAccountName());
+            if (!c.CheckSecondPassword(secondPassword)) {
+                c.getSession().write(CSPacket.sendCSFail(32));      // 2nd password error
+                doCSPackets(c);
+                return;
+            }
+            int soldItemUniqueID = (int) slea.readLong();
+            Item soldItem = c.getPlayer().getCashInventory().findByCashId(soldItemUniqueID);
+            if(soldItem == null) {
+                c.getSession().write(CSPacket.sendCSFail(0));
+                doCSPackets(c);
+                return;
+            }
+            CashItemInfo soldItemInfo = CashItemFactory.getInstance().getItem(CashItemFactory.getInstance().getItemSN(soldItem.getItemId()));
+            if(soldItemInfo == null) {
+                c.getSession().write(CSPacket.sendCSFail(0));
+                doCSPackets(c);
+                return;
+            }
+            chr.modifyCSPoints(type, (int) (0.3 * soldItemInfo.getPrice()), true);
+            chr.getCashInventory().removeFromInventory(soldItem);
+        }
+        else {
             System.out.println("未知操作碼: " + action + " Remaining: " + slea.toString());
             c.getSession().write(CSPacket.sendCSFail(0));
         }
@@ -539,11 +608,11 @@ public class CashShopOperation {
         final CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
         String partnerName = slea.readMapleAsciiString();
         String msg = slea.readMapleAsciiString();
-//        if (!secondPassword.equals(c.getSecondPassword())) {
-//            c.getPlayer().dropMessage(1, "第二組密碼錯誤，請重新輸入。");
-//            doCSPackets(c);
-//            return;
-//        }
+        if (!secondPassword.equals(c.getSecondPassword())) {
+            c.getSession().write(CSPacket.sendCSFail(32));      // 2nd password error
+            doCSPackets(c);
+            return;
+        }
         if (item == null || c.getPlayer().getCSPoints(1) < item.getPrice() || msg.getBytes().length > 73 || msg.getBytes().length < 1) { //dont want packet editors gifting random stuff =P
             c.getSession().write(CSPacket.sendCSFail(0));
             doCSPackets(c);
@@ -639,6 +708,7 @@ public class CashShopOperation {
 //        c.getSession().write(CSPacket.sendWishList(c.getPlayer(), false));
 //        c.getSession().write(CSPacket.showNXMapleTokens(c.getPlayer()));
         c.getSession().write(CSPacket.getCSInventory(c));
+        
         c.getSession().write(CSPacket.disableCS());
         //c.getSession().write(CSPacket.enableCSUse());
         //c.getPlayer().getCashInventory().checkExpire(c);

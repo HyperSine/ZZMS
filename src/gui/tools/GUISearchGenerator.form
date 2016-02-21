@@ -71,22 +71,26 @@
     <Component class="javax.swing.JComboBox" name="jComboBox1">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="12">
+          <StringArray count="13">
             <StringItem index="0" value="&#x5168;&#x90e8;"/>
             <StringItem index="1" value="&#x9053;&#x5177;"/>
             <StringItem index="2" value="NPC"/>
-            <StringItem index="3" value="&#x5730;&#x5716;"/>
+            <StringItem index="3" value="&#x5730;&#x56fe;"/>
             <StringItem index="4" value="&#x602a;&#x7269;"/>
-            <StringItem index="5" value="&#x4efb;&#x52d9;"/>
+            <StringItem index="5" value="&#x4efb;&#x52a1;"/>
             <StringItem index="6" value="&#x6280;&#x80fd;"/>
-            <StringItem index="7" value="&#x8077;&#x696d;"/>
-            <StringItem index="8" value="&#x4f3a;&#x670d;&#x5668;&#x5305;&#x982d;"/>
-            <StringItem index="9" value="&#x7528;&#x6236;&#x7aef;&#x5305;&#x982d;"/>
-            <StringItem index="10" value="&#x9aee;&#x578b;"/>
-            <StringItem index="11" value="&#x81c9;&#x578b;"/>
+            <StringItem index="7" value="&#x804c;&#x4e1a;"/>
+            <StringItem index="8" value="&#x670d;&#x52a1;&#x7aef;&#x5305;&#x5934;"/>
+            <StringItem index="9" value="&#x5ba2;&#x6237;&#x7aef;&#x5305;&#x5934;"/>
+            <StringItem index="10" value="&#x53d1;&#x578b;"/>
+            <StringItem index="11" value="&#x8138;&#x578b;"/>
+            <StringItem index="12" value="SN"/>
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
@@ -111,8 +115,8 @@
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="3" rowCount="0">
-                <Column editable="false" title="&#x985e;&#x578b;" type="java.lang.String"/>
-                <Column editable="true" title="&#x540d;&#x7a31;" type="java.lang.String"/>
+                <Column editable="false" title="&#x7c7b;&#x578b;" type="java.lang.String"/>
+                <Column editable="true" title="&#x540d;&#x79f0;&#x6216;ID" type="java.lang.String"/>
                 <Column editable="true" title="&#x503c;" type="java.lang.Integer"/>
               </Table>
             </Property>

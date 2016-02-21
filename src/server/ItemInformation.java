@@ -12,7 +12,7 @@ public class ItemInformation {
     public Equip eq = null;
     public Map<String, Integer> equipStats;
     public double price = 0.0;
-    public int itemId, wholePrice, monsterBook, stateChange, meso, questId, totalprob, replaceItem, mob, cardSet, create, flag, npc;
+    public int itemId, wholePrice, monsterBook, stateChange, meso, questId, totalprob, replaceItem, mob, cardSet, create, flag, npc, sn;
     public String name, desc, msg, replaceMsg, afterImage, script;
     public byte karmaEnabled;
     public List<StructRewardItem> rewardItems = null;

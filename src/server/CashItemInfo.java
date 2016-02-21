@@ -47,7 +47,7 @@ public class CashItemInfo {
     }
 
     public boolean onSale() {
-        return onSale || (CashItemFactory.getInstance().getModInfo(sn) != null && CashItemFactory.getInstance().getModInfo(sn).showUp);
+        return onSale || (CashItemFactory.getInstance().getModInfo(sn) != null && CashItemFactory.getInstance().getModInfo(sn).showUp != 0);
     }
 
     public int getLikes() {
@@ -60,11 +60,11 @@ public class CashItemInfo {
 
     public static class CashModInfo {
 
-        public int discountPrice, mark, priority, sn, itemid, flags, period, gender, count, meso, unk_1, unk_2, unk_3, extra_flags;
-        public boolean showUp, packagez;
+        public int discountPrice, mark, priority, sn, itemid, flags, period, gender, count, meso, unk_1, unk_2, unk_3, extra_flags, starttime, endtime, showUp;
+        public boolean packagez;
         private CashItemInfo cii;
 
-        public CashModInfo(int sn, int discount, int mark, boolean show, int itemid, int priority, boolean packagez, int period, int gender, int count, int meso, int unk_1, int unk_2, int unk_3, int extra_flags) {
+        public CashModInfo(int sn, int discount, int mark, int show, int itemid, int priority, boolean packagez, int period, int gender, int count, int meso, int unk_1, int unk_2, int unk_3, int extra_flags, int startTime, int endTime) {
             this.sn = sn;
             this.itemid = itemid;
             this.discountPrice = discount;
@@ -81,9 +81,12 @@ public class CashItemInfo {
             this.unk_3 = unk_3;
             this.extra_flags = extra_flags;
             this.flags = extra_flags;
+            this.starttime = startTime;
+            this.endtime = endTime;
+            
 
             if (this.itemid > 0) {
-                this.flags |= 0x1;
+                if(CashItemFactory.getInstance().getItem(this.sn).itemId != this.itemid) this.flags |= 0x1;
             }
             if (this.count > 0) {
                 this.flags |= 0x2;
@@ -94,7 +97,7 @@ public class CashItemInfo {
             if (this.unk_1 > 0) {
                 this.flags |= 0x8;
             }
-            if (this.priority >= 0) {
+            if (this.priority > 0) {
                 this.flags |= 0x10;
             }
             if (this.period > 0) {
@@ -110,14 +113,20 @@ public class CashItemInfo {
             if (this.gender >= 0) {
                 this.flags |= 0x200;
             }
-            if (this.showUp) {
+            if (this.showUp != -1) {
                 this.flags |= 0x400;
             }
-            if (this.mark >= -1 || this.mark <= 3) {
+            if (this.mark >= -1 && this.mark <= 3) {
                 this.flags |= 0x800;
             }
             if (this.unk_3 > 0) {
                 this.flags |= 0x1000;
+            }
+            if (this.starttime > 0) {
+                this.flags |= 0x80000;
+            }
+            if (this.endtime > 0) {
+                this.flags |= 0x100000;
             }
             //0x2000, 0x4000, 0x8000, 0x10000, 0x20000, 0x100000, 0x80000 - ?
             if (this.packagez) {
@@ -160,10 +169,10 @@ public class CashItemInfo {
             } else {
                 gen = gender;
             }
-            if (!showUp) {
+            if (!(showUp != 0)) {
                 onSale = (backup == null ? false : backup.onSale());
             } else {
-                onSale = showUp;
+                onSale = showUp != 0;
             }
 
             cii = new CashItemInfo(item, c, price, sn, expire, gen, onSale, 0);

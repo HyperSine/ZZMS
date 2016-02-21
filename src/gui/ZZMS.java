@@ -65,6 +65,18 @@ import tools.wztosql.DumpOxQuizData;
 import tools.wztosql.DumpQuests;
 import tools.wztosql.FixCharSets;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.File;
+import java.util.Collection;
+import provider.MapleData;
+import provider.MapleDataProviderFactory;
+import provider.MapleDataTool;
+import server.ItemInformation;
+import tools.HexTool;
+import java.util.Comparator;  
+import java.util.TreeMap;  
+import server.CashItemFactory;
 /**
  *
  * @author Pungin
@@ -82,7 +94,7 @@ public class ZZMS extends javax.swing.JFrame {
     private ImageIcon icon = new ImageIcon(this.getClass().getClassLoader().getResource("Image/Icon.png"));
     private Map<Windows, javax.swing.JFrame> windows = new HashMap<>();
     private boolean charInitFinished = false;
-
+    public static Collection<ItemInformation> kk = MapleItemInformationProvider.getInstance().getAllItems();
     public static final ZZMS getInstance() {
         return instance;
     }
@@ -179,9 +191,9 @@ public class ZZMS extends javax.swing.JFrame {
         dropRate.setText(String.valueOf(world.getDrop()));
         flag.setText(String.valueOf(world.getFlag()));
         show.setSelected(world.show());
-        show.setText(show.isSelected() ? "顯示" : "不顯");
+        show.setText(show.isSelected() ? "显示" : "不显示");
         available.setSelected(world.isAvailable());
-        available.setText(available.isSelected() ? "啟用" : "關閉");
+        available.setText(available.isSelected() ? "启用" : "关闭");
         channelCount.setText(String.valueOf(world.getChannelCount()));
         worldTip.setText(String.valueOf(world.getWorldTip()));
         scrollingMessage.setText(String.valueOf(world.getScrollMessage()));
@@ -198,9 +210,10 @@ public class ZZMS extends javax.swing.JFrame {
             ResultSet rs = null;
             ps = con.prepareStatement("SELECT * FROM characters");
             rs = ps.executeQuery();
+            ((DefaultTableModel) charTable.getModel()).setRowCount(0);
             while (rs.next()) {
                 ((DefaultTableModel) charTable.getModel()).insertRow(charTable.getRowCount(), new Object[]{
-                    "離線",
+                    "离线",
                     rs.getInt("id"),
                     rs.getInt("accountid"),
                     rs.getInt("world"),
@@ -242,15 +255,45 @@ public class ZZMS extends javax.swing.JFrame {
         charInitFinished = true;
     }
 
+    private void initModifiedCommodityPannel() {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = null;
+            PreparedStatement pse;
+            ResultSet rs = null;
+            ps = con.prepareStatement("SELECT * FROM cashshop_modified_items");
+            rs = ps.executeQuery();
+            ((DefaultTableModel) charTable1.getModel()).setRowCount(0);
+            while (rs.next()) {
+                ((DefaultTableModel) charTable1.getModel()).insertRow(charTable1.getRowCount(), new Object[]{
+                    rs.getInt("serial"),
+                    rs.getString("name"),
+                    rs.getInt("itemid"),
+                    rs.getInt("discount_price"),
+                    rs.getByte("mark"),
+                    rs.getByte("showup"),
+                    rs.getByte("priority"),
+                    rs.getShort("period"),
+                    rs.getByte("gender"),
+                    rs.getShort("count"),
+                    rs.getInt("start_time"),
+                    rs.getInt("end_time")
+                });
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ZZMS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void startServer() {
         if (LoginServer.isShutdown() && server == null) {
             server = new Thread() {
                 @Override
                 public void run() {
                     try {
-                        JOptionPane.showMessageDialog(null, "伺服端啟動需要時間,請點選確定繼續。");
+                        JOptionPane.showMessageDialog(null, "服务端启动需要时间，请点击确定继续。");
                         Start.main(null);
-                        JOptionPane.showMessageDialog(null, "伺服端啟動完成。");
+                        JOptionPane.showMessageDialog(null, "服务端启动完成。");
                     } catch (InterruptedException | IOException ex) {
                         Logger.getLogger(ZZMS.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -258,15 +301,15 @@ public class ZZMS extends javax.swing.JFrame {
             };
             server.start();
         } else {
-            JOptionPane.showMessageDialog(null, "伺服端已在運行中。");
+            JOptionPane.showMessageDialog(null, "服务端已在运行中。");
         }
     }
 
     private void reStartServer() {
         if (LoginServer.isShutdown() || server == null) {
-            JOptionPane.showMessageDialog(null, "伺服端未運行。");
+            JOptionPane.showMessageDialog(null, "服务端尚未运行。");
         } else {
-            JOptionPane.showMessageDialog(null, "正在重新啟動伺服端,請點選確定繼續。");
+            JOptionPane.showMessageDialog(null, "正在启动服务端，请点击确定继续。");
             ShutdownServer.getInstance().shutdown();
             server = null;
             startServer();
@@ -279,7 +322,7 @@ public class ZZMS extends javax.swing.JFrame {
 
     private void shutdownServer() {
         if (LoginServer.isShutdown() || server == null) {
-            JOptionPane.showMessageDialog(null, "伺服端未運行。");
+            JOptionPane.showMessageDialog(null, "服务端尚未运行。");
             return;
         }
         minutesLeft = 0;
@@ -295,13 +338,13 @@ public class ZZMS extends javax.swing.JFrame {
                         server = null;
                         return;
                     }
-                    World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(0, "伺服器將在" + minutesLeft + " 分鐘后進行停機維護, 請及時安全的下線, 以免造成不必要的損失。"));
+                    World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(0, "服务端将在 " + minutesLeft + " 分钟后进行停机维护，请及时安全下线，以免造成不必要的损失。"));
                     minutesLeft--;
                 }
             }, 60000);
-            JOptionPane.showMessageDialog(null, "伺服器將在" + minutesLeft + " 分鐘后關閉");
+            JOptionPane.showMessageDialog(null, "服务端将在 " + minutesLeft + " 分钟后关闭。");
         } else {
-            JOptionPane.showMessageDialog(null, "關閉進程正在進行或者關閉已完成，請稍候。");
+            JOptionPane.showMessageDialog(null, "关闭进程正在进行或已经完成，请稍后。");
         }
     }
 
@@ -351,9 +394,9 @@ public class ZZMS extends javax.swing.JFrame {
                     break;
             }
             resetWorldPanel();
-            JOptionPane.showMessageDialog(null, "更變成功。");
+            JOptionPane.showMessageDialog(null, "更变成功。");
         } catch (NumberFormatException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, "錯誤!\r\n" + e);
+            JOptionPane.showMessageDialog(null, "错误！\r\n" + e);
         }
     }
 
@@ -390,9 +433,9 @@ public class ZZMS extends javax.swing.JFrame {
                     break;
             }
             resetWorldPanel();
-            JOptionPane.showMessageDialog(null, "更變成功。");
+            JOptionPane.showMessageDialog(null, "更变成功。");
         } catch (NumberFormatException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, "錯誤!\r\n" + e);
+            JOptionPane.showMessageDialog(null, "错误！\r\n" + e);
         }
     }
 
@@ -763,6 +806,7 @@ public class ZZMS extends javax.swing.JFrame {
         jButton33 = new javax.swing.JButton();
         jCheckBox2 = new javax.swing.JCheckBox();
         jLabel34 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
         jPanel27 = new javax.swing.JPanel();
         jPanel33 = new javax.swing.JPanel();
         jLabel40 = new javax.swing.JLabel();
@@ -778,6 +822,8 @@ public class ZZMS extends javax.swing.JFrame {
         jLabel42 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        charTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jLabel30 = new javax.swing.JLabel();
@@ -793,6 +839,7 @@ public class ZZMS extends javax.swing.JFrame {
         jPanel20 = new javax.swing.JPanel();
         jLabel32 = new javax.swing.JLabel();
         jButton28 = new javax.swing.JButton();
+        jButton21 = new javax.swing.JButton();
         jPanel21 = new javax.swing.JPanel();
         jLabel33 = new javax.swing.JLabel();
         jButton29 = new javax.swing.JButton();
@@ -1039,9 +1086,9 @@ public class ZZMS extends javax.swing.JFrame {
             }
         });
 
-        jLabel44.setText("發送方式");
+        jLabel44.setText("发送方式");
 
-        jLabel46.setText("狀態");
+        jLabel46.setText("状态");
 
         jButton27.setText("更变");
         jButton27.addActionListener(new java.awt.event.ActionListener() {
@@ -1057,7 +1104,7 @@ public class ZZMS extends javax.swing.JFrame {
             }
         });
 
-        jLabel47.setText("頻道總數");
+        jLabel47.setText("频道总数");
 
         jButton39.setText("更变");
         jButton39.addActionListener(new java.awt.event.ActionListener() {
@@ -1167,46 +1214,45 @@ public class ZZMS extends javax.swing.JFrame {
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(noticeText))))
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel9Layout.createSequentialGroup()
-                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(jButton8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton10))
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 808, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jPanel9Layout.createSequentialGroup()
-                                    .addComponent(jButton8)
+                                    .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jButton10))
-                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 808, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel9Layout.createSequentialGroup()
-                                        .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(jPanel9Layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(worldList, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(show)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(available)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel47)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(channelCount, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton39)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton40)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel46)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(flag, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton27)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton38)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(worldList, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(show)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(available)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel47)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(channelCount, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton39)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton40)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel46)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(flag, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton38)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -1611,6 +1657,13 @@ public class ZZMS extends javax.swing.JFrame {
         jLabel34.setForeground(new java.awt.Color(255, 51, 51));
         jLabel34.setText("* 雙擊表格可以對屬性進行更改");
 
+        jButton7.setText("刷新");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel26Layout = new javax.swing.GroupLayout(jPanel26);
         jPanel26.setLayout(jPanel26Layout);
         jPanel26Layout.setHorizontalGroup(
@@ -1625,7 +1678,9 @@ public class ZZMS extends javax.swing.JFrame {
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jCheckBox2)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton7)
+                        .addGap(14, 14, 14))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -1633,9 +1688,11 @@ public class ZZMS extends javax.swing.JFrame {
             jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel26Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel39)
-                    .addComponent(jCheckBox2))
+                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel39)
+                        .addComponent(jCheckBox2))
+                    .addComponent(jButton7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1766,7 +1823,7 @@ public class ZZMS extends javax.swing.JFrame {
                         .addComponent(jLabel42)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton35)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                         .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
@@ -1806,15 +1863,45 @@ public class ZZMS extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("怪物掉寶", jPanel7);
 
+        jScrollPane9.setToolTipText("");
+
+        charTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "SN", "商品名称", "商品ID", "折扣价", "Mark", "ShowUp", "优先度", "商品期限", "商品性别", "商品数量", "开始出售时间", "停止出售时间"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Byte.class, java.lang.Byte.class, java.lang.Byte.class, java.lang.Short.class, java.lang.Byte.class, java.lang.Short.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        charTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane9.setViewportView(charTable1);
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 870, Short.MAX_VALUE)
+            .addComponent(jScrollPane9)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 584, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 77, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("商店", jPanel8);
@@ -1947,6 +2034,13 @@ public class ZZMS extends javax.swing.JFrame {
             }
         });
 
+        jButton21.setText("jButton21");
+        jButton21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton21ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
         jPanel20.setLayout(jPanel20Layout);
         jPanel20Layout.setHorizontalGroup(
@@ -1955,8 +2049,11 @@ public class ZZMS extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel32)
-                    .addComponent(jButton28))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel20Layout.createSequentialGroup()
+                        .addComponent(jButton28)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton21)))
+                .addContainerGap(246, Short.MAX_VALUE))
         );
         jPanel20Layout.setVerticalGroup(
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1964,7 +2061,9 @@ public class ZZMS extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel32)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton28)
+                .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton28)
+                    .addComponent(jButton21))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -2184,6 +2283,11 @@ public class ZZMS extends javax.swing.JFrame {
         jCheckBox3.setText("測試機");
 
         jCheckBox4.setText("下線回到選角色");
+        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox4ActionPerformed(evt);
+            }
+        });
 
         jCheckBox5.setText("僅管理員模式");
 
@@ -2632,10 +2736,13 @@ public class ZZMS extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel45, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel45, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jTabbedPane1)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2956,6 +3063,66 @@ public class ZZMS extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "數據載入完成。");
     }//GEN-LAST:event_jButton43ActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        charInitFinished = false;
+        try {
+            initCharacterPannel();
+        } catch (Exception ex) {
+            System.out.println("刷新角色信息错误：" + ex);
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+    public class ItemInfo {
+        public Integer ItemId;
+        public Integer OnSale;
+        public String Name;
+        public ItemInfo(Integer itemid,Integer onsale) {
+            ItemId = itemid;
+            OnSale = onsale;
+            Name = "未知名称";
+            for (ItemInformation itemInfo : MapleItemInformationProvider.getInstance().getAllItems()) {
+                    if(itemInfo.itemId == itemid) Name = itemInfo.name;
+                }
+        }
+    }
+    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+        Map<Integer, ItemInfo> values = new TreeMap<Integer, ItemInfo>(new Comparator<Integer>(){  
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);  
+            }
+        });
+        MapleData SNdata = MapleDataProviderFactory.getDataProvider("Etc.wz").getData("Commodity.img");
+        for (MapleData EtcItemData : SNdata.getChildren()) {
+            if(EtcItemData.getChildByPath("SN") != null 
+                    && EtcItemData.getChildByPath("ItemId") != null 
+                    && EtcItemData.getChildByPath("OnSale") != null){
+                        if(Integer.valueOf(EtcItemData.getChildByPath("OnSale").getData().toString()) == 0) values.put(Integer.valueOf(EtcItemData.getChildByPath("SN").getData().toString()), new ItemInfo(
+                                Integer.valueOf(EtcItemData.getChildByPath("ItemId").getData().toString()),
+                                Integer.valueOf(EtcItemData.getChildByPath("OnSale").getData().toString())));
+            }
+        }
+        
+        File F = new File("D:\\sql commond.txt");
+        try {
+        if(!F.exists()) F.createNewFile();
+        FileWriter fw = new FileWriter(F);
+        for(Integer a : values.keySet()){
+            fw.write("(" + a.toString() + ",0,-1,1," + values.get(a).ItemId + ",0,0,0,0,0,0,0,0,0,0,0,0,'"+ values.get(a).Name + "'), \r\n");
+        }
+        fw.flush();
+        fw.close();
+        JOptionPane.showMessageDialog(null, "Success!");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "错误！：" + ex);
+        }
+        
+       
+    }//GEN-LAST:event_jButton21ActionPerformed
+
+    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2977,8 +3144,9 @@ public class ZZMS extends javax.swing.JFrame {
         System.setErr(err);
         try {
             initCharacterPannel();
+            initModifiedCommodityPannel();
         } catch (Exception ex) {
-            System.out.println("初始化角色訊息錯誤:" + ex);
+            System.out.println("初始化角色信息错误：" + ex);
         }
     }
 
@@ -2992,6 +3160,7 @@ public class ZZMS extends javax.swing.JFrame {
     private javax.swing.JButton changeMesoRate1;
     private javax.swing.JTextField channelCount;
     private javax.swing.JTable charTable;
+    private javax.swing.JTable charTable1;
     private javax.swing.JTextPane chatLog;
     private javax.swing.JTextField dropRate;
     private javax.swing.JTextField expRate;
@@ -3009,6 +3178,7 @@ public class ZZMS extends javax.swing.JFrame {
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
+    private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton24;
@@ -3035,6 +3205,7 @@ public class ZZMS extends javax.swing.JFrame {
     private javax.swing.JButton jButton43;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox10;
@@ -3146,6 +3317,7 @@ public class ZZMS extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextArea jTextArea3;

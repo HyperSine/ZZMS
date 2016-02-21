@@ -80,11 +80,11 @@ public class CashItemFactory {
         try {
             Connection con = DatabaseConnection.getConnection();
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM cashshop_modified_items"); ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    CashModInfo ret = new CashModInfo(rs.getInt("serial"), rs.getInt("discount_price"), rs.getInt("mark"), rs.getInt("showup") > 0, rs.getInt("itemid"), rs.getInt("priority"), rs.getInt("package") > 0, rs.getInt("period"), rs.getInt("gender"), rs.getInt("count"), rs.getInt("meso"), rs.getInt("unk_1"), rs.getInt("unk_2"), rs.getInt("unk_3"), rs.getInt("extra_flags"));
+                while (rs.next()) {
+                    CashModInfo ret = new CashModInfo(rs.getInt("serial"), rs.getInt("discount_price"), rs.getInt("mark"), rs.getInt("showup"), rs.getInt("itemid"), rs.getInt("priority"), rs.getInt("package") > 0, rs.getInt("period"), rs.getInt("gender"), rs.getInt("count"), rs.getInt("meso"), rs.getInt("unk_1"), rs.getInt("unk_2"), rs.getInt("unk_3"), rs.getInt("extra_flags"),rs.getInt("start_time"),rs.getInt("end_time"));
                     itemMods.put(ret.sn, ret);
-                    if (ret.showUp) {
-                        final CashItemInfo cc = itemStats.get(Integer.valueOf(ret.sn));
+                    if (ret.showUp != 0) {
+                        final CashItemInfo cc = itemStats.get(ret.sn);
                         if (cc != null) {
                             ret.toCItem(cc); //init
                         }
@@ -95,16 +95,8 @@ public class CashItemFactory {
         }
 
         List<Integer> availableSN = new LinkedList<>();
-        availableSN.add(20001141);
-        availableSN.add(20001142);
-        availableSN.add(20001143);
-        availableSN.add(20001144);
-        availableSN.add(20001145);
-        availableSN.add(20001146);
-        availableSN.add(20001147);
-        openBox.put(5533003, availableSN); // Rainbow Visor Box
-
-        availableSN = new LinkedList<>();
+        
+        
         availableSN.add(20000462);
         availableSN.add(20000463);
         availableSN.add(20000464);
@@ -131,7 +123,28 @@ public class CashItemFactory {
         availableSN.add(20800273);
         availableSN.add(20800274);
         openBox.put(5533002, availableSN); // Chief Knight Weapon Box
-
+        
+        availableSN = new LinkedList<>();
+        availableSN.add(20001141);
+        availableSN.add(20001142);
+        availableSN.add(20001143);
+        availableSN.add(20001144);
+        availableSN.add(20001145);
+        availableSN.add(20001146);
+        availableSN.add(20001147);
+        openBox.put(5533003, availableSN); // Rainbow Visor Box
+        
+        availableSN = new LinkedList<>();
+        availableSN.add(150500000);
+        availableSN.add(150500001);
+        availableSN.add(150500002);
+        availableSN.add(150500003);
+        availableSN.add(150500004);
+        availableSN.add(150500005);
+        availableSN.add(150500006);
+        availableSN.add(150500007);
+        openBox.put(5533012, availableSN); // 傷害字型隨機箱
+        
         try {
             Connection con = DatabaseConnection.getConnection();
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM cashshop_categories"); ResultSet rs = ps.executeQuery()) {

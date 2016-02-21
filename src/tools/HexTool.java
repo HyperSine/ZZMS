@@ -4,6 +4,8 @@ import constants.ServerConstants;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import org.apache.mina.core.buffer.IoBuffer;
+import tools.data.ByteArrayByteStream;
+import tools.data.LittleEndianAccessor;
 
 /**
  * Provides a class for manipulating hexadecimal numbers.
@@ -150,5 +152,14 @@ public class HexTool {
 
     public static String getOpcodeToString(final int op) {
         return "0x" + StringUtil.getLeftPaddedStr(Integer.toHexString(op).toUpperCase(), '0', 4);
+    }
+    
+    public static Integer getIntegerFromHexString(String SourceString) {
+        LittleEndianAccessor a = new LittleEndianAccessor(new ByteArrayByteStream(getByteArrayFromHexString(SourceString)));
+        return a.readInt();
+        
+    }
+    public static int getIntFromHexString(String SourceString) {
+        return getIntegerFromHexString(SourceString);
     }
 }

@@ -62,7 +62,7 @@ public class ServerConstants {
     public static boolean AntiKS = false;
     public static int MIRACLE_RATE = 1;
     public static byte SHOP_DISCOUNT = 0;
-    public static boolean IS_BETA_FOR_ADMINS = false;//是否Beta版,若是創建的角色都是伺服器管理員
+    public static boolean IS_BETA_FOR_ADMINS = false;//是否Beta版,若是,創建的角色都是伺服器管理員
     public static boolean FEVER_TIME = false; // Forever Time!! 咒語的痕跡用的
     public static Triple<String, Integer, Boolean>[] backgrounds = new Triple[]{ //boolean for randomize
         new Triple<>("20140430/0", 1, false),

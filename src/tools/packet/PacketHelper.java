@@ -904,7 +904,7 @@ public class PacketHelper {
         }
 
         mplew.writeInt(head);
-        System.out.println("mask " + head);
+        //System.out.println("mask " + head);
 
         if (head != 0) {
             if (equip.getSpecialStats().contains(EquipSpecialStat.TOTAL_DAMAGE)) {

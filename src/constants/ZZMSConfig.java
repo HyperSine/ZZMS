@@ -11,7 +11,7 @@ package constants;
  */
 public class ZZMSConfig {
 
-    public static byte defaultInventorySlot = 96; //默認道具欄位
+    public static byte defaultInventorySlot = 48; //默認道具欄位
 
     public static int monsterSpawn = 1; //同一個生怪點生怪次數
 

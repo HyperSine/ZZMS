@@ -3385,6 +3385,8 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                         remainingSp[GameConstants.getSkillBookByJob(newJob)] += 10;
                     }
                 }
+               
+                if (newJob == MapleJob.惡魔復仇者1轉.getId()) remainingSp[GameConstants.getSkillBookByJob(newJob)] -=5;     //修复恶魔复仇者多出的5个技能点
                 updateSingleStat(MapleStat.AVAILABLESP, 0); // we don't care the value here
             }
 
@@ -4134,8 +4136,9 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             } else {
                 boolean leveled = false;
                 long tot = exp + total;
+                exp += total;
                 if (tot >= needed) {
-                    exp += total;
+                    //exp += total;
                     while (exp >= needed) {
                         levelUp();
                         needed = getNeededExp();
@@ -4149,9 +4152,9 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                             setExp(needed - 1);
                         }
                     }
-                } else {
-                    exp += total;
-                }
+                } //else {
+                    //exp += total;
+                //}
                 if (total > 0) {
                     familyRep(prevexp, needed, leveled);
                 }
@@ -4891,10 +4894,8 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         }
         maxmp += stats.getTotalInt() / 10;
 
-        exp -= getNeededExp();
-        if (exp < 0) {
-            exp = 0;
-        }
+        exp -= getNeededExp();    //我不认为应该如此，升了级之后经验应该清零。
+        if (exp < 0) exp = 0;
         level += 1;
         addLevelSkills();
         maxhp = Math.min(500000, Math.abs(maxhp));
@@ -4964,6 +4965,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             //sb.append(getName()).append(" on such an amazing achievement!");
             World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, sb.toString()));
         }
+        setExp(0);
         //if (map.getForceMove() > 0 && map.getForceMove() <= getLevel()) {
         //    changeMap(map.getReturnMap(), map.getReturnMap().getPortal(0));
         //    dropMessage(-1, "You have been expelled from the map.");

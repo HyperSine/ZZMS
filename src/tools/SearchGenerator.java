@@ -42,6 +42,7 @@ public class SearchGenerator {
         用戶端包頭(9),
         髮型(10),
         臉型(11),
+        SN(12),
         未知;
 
         private int value;
@@ -78,6 +79,7 @@ public class SearchGenerator {
     public static final int 用戶端包頭 = SearchType.用戶端包頭.getValue();
     public static final int 髮型 = SearchType.髮型.getValue();
     public static final int 臉型 = SearchType.臉型.getValue();
+    public static final int SN = SearchType.SN.getValue();
     private static final Map<SearchType, Map<Integer, String>> searchs = new HashMap();
 
     public static Map<Integer, String> getSearchs(int type) {
@@ -144,6 +146,12 @@ public class SearchGenerator {
                 break;
             case 臉型:
                 values = MapleItemInformationProvider.getInstance().getFaceList();
+                break;
+            case SN:
+                MapleData SNdata = MapleDataProviderFactory.getDataProvider("Etc.wz").getData("Commodity.img");
+                for (MapleData EtcItemData : SNdata.getChildren()) {
+                        values.put(Integer.parseInt(EtcItemData.getChildByPath("SN").getData().toString()), MapleDataTool.getString(EtcItemData.getChildByPath("ItemId"), "无物品ID"));
+                }
                 break;
         }
 

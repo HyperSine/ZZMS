@@ -105,7 +105,12 @@ public class GUISearchGenerator extends javax.swing.JFrame implements GUIWindow 
 
         jLabel1.setText("檢索類型:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "全部", "道具", "NPC", "地圖", "怪物", "任務", "技能", "職業", "伺服器包頭", "用戶端包頭", "髮型", "臉型" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "全部", "道具", "NPC", "地图", "怪物", "任务", "技能", "职业", "服务端包头", "客户端包头", "发型", "脸型", "SN" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("檢索");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -121,7 +126,7 @@ public class GUISearchGenerator extends javax.swing.JFrame implements GUIWindow 
 
             },
             new String [] {
-                "類型", "名稱", "值"
+                "类型", "名称或ID", "值"
             }
         ) {
             Class[] types = new Class [] {
@@ -182,6 +187,10 @@ public class GUISearchGenerator extends javax.swing.JFrame implements GUIWindow 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         search();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -30,8 +30,9 @@ function action(mode, type, selection) {
     } else if (status == 1) {
         cm.sendYesNo("怎麼樣，要體驗法師嗎？");
     } else if (status == 2) {
-        cm.MovieClipIntroUI(true);
-        cm.warp(1020200, 0); // Effect/Direction3.img/magician/Scene00
+        cm.lockUI(true);
+        cm.lockKey(true);
         cm.dispose();
+        cm.warp(1020200, 0); // Effect/Direction3.img/magician/Scene00
     }
 }

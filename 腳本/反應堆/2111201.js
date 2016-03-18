@@ -1,12 +1,14 @@
 /*
-Zakum Altar - Summons Zakum.
-*/
+ Zakum Altar - Summons Zakum.
+ */
+
+/* global rm */
 
 function act() {
-	rm.changeMusic("Bgm06/FinalFight");
-	rm.getMap().spawnSimpleZakum(-10, -215);
-	rm.mapMessage("Òòé»ğÑæÖ®ÑÛµÄÁ¦Á¿£¬Ñ×Ä§±»ÕÙ†¾ÁË£¡£¡£¡");
-	if (!rm.getPlayer().isGM()) {
-		rm.getMap().startSpeedRun();
-	}
+    rm.changeMusic("Bgm06/FinalFight");
+    rm.getMap().spawnSimpleZakum(-10, -215);
+    rm.mapMessage("ç°¡æ˜“æ®˜æš´ç‚é­”å‡ºç¾äº†ï¼Œè«‹åœ¨è¦å®šæ™‚é–“ç¯„åœå…§æ“Šæ•—å®ƒã€‚");
+    if (!rm.getPlayer().isGM()) {
+        rm.getMap().startSpeedRun();
+    }
 }

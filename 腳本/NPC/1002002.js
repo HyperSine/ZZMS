@@ -35,14 +35,14 @@ function action(mode, type, selection) {
 	} else {
 	    cm.gainMeso(-1500);
 	    cm.saveLocation("FLORINA");
-	    cm.warp(120030000, 0);
 	    cm.dispose();
+	    cm.warp(120030000, 0);
 	}
     } else if (status == 3) {
 	if (cm.haveItem(4031134)) {
 	    cm.saveLocation("FLORINA");
-	    cm.warp(120030000, 0);
 	    cm.dispose();
+	    cm.warp(120030000, 0);
 	} else {
 	    cm.sendNext("Hmmm, so where exactly is your #bVIP Ticket to Florina\r\nBeach#k? Are you sure you have one? Please double-check.");
 	    cm.safeDispose();

@@ -1,8 +1,6 @@
+/* global pi */
 
-function enter(pi) { 
-	pi.EnableUI(0);
-	pi.DisableUI(false);
-	if (pi.isQuestFinished(2568) && pi.getQuestStatus(2570) == 0) {
-	    pi.showInstruction("Where am I? My head hurts...", 150, 5);
-	}
-}  
+function enter(pi) {
+    pi.lockUI(0);
+    pi.disableOthers(false);
+}

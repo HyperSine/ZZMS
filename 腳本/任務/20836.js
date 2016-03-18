@@ -37,7 +37,7 @@ function end(mode, type, selection) {
         } else if (status == 2) {
             qm.forceCompleteQuest();
             qm.environmentChange("Aran/balloon", 5);
-            qm.showWZEffect(0x1A, "UI/tutorial.img/7");
+            qm.showWZEffectNew("UI/tutorial.img/7");
             qm.dispose();
         }
     }

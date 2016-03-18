@@ -1,28 +1,21 @@
 var status = -1;
 
-function start(mode, type, selection) {
-	if (status == -1) {
-		qm.sendNext("Did the curse do this to me? This must be a nightmare.");
-		qm.forceCompleteQuest();
-		status++;
-	} else {
-		qm.ShowWZEffect("Effect/Direction5.img/mersedesQuest/Scene2");
-		qm.showWZEffect("Effect/OnUserEff.img/questEffect/mercedes/q24040");
-		qm.forceCompleteQuest(29952);
-		qm.gainItem(1142336,1);
-		qm.dispose();
-	}
-}
 function end(mode, type, selection) {
-	if (status == -1) {
-		qm.sendNext("Did the curse do this to me? This must be a nightmare.");
-		qm.forceCompleteQuest();
-		status++;
-	} else {
-		qm.ShowWZEffect("Effect/Direction5.img/mersedesQuest/Scene2");
-		qm.showWZEffect("Effect/OnUserEff.img/questEffect/mercedes/q24040");
-		qm.forceCompleteQuest(29952);
-		qm.gainItem(1142336,1);
-		qm.dispose();
+    if (mode === 1) {
+        status++;
+    } else {
+        status--;
+    }
+
+    var i = -1;
+    if (status <= i++) {
+        cm.dispose();
+    } else if (status === i++) {
+        qm.sendNextS("這就是對我的詛咒嗎？這不是真的，這一定是場夢……", 2);
+        qm.forceCompleteQuest();
+    } else {
+        qm.forceCompleteQuest(29952);
+        qm.gainItem(1142336,1);
+        qm.dispose();
 	}
 }

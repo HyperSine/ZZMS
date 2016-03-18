@@ -41,7 +41,7 @@ function action(mode, type, selection) {
 	cm.sendYesNo("這地方應該沒有什麼可以參觀的了。確定要移動到#b#m" + maps[selection] + "##k村子嗎?價格為 #b0楓幣 #k。");
 	selectedMap = selection;
     } else if (status == 3) {
-	cm.warp(maps[selectedMap]);
 	cm.dispose();
+	cm.warp(maps[selectedMap]);
     }
 }

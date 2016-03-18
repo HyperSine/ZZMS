@@ -36,8 +36,8 @@ function action(mode, type, selection) {
     else if (chat == 9)
         cm.sendNextPrevS("I assure you, Commander Orchid. Lotus is perfectly fine. Do you wish to see? Here... Execute Program Alpha-97.", 1);
     else if (chat == 10) {
-        cm.introEnableUI(0);
-        cm.DisableUI(false);
+        cm.lockUI(false);
+        cm.disableOthers(false);
         cm.warp(310010000, 0);
         cm.forceCompleteQuest(1081);
         cm.dispose();

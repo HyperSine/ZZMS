@@ -40,8 +40,8 @@ function action(mode, type, selection) {
 	else if (chat == 11) 
 	     cm.sendNextPrevS("I'll send you to #b#e#m105010000##n#k with Shinsoo's power.",1);
 	else if (chat == 12) {
-		cm.introEnableUI(0);
-        cm.introDisableUI(false);
+        cm.lockUI(false);
+        cm.disableOthers(false);
         cm.warp(105010000,3);		
         cm.dispose();
     }

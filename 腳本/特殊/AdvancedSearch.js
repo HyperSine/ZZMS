@@ -1,3 +1,5 @@
+/* global cm */
+
 var status, str, select, list;
 
 function start() {
@@ -60,7 +62,14 @@ function action(mode, type, selection) {
             }
             switch (str) {
                 case 1:
-                    if (select < 2000000) {
+                    if (select < 1000000) {
+                        if (select / 10000 == 2) {
+                            cm.setFace(select);
+                        } else if (select / 10000 == 3) {
+                            cm.setHair(select);
+                        }
+                        cm.dispose();
+                    } else if (select < 2000000) {
                         if (cm.canHold(select)) {
                             cm.gainItem(select, 1);
                         }

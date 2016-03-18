@@ -1,4 +1,4 @@
-﻿/*
+/*
     Made by Pungin
 */
 
@@ -13,13 +13,13 @@ function action(mode, type, selection) {
 
 	if (status == 0) {
 		ms.getDirectionStatus(true);
-		ms.EnableUI(1);
+		ms.lockUI(true);
 		ms.environmentChange("demonSlayer/whiteOut", 13);
-		ms.getDirectionInfo(1, 1950);
+		ms.getDirectionEffect(1, "", [1950]);
 	} else if (status == 1) {
 		ms.forceStartQuest(32201);
-		ms.warp(4000010, 0);
 		ms.dispose();
+		ms.warp(4000010, 0);
 	} else {
 		ms.dispose();
 	}

@@ -33,12 +33,12 @@ function action(mode, type, selection) {
 	    cost = 10000;
 	}
     } else if (status == 2) {
+	cm.dispose();
 	if (cm.getMeso() < cost) {
 	    cm.sendNext("It looks like you don't have enough mesos. Sorry but you won't be able to use this without it.")
 	} else {
 	    cm.gainMeso(-cost);
 	    cm.warp(105070001, 0);
 	}
-	cm.dispose();
     }
 }

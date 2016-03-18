@@ -12,9 +12,9 @@ function start(mode, type, selection) {
 	} else if (status == 2) {
 	    qm.sendYesNo("你看起來充分擁有成為法師的天份… 你要成為法師嗎？ 若是同意的話，我會利用轉職官的特權，邀請你到 #b魔法森林，魔法圖書館#k 。 我會親自替你轉職的。 #r不過，就算拒絕也是有其他選擇的。 若是拒絕的話，我會介紹你除了法師以外的職業。#k");
 	} else if (status == 3) {
-		qm.warp(101000003);
 		qm.forceStartQuest();
 		qm.dispose();
+		qm.warp(101000003);
 	} else if (status == 4) {
 		qm.sendSimple("成為法師無法滿足你嗎？ 真是可惜。 不過我尊重你的選擇。 那麼要走哪一條路呢？  \r\n#b#L1#劍士#l \r\n#b#L3#弓箭手#l \r\n#b#L4#盜賊#l \r\n#b#L5#海盜#l");
 	} else if (status == 5) {

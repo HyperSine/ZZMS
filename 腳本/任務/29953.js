@@ -1,28 +1,29 @@
 var status = -1;
 
 function start(mode, type, selection) {
-    if (mode == -1) {
-	qm.dispose();
+    if (mode === 0) {
+        status--;
     } else {
-	if (mode == 1)
-	    status++;
-	else
-	    status--;
-	
-	if (status == 0) {
-	    qm.sendNext("Cac gia lang van dang chim sau trong giac ngu," + qm.getPlayer().getName()+"!");
-	} else if (status == 1) {
-	    qm.sendNextPrev("Hay tap luyen them nua, 1 ngay nao do hay cuu ho...");
-	} else if (status == 2) {
-	    qm.sendNext("Mercedes...");
-	} else if (status == 3) {
-            qm.forceStartQuest();
-            qm.changeJob(2310);
-            qm.gainItem(1142337,1);
-            qm.dispose();
-	}
+        status++;
     }
+	
+    var i = -1;
+    if (status <= i++) {
+        qm.dispose();
+    } else if (status === i++) {
+        qm.sendNext("偉大的精靈遊俠啊…");
+    } else if (status === i++) {
+        qm.sendNext("之後的道路將會非常艱辛。");
+    } else if (status === i++) {
+        qm.sendNext("但不要害怕，我將永遠在你身邊…");
+    } else {
+        qm.forceCompleteQuest(29953);
+        qm.gainItem(1142337,1);
+        qm.dispose();
+    }
+    
 }
 
 function end(mode, type, selection) {
+    
 }

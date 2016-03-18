@@ -3,6 +3,6 @@
  */
 
 function action(mode, type, selection) {
-    ms.DisableUI(true);
+    ms.disableOthers(true);
     ms.dispose();
 }

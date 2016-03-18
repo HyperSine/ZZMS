@@ -3,7 +3,7 @@
  */
 
 function start() {
-    ms.EnableUI(0);
+    ms.lockUI(false);
     ms.dispose();
 }
 

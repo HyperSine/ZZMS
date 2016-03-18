@@ -35,19 +35,18 @@ function action(mode, type, selection) {
                 cm.sendSangokuTalk("是喔，沒必要知道名字啦。", 9131007, true, true);
             } else if (status == 7) {
                 cm.spawnNPCRequestController(9131007, 135, 30);
-                cm.setNPCSpecialAction(9131007, "summon");
                 cm.sendNextPrevS("信玄！", 3);
             } else if (status == 8) {
                 cm.sendSangokuTalk("看你就知道這次混戰從哪裡開始的，難道不是嗎？四天王，明智光秀！", 9131007, true, true);
             } else if (status == 9) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/0", 0, 0, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/0", [0, 0, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 10) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/3", 0, 0, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/3", [0, 0, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 11) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/4", 0, 0, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/4", [0, 0, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 12) {
                 cm.sendSangokuTalk("喔啦啦，呼呼… 果然武田信玄名不虛傳呀，第一眼就知道我的真實身分，連我要謀反的事情也知道了。 ", 9131000, false, true);
             } else if (status == 13) {
@@ -55,46 +54,47 @@ function action(mode, type, selection) {
             } else if (status == 14) {
                 cm.sendNextPrevS("信玄，就是那傢伙把松山燒了！怎麼可以跟大仇人聯手！ 明智光秀覺悟吧！", 3);
             } else if (status == 15) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/5", 0, 0, -120, 0, 0);
-                cm.getDirectionInfo(1, 1000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/5", [0, 0, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [1000]);
             } else if (status == 16) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/6", 0, -100, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/6", [0, -100, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 17) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/7", 0, -100, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/7", [0, -100, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 18) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/8", 0, 0, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/8", [0, 0, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 19) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/9", 0, -100, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/9", [0, -100, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 20) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/10", 0, 0, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/10", [0, 0, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 21) {
-                cm.getDirectionInfo(3, 1);
-                cm.getDirectionInfo(1, 1300);
+                cm.getDirectionEffect(3, "", [1]);
+                cm.getDirectionEffect(1, "", [1300]);
             } else if (status == 22) {
-                cm.getDirectionInfo(3, 0);
-                cm.getDirectionInfo(1, 1300);
-                cm.getDirectionInfo(0, 1033, 0);
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/11", 0, -100, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(3, "", [0]);
+                cm.getDirectionEffect(1, "", [1300]);
             } else if (status == 23) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/12", 0, -100, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(0, "", [1033, 0]);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/11", [0, -100, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 24) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/13", 0, 150, -120, 0, 0);
-                cm.getDirectionInfo(1, 2000);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/12", [0, -100, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 25) {
-                cm.setNPCSpecialAction(9131007, "attack");
-                cm.getDirectionInfo(1, 300);
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/balloonMsg/13", [0, 150, -120, 0, 0]);
+                cm.getDirectionEffect(1, "", [2000]);
             } else if (status == 26) {
-                cm.getDirectionInfo("Effect/DirectionJP3.img/effect/kenjiTuto/shingenAttack/0", 0, 0, 0, 0, 0);
-                cm.getDirectionInfo(1, 400);
+                cm.setNPCSpecialAction(9131007, "attack");
+                cm.getDirectionEffect(1, "", [300]);
+            } else if (status == 27) {
+                cm.getDirectionEffect(2, "Effect/DirectionJP3.img/effect/kenjiTuto/shingenAttack/0", [0, 0, 0, 0, 0]);
+                cm.getDirectionEffect(1, "", [400]);
             } else {
-                cm.EnableUI(0);
+                cm.lockUI(false);
 		cm.removeNPCRequestController(9131007);
                 cm.dispose();
                 cm.warp(807100004, 0);

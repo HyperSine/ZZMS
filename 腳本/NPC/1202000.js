@@ -17,13 +17,24 @@ function action(mode, type, selection) {
 
     if (cm.getPlayer().getMapId() != 140090000) {
         if (status == 0) {
-            cm.sendSimple("您有什麼想知道的呢？有的話我會再度說明。\r\n#b#L1#我是誰呢？#l \r\n#b#L2#這裡是哪裡呢？#l \r\n#b#L3#你是誰呀？#l\r\n#b#L4#告訴我現在要做的事。#l\r\n#b#L5#該如何使用道具？#l\r\n#b#L6#該如何提升技能？#l\r\n#b#L7#想知道如何穿上裝備。#l\r\n#b#L8#如何使用快捷欄？#l \r\n#b#L9#如何打碎箱子？#l");
+            cm.sendSimple("您有什麼想知道的呢？有的話我會再度說明。\r\n#b#L1#我是誰呢？#l \r\n#b#L2#這裡是哪裡呢？#l \r\n#b#L3#你是誰呀？#l\r\n#b#L4#告訴我現在要做的事。#l\r\n#b#L14#該如何使用道具？#l\r\n#b#L15#該如何提升技能？#l\r\n#b#L16#想知道如何穿上裝備。#l\r\n#b#L17#如何使用快捷欄？#l \r\n#b#L18#如何打碎箱子？#l");
         } else {
-            //您是數百年前，從黑魔法師的魔掌中拯救楓之谷的英雄之一。被黑魔法師詛咒後失去了全部的記憶。
-            //這裡是您被詛咒後沉睡的瑞恩島。由冰雪形成的小島。居民大部分是企鵝。
-            //我是相信預言等待您到來的瑞恩族成員莉琳。未來會繼續引導您 。
-            //詳細的情況我到村莊再向您說明。我們不能再這裡停留，要快點回去村莊。跟著指示繼續走就可以了。
-            cm.summonMsg(selection);
+            switch (selection) {
+                case 1:
+                    cm.summonMsg("您是數百年前，從黑魔法師的魔掌中拯救楓之谷的英雄之一。被黑魔法師詛咒後失去了全部的記憶。");
+                    break;
+                case 2:
+                    cm.summonMsg("這裡是您被詛咒後沉睡的瑞恩島。由冰雪形成的小島。居民大部分是企鵝。");
+                    break;
+                case 3:
+                    cm.summonMsg("我是相信預言等待您到來的瑞恩族成員莉琳。未來會繼續引導您 。");
+                    break;
+                case 4:
+                    cm.summonMsg("詳細的情況我到村莊再向您說明。我們不能在這裡停留，要快點回去村莊。跟著指示繼續走就可以了。");
+                    break;
+                default:
+                    cm.summonMsg(selection);
+            }
             cm.dispose();
         }
     } else {

@@ -1,6 +1,6 @@
 function start() {
-    ms.EnableUI(1);
-    ms.DisableUI(true);
+    ms.lockUI(true);
+    ms.disableOthers(true);
     switch (ms.getMapId()) {
         case 914090010:
             ms.showWZEffect("Effect/Direction1.img/aranTutorial/Scene0");

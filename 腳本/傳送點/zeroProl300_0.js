@@ -1,7 +1,7 @@
-/* RED 1st impact
-    Zero tut
-    Made by Daenerys
-*/
+/* global pi */
+
 function enter(pi) {
-   pi.warp(321000400,0);
+    if (pi.getQuestStatus(40002) !== 0) {
+        pi.warp(321000400, 0);
+    }
 }

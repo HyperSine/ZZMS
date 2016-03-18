@@ -12,9 +12,9 @@ function start(mode, type, selection) {
 	} else if (status == 2) {
 	    qm.sendYesNo("若是你真的想要成為弓箭手，我會利用轉職官的特權邀請你到 #b弓箭手村的弓箭手教育園#k。 #r不過，若是需要其他職業的話，你也可以拒絕。 我會幫助你轉職為其他職業的#k… 要成為弓箭手嗎？");
 	} else if (status == 3) {
-		qm.warp(100000201);
 		qm.forceStartQuest();
 		qm.dispose();
+		qm.warp(100000201);
 	} else if (status == 4) {
 		qm.sendSimple("你選擇了其他職業呢… 雖然很可惜，不過畢竟這是你的決定… 那麼你想要選擇非弓箭手的其他職業嗎？\r\n#b#L1#劍士#l \r\n#b#L2#法師#l \r\n#b#L4#盜賊#l \r\n#b#L5#海盜#l");
 	} else if (status == 5) {

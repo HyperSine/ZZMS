@@ -15,6 +15,7 @@ function start(mode, type, selection) {
             status--;
         if (status == 0 && qm.getQuestStatus(2608) == 2) {
             qm.forceStartQuest();
+            qm.useItem(2022963);
             qm.dispose();
         } else {
             qm.dispose();

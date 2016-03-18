@@ -3,8 +3,8 @@ function start() {
 }
 
 function action(mode, type, selection) {
-	if (mode == 1) {
-		cm.warp(400000001, 1);
-	}
     cm.dispose();
+    if (mode == 1) {
+        cm.warp(400000001, 1);
+    }
 }

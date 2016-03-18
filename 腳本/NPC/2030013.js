@@ -1,11 +1,11 @@
-﻿/*
+/*
  BOSS殘暴炎魔
  */
 /* global cm */
 
 var minLevel = [90, 90, 50];
 var maxLevel = [255, 255, 255];
-var maxEnter = 200;
+var maxEnter = 2;
 var pqName = "殘暴炎魔";
 var eventNames = ["ZakumBattle", "ChaosZakum", "SimpleZakum"];
 var open = true;

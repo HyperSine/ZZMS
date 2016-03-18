@@ -3,6 +3,6 @@
 */
 
 function enter(pi) {
-    pi.clearSavedLocation("BPRETURN");
+    pi.clearSavedLocation("BPReturn");
     pi.warp(211042300, 2);
 }

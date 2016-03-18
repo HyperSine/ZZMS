@@ -22,14 +22,14 @@ function start(mode, type, selection) {
         qm.sendNextSNew("我來告訴你時空旅行的方法吧。 \r\n有看到那邊的右側的時空隙縫嗎？可以從這隙縫移動至異世界。", 0x20, 1);
     } else if (status == 1) {
         qm.getDirectionStatus(true);
-        qm.EnableUI(1, 0);
-        qm.getDirectionInfoNew(0, 1500, 520, 100);
+        qm.lockUI(true, 0);
+        qm.getDirectionEffect(5, "", [0, 1500, 520, 100]);
     } else if (status == 2) {
-        qm.getDirectionInfo(1, 2000);
+        qm.getDirectionEffect(1, "", [2000]);
     } else if (status == 3) {
-        qm.getDirectionInfoNew(1, 2000);
+        qm.getDirectionEffect(5, "", [1, 2000, 0, 0]);
     } else if (status == 4) {
-        qm.EnableUI(0);
+        qm.lockUI(false);
         qm.sendNextPrevSNew("啊?好期待會是什麼樣的地方！!", 0x38, 1);
     } else if (status == 5) {
         qm.sendNextPrevSNew("啊啊…在這說明不如實際體驗最快。\r\n不過有一個注意事項，就是在那世界無法使用#h0#在楓之谷所能使用的技能。因為時空不同，這應該這也不算什麼。", 0x20, 1);

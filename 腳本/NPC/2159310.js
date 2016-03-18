@@ -36,8 +36,8 @@ function action(mode, type, selection) {
     } else if (status == 13) {
         cm.sendNextPrevS("哎呀，怎麼這麼謙虛啊。 反正以那個功勞應該可以得到祂的認可吧?比起他我先去神殿散播許多的小動作實在太微小了，不會害羞嗎", 5, 2159308);
     } else if (status == 14) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg0/10", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 15) {
         cm.sendNextS("…你們兩夠了吧.", 5, 2159310);
     } else if (status == 16) {
@@ -45,8 +45,8 @@ function action(mode, type, selection) {
     } else if (status == 17) {
         cm.sendNextPrevS("我不過只是被稱讚為我們軍團最佳的有功之人#h0#而已.ㄎㄎㄎ...", 5, 2159308);
     } else if (status == 18) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg0/10", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 19) {
         cm.sendNextS("#p2159309#.  只要占領完神殿一切都結束了... 那個意義去綁架時間女神的功勞 是絕對的.", 5, 2159310);
     } else if (status == 20) {
@@ -66,13 +66,13 @@ function action(mode, type, selection) {
     } else if (status == 27) {
         cm.sendNextPrevS("偉大的祂希望可以終結所有的戰爭. 接到了完全去除停滯不前的抵抗的勢力的命令除了你以外的軍團長們都會站出來吧.", 5, 2159308);
     } else if (status == 28) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg1/18", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/18", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 29) {
         cm.sendNextS("…連神木村的一草一木都不剩全都消滅掉了...", 5, 2159310);
     } else if (status == 30) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg1/3", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 31) {
         cm.sendNextS("(家人在神木村的南部地域耶...!)", 3, 2159310);
     } else if (status == 32) {
@@ -84,14 +84,14 @@ function action(mode, type, selection) {
     } else if (status == 35) {
         cm.sendNextPrevS("到什麼程度啊 嗯... 當然要好好照祂指是的去做阿。接取到破壞全部的名義話當然要清除的一乾二淨啊。哈哈哈哈哈…你的反應怎這麼敏感?有什麼掛心的事情嗎?", 5, 2159308);
     } else if (status == 36) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg0/11", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/11", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 37) {
         cm.sendNextS("我有要去確認的事情我就先離席了…", 3, 2159308);
     } else if (status == 38) {
         cm.sendNextPrevS("你受到黑魔法師的寵愛並不代表你可以隨便行事。我沒說要做我們的事情嗎?現在離開的話就是不服從命令.", 5, 2159308);
     } else if (status == 39) {
-        cm.getDirectionInfo(3, 2);
+        cm.getDirectionEffect(3, "", [2]);
     } else if (status == 40) {
         cm.sendNextS("(戴維安，母親…希望你們沒事…)", 3, 2159308);
     } else if (status == 41) {

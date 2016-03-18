@@ -34,14 +34,29 @@ function end(mode, type, selection) {
         status++;
     else
         status--;
+
     if (status == 0) {
         qm.sendNextS("#b冒險之書#k嗎? 在這裡可以記錄我的冒險故事?", 16);
     } else if (status == 1) {
         qm.sendNextPrevS("剛好正是要開始冒險的時候，那麼從現在開始就行了. …咦?", 16);
     } else if (status == 2) {
+        qm.lockUI(true);
+        qm.showEffect(false, "adventureStory/mapleLeaf/0");
+        qm.wait(1800);
+    } else if (status == 3) {
+        qm.lockUI(false);
+        qm.sendNextS("這楓葉是什麼? 這麼看來在楓之島上有巨大的楓樹吧. 這楓葉是一路跟著我到這的嗎?", 17);
+    } else if (status == 4) {
+        qm.sendNextPrevS("這個也算是紀念，我會好好保存的. 夾在#b 冒險之書#k中間就不會變皺了.", 17);
+    } else if (status == 5) {
+        qm.sendNextPrevS("點選鍵盤設定鈕設定劇情書熱鍵後,打開書櫃確認#e#b'冒險之書'#k#n吧.", 17);
+    } else if (status == 6) {
         qm.forceStartQuest();
         qm.forceCompleteQuest();
+        qm.topMsg("獲得了冒險之書.");
+        qm.openUI(191);
         qm.dispose();
-        qm.showMapleLeafScene();
+    } else {
+        qm.dispose();
     }
 }

@@ -18,9 +18,9 @@ function start(mode, type, selection) {
 	} else if (status == 5) {
 	    qm.sendYesNo("我似乎說太久了… 那麼，快決定吧！ 要成為海盜呢？還是要選擇其他職業呢？ 若是你要成為海盜的話，我就會用轉職官的特權邀請你到鯨魚號。 #r若是拒絕的話？ 我會建議你其他職業，所以不需要擔心。#k。");
 	} else if (status == 6) {
-		qm.warp(120000101);
 		qm.forceStartQuest();
 		qm.dispose();
+		qm.warp(120000101);
 	} else if (status == 7) {
 		qm.sendSimple("你要選擇其他職業嗎？ 這也並非是壞事。 那你想要選哪一種職業呢？  \r\n#b#L1#劍士#l \r\n#b#L2#法師#l \r\n#b#L3#弓箭手#l \r\n#b#L4#盜賊#l");
 	} else if (status == 8) {

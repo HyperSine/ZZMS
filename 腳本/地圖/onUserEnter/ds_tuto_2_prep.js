@@ -6,7 +6,6 @@ var status = -1;
 function action(mode, type, selection) {
     ms.resetMap(927000020);
     ms.spawnNPCRequestController(2159309, 550, 50);
-    ms.setNPCSpecialAction(2159309, "summon");
     ms.teachSkill(30010166, 1, 1);
     ms.teachSkill(30011167, 1, 1);
     ms.teachSkill(30011168, 1, 1);

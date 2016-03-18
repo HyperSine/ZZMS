@@ -58,8 +58,8 @@ function action(mode, type, selection) {
 	    selectedMap = selection;
 	} else {
 	    cm.gainItem(4032313, -1);
-	    cm.warp(100000000, 6);
 	    cm.dispose();
+	    cm.warp(100000000, 6);
 	}
     } else if (status == 3) {
 	if (cm.getMeso() < sCost) {
@@ -67,8 +67,8 @@ function action(mode, type, selection) {
 	    cm.safeDispose();
 	} else {
 	    cm.gainMeso(-sCost);
-	    cm.warp(maps[selectedMap]);
 	    cm.dispose();
+	    cm.warp(maps[selectedMap]);
 	}
     }
 }

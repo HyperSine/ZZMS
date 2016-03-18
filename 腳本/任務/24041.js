@@ -1,27 +1,27 @@
 var status = -1;
 
 function start(mode, type, selection) {
-	if (mode == 1) {
-		status++;
-	} else {
-		cm.dispose();
-		return;
-	}
-	if (status == 0) {
-		qm.sendPlayerToNpc("Calm down! I just have to think. Okay, let's run down what's going on.");
-	} else if (status == 1) {
-		qm.sendPlayerToNpc("1. The rest of the Elves are still frozen, so the Black Mage's curse is still in place.");
-	} else if (status == 2) {
-		qm.sendPlayerToNpc("2. I'm the only one who's woken up. I don't know why, but I get the feeling that the Black Mage's seal is weakening.");
-	} else if (status == 3) {
-		qm.sendPlayerToNpc("3. I want to go outside and check on Maple World, but I'm only level 10. I can't believe it... Just how powerful was that curse? I'm still freezing!");
-	} else if (status == 4) {
-		qm.sendPlayerToNpc("Right, hold it together.. I need to make sure there's not anything wrong with me.");
-	} else {
-		qm.dispose();
-	}
+    if (mode == 1) {
+        status++;
+    } else {
+        cm.dispose();
+        return;
+    }
+    if (status == 0) {
+        qm.forceStartQuest(24041, "1");
+        qm.sendPlayerToNpc("不，冷靜！現在好好想想到底發生了什麼。");
+    } else if (status == 1) {
+        qm.sendPlayerToNpc("其他的精靈還在冰里，所以黑魔法師的詛咒仍然還在起作用！");
+    } else if (status == 2) {
+        qm.sendPlayerToNpc("我是唯一一個醒來的，我不知道為什麼，但我感覺黑魔法師的詛咒在減弱。");
+    } else if (status == 3) {
+        qm.sendPlayerToNpc("我現在必須出去，我要到外面去看看世界成什麼樣了。可是我現在只有10等級。真不敢相信……詛咒的力量究竟有多大？");
+    } else {
+        qm.dispose();
+    }
 }
+
 function end(mode, type, selection) {
-	qm.forceCompleteQuest(29952);
+	qm.completeQuest(24041);
 	qm.dispose();
 }

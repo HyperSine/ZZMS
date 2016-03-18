@@ -24,16 +24,16 @@ function action(mode, type, selection) {
     } else if (status == 7) {
         cm.sendNextPrevS("黑魔法師？ 軍團長？ 我聽不懂你在說些什麼。 因為你說的那些事情和目前的情況根本就毫無關聯性。 你知道嗎？ 據我所知，黑魔法師早在數百年前就已經被英雄們封印起來了！", 5, 2159315);
     } else if (status == 8) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg1/3", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 600);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [600]);
     } else if (status == 9) {
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", 1500, -90, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", 1500, 210, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", 1500, 100, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", 1500, -180, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", 1500, -260, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", 1500, 270, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [1500, -90, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [1500, 210, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [1500, 100, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [1500, -180, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [1500, -260, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/10", [1500, 270, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 10) {
         cm.sendNextS("…嗯… 你該不會是因為實驗的關係，造成腦部發生異常吧？", 5, 2159314);
     } else if (status == 11) {
@@ -65,12 +65,12 @@ function action(mode, type, selection) {
     } else if (status == 24) {
         cm.sendNextPrevS("想要向黑魔法師報仇的人… 既然如此，要不要成為我們的同事呢？", 5, 2159311);
     } else if (status == 25) {
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", 1500, -90, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", 1500, 210, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", 1500, 100, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", 1500, -180, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", 1500, -260, -150, 1, 1, 0, 0, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", 1500, 270, -150, 1, 1, 0, 0, 0);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", [1500, -90, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", [1500, 210, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", [1500, 100, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", [1500, -180, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", [1500, -260, -150, 1, 1, 0, 0, 0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/4", [1500, 270, -150, 1, 1, 0, 0, 0]);
         cm.sendNextPrevS("校長？！ 那是什麼意思呢…", 5, 2159315);
     } else if (status == 26) {
         cm.sendNextPrevS(" 你相信這個人說的話嗎？ 說不定他只是因為實驗的後遺症導致變成不正常。 就算他說的是真的，但他曾經是黑魔法師的軍團長呀！？", 5, 2159313);
@@ -100,8 +100,8 @@ function action(mode, type, selection) {
         cm.sendNextPrevS("那你就放輕鬆一點，不要太拘束。 若是改變心意，隨時都可以跟我們說… 呵呵呵", 5, 2159311);
     } else {
         cm.forceCompleteQuest(23279);
-        cm.EnableUI(0);
-        cm.DisableUI(false);
+        cm.lockUI(false);
+        cm.disableOthers(false);
         cm.dispose();
         cm.warp(931050040, 0);
     }

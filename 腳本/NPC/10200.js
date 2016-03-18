@@ -4,7 +4,7 @@
  Description: 		Job tutorial, movie clip
  */
 
-var status = -1;
+        var status = -1;
 
 function start() {
     if (cm.getMapId() != 1020000 && cm.getMapId() != 4000026) {
@@ -30,8 +30,9 @@ function action(mode, type, selection) {
     } else if (status == 1) {
         cm.sendYesNo("要想體驗弓箭手嗎？");
     } else if (status == 2) {
-        cm.MovieClipIntroUI(true);
-        cm.warp(1020300, 0); // Effect/Direction3.img/archer/Scene00
+        cm.lockUI(true);
+        cm.lockKey(true);
         cm.dispose();
+        cm.warp(1020300, 0); // Effect/Direction3.img/archer/Scene00
     }
 }

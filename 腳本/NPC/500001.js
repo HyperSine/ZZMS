@@ -34,7 +34,7 @@ function action(mode, type, selection) {
     } else if (status == 8) {
         cm.sendSangokuTalk("哈哈哈，很強大的氣魄！若可以的話就這樣一直都把你留作我的手下，祝你好運，武田信玄騎馬隊很快會跟上去的！", 9130000, true, true);
     } else if (status == 9) {
-        cm.EnableUI(0);
+        cm.lockUI(false);
         cm.environmentChange("guide1");
         cm.environmentChange("guide2");
         cm.environmentChange("guide3");

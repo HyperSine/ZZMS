@@ -14,9 +14,9 @@ function start(mode, type, selection) {
 	} else if (status == 3) {
 	    qm.sendYesNo("怎麼樣？ 你要成為盜賊嗎？ 若是你決定要成為盜賊的話，我會利用轉職官的特權邀請你到#b墮落城市，墮落城市酒吧#k。 那裡是個相當隱密的地方，所以你要感到榮幸。 #r不過，若是你更喜歡其他職業的話？ 如果是這樣的話，那就拒絕吧。 我會推薦你其他職業的。#k。");
 	} else if (status == 4) {
-		qm.warp(103000003);
 		qm.forceStartQuest();
 		qm.dispose();
+		qm.warp(103000003);
 	} else if (status == 5) {
 		qm.sendSimple("你不想成為盜賊嗎？ 我是不會強迫他人的。 那你想要哪一種職業呢？  \r\n#b#L1#劍士#l \r\n#b#L2#法師#l \r\n#b#L3#弓箭手#l \r\n#b#L5#海盜#l");
 	} else if (status == 6) {

@@ -1,9 +1,11 @@
 /*
  闇黑龍王
  */
+/* global cm */
+
 var minLevel = [130, 130, 135];
 var maxLevel = [255, 255, 255];
-var maxEnter = 3;
+var maxEnter = 2;
 var pqName = "闇黑龍王";
 var eventNames = ["SimpleHorntail", "HorntailBattle", "ChaosHorntail"];
 var open = true;
@@ -22,16 +24,16 @@ function start() {
 
 
 function action(mode, type, selection) {
-    if (mode == 1) {
+    if (mode === 1) {
         status++;
     } else {
         status--;
     }
 
-    if (status == 0) {
+    if (status === 0) {
         cm.sendSimple("#e<BOSS: 闇黑龍王>#n\r\n選擇想要的模式.\r\n\r\n#L0# 簡單模式 ( 等級" + minLevel[0] + " 以上 )#l\r\n#L1# 一般模式 ( 等級 " + minLevel[1] + " 以上 )#l\r\n#L2# 混沌模式 ( 等級 " + minLevel[2] + " 以上 )#l");
-    } else if (status == 1) {
-        if (mode == -1) {
+    } else if (status === 1) {
+        if (mode !== -1) {
             mode = selection;
         }
 
@@ -41,11 +43,11 @@ function action(mode, type, selection) {
             cm.sendNext("你的隊員\"" + cm.getNotAllowedPQMember(pqName, maxEnter).getName() + "\"次數已經達到上限了。");
         } else {
             var em = cm.getEventManager(eventNames[mode]);
-            if (em == null || open == false) {
+            if (em === null || open === false) {
                 cm.sendSimple("配置文件不存在,請聯繫管理員。");
             } else {
                 var prop = em.getProperty("state");
-                if (prop == null || prop.equals("0")) {
+                if (prop === null || prop.equals("0")) {
                     em.startInstance(cm.getParty(), cm.getMap(), 255);
                     cm.gainMembersPQ(pqName, 1);
                 } else {

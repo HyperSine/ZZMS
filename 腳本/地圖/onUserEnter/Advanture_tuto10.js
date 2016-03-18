@@ -1,37 +1,37 @@
-ï»¿/*
-    Made by Pungin
-*/
+/*
+ Made by Pungin
+ */
 
-var status = -1;
+        var status = -1;
 
 function start() {
-	if (ms.getQuestStatus(32201) == 1) {
-		ms.forceCompleteQuest(32201);
-		ms.forceStartQuest(32202);
-		ms.getDirectionInfo(1, 2100);
-	} else {
-		action(1, 0, 0);
-	}
+    if (ms.getQuestStatus(32201) == 1) {
+        ms.forceCompleteQuest(32201);
+        ms.forceStartQuest(32202);
+        ms.getDirectionEffect(1, "", [2100]);
+    } else {
+        action(1, 0, 0);
+    }
 }
 
 function action(mode, type, selection) {
-	if (mode == 1) {
-		status++;
-	} else {
-		status--;
-	}
+    if (mode == 1) {
+        status++;
+    } else {
+        status--;
+    }
 
-	if (status == 0) {
-		ms.sendSelfTalk("......é€™æ˜¯æ¥“æ¨¹?");
-	} else if (status == 1) {
-		ms.sendSelfTalk("å…ˆåˆ°ä¸‹é¢å»çœ‹çœ‹å§");
-	} else if (status == 2) {
-		ms.directionEffect("Effect/Direction3.img/effect/tuto/key/2", 3000000, -520, -740, 0);
-		ms.topMsg("åŒæ™‚æŒ‰ä¸‹[â†“]éµèˆ‡ [Alt] æˆ– [Space] (é¸æ“‡å‹è¨­å®š)éµå¯ä»¥å¾€ä¸‹é™");
-		ms.introEnableUI(0);
-		ms.forceCompleteQuest(32202);
-		ms.dispose();
-	} else {
-		ms.dispose();
-	}
+    if (status == 0) {
+        ms.sendSelfTalk("......ß@ÊÇ—÷˜ä?");
+    } else if (status == 1) {
+        ms.sendSelfTalk("ÏÈµ½ÏÂÃæÈ¥¿´¿´°É");
+    } else if (status == 2) {
+        ms.getDirectionEffect(2, "Effect/Direction3.img/effect/tuto/key/2", [3000000, -520, -740, 1, 1, 0, 0, 0]);
+        ms.topMsg("Í¬•r°´ÏÂ[¡ı]æIÅc [Alt] »ò [Space] (ßx“ñĞÍÔO¶¨)æI¿ÉÒÔÍùÏÂ½µ");
+        ms.lockUI(false);
+        ms.forceCompleteQuest(32202);
+        ms.dispose();
+    } else {
+        ms.dispose();
+    }
 }

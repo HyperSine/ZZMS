@@ -3,6 +3,6 @@
  */
 
 function start() {
-    ms.DisableUI(true);
+    ms.disableOthers(true);
     ms.dispose();
 }

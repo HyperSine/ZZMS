@@ -3,9 +3,9 @@
  */
 
 function start() {
-    ms.EnableUI(1);
-    ms.DisableUI(true);
-    ms.getDirectionInfo(1, 3000);
+    ms.lockUI(true);
+    ms.disableOthers(true);
+    ms.getDirectionEffect(1, "", [3000]);
     ms.getDirectionStatus(true);
     ms.dispose();
     ms.openNpc(2159314);

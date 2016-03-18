@@ -33,7 +33,7 @@ function action(mode, type, selection) {
     } else if (status == 9) {
         cm.sendNextPrevS("停！", 4, 2159010);
     } else if (status == 10) {
-        cm.warp(931000021, 1);
         cm.dispose();
+        cm.warp(931000021, 1);
     }
 }

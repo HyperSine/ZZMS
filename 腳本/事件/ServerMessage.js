@@ -1,31 +1,11 @@
 var Message = new Array(
-    "You can earn Cash by killing monsters, achievements and Mu Lung Dojo.",
-    "Use @help command for the list of player command you can use.",
-    "MapleLeafs can be used to make Maple Items (lv35,43,64,77) or traded for Experience at Cody NPC in FreeMarket.",
-    "Please do not use foul language, harass or scam other players. We would like to keep this community clean & friendly.",
-    "Exclusive Warpback system for all bosses including BossPartyQuest!",
-    "1 billion mesos can be traded for Golden Leaf from @npc.",
-    "Vote at our website and accumulate points to get special items!",
-    "Gather your friends and enjoy the fun of our Party Quests!",
-    "Please report any bugs/glitches at our forum.",
-    "Use @ea if you cant speak to a NPC.",
-    "Go to the Universal Shop to purchase summoning rocks/magic rocks/all cure potions and elixirs, magnifying glasses.",
-    "Make a party with your friends and conquer Mulung Dojo! Take down the bosses and receive points to exchange for belts.",
-    "Use @check to check for points, cash, and voting points!",
-    "Check out @npc to get to many town/monster maps!",
-    "We have full cash shop working! Purchase cash items to create your unique character look!",
-    "Click on our PlayerNPCs to view your speedrun at bosses!",
-    "Peanut Machines available when you join in our events!",
-    "Events like Olaola/Maple Fitness/Snowball/Coconut Harvest will be hosted by GMs.",
-    "Trade rare item for cash at the rare item seller in Free Market .",
-    "There will be Channel limit for certain bosses. You can only fight the bosses in the stated channel.",
-    "Now, there will be a random gain of cash when you kill a monster!",
-    "Friendship rings/friendship shirt/couple rings/couples shirt are working! ",
-    "Gather your guildmates and try out the Guild Quest!",
-    "Look for Mar the Fairy at Ellinia to evolve or revive your pet.",
-    "You can purchase your respective mounts at Monster Rider Shop accessed by @npc.",
-    "Please report any bugs you are facing immediately in the forums!",
-    "15% and 65% scrolls can be created by Inkwell NPC.");
+        "你能從打獵怪物、達成成就跟武陵道場來獲取楓點。",
+        "在對話視窗輸入 '@幫助' 時可以看到使用 '@' 的指令說明.",
+        "如果無法跟NPC對話，請輸入'@解卡'.",
+        "如果遇到BUG/故障請到QQ群反饋，群號185386815",
+        "使用'@查看'指令可以查看自身的各種訊息。",
+        "現在，擊殺怪物會有幾率獲得楓點！"
+        );
 
 var setupTask;
 
@@ -34,14 +14,14 @@ function init() {
 }
 
 function scheduleNew() {
-    setupTask = em.schedule("start", 900000);
+    setupTask = em.schedule("start", 180000);
 }
 
 function cancelSchedule() {
-	setupTask.cancel(false);
+    setupTask.cancel(false);
 }
 
 function start() {
     scheduleNew();
-    em.broadcastYellowMsg("[" + em.getChannelServer().getServerName() + "Tip] " + Message[Math.floor(Math.random() * Message.length)]);
+    em.broadcastYellowMsg("[" + em.getChannelServer().getServerName() + "幫助] " + Message[Math.floor(Math.random() * Message.length)]);
 }

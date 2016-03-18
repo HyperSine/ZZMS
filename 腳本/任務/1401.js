@@ -12,9 +12,9 @@ function start(mode, type, selection) {
 	} else if (status == 2) {
 	    qm.sendYesNo("你看起來相當具有天份。 若是你這種人才願意成為劍士的話，那真是歡迎！ 要成為劍士嗎？ 若是你同意的話，我會使用轉職官的特權邀請你到 #b勇士之村，勇士聖殿 #k。 #r不過，就算拒絕也是有其他選擇的。 若是拒絕的話，那我就帶領你去選擇其他職業。#k。");
 	} else if (status == 3) {
-		qm.warp(102000003);
 		qm.forceStartQuest();
 		qm.dispose();
+		qm.warp(102000003);
 	} else if (status == 4) {
 		qm.sendSimple("你不想要成為劍士嗎？ 總不能強迫他人做不想做的事情吧。 既然如此，那你就選擇其他職業吧。 除了劍士以外，我還準備了其他四個選擇。 \r\n#b#L2#法師#l \r\n#b#L3#弓箭手#l \r\n#b#L4#盜賊#l \r\n#b#L5#海盜#l");
 	} else if (status == 5) {

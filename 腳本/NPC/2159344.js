@@ -12,10 +12,10 @@ function action(mode, type, selection) {
     } else if (status == 1) {
         cm.sendNextPrevS("(這裡是…  是一個陌生的房間。 不是剛才的那個洞穴… 嗚嗯… 全身都好痛。)", 3);
     } else if (status == 1) {
-        cm.getDirectionInfo(3, 1);
-        cm.getDirectionInfo(1, 600);
+        cm.getDirectionEffect(3, "", [1]);
+        cm.getDirectionEffect(1, "", [600]);
     } else if (status == 2) {
-        cm.getDirectionInfo(3, 0);
+        cm.getDirectionEffect(3, "", [0]);
         cm.sendNextS("(雖然看起來很陌生，但卻像是醫療室… 這裡是什麼地方呢？ 我怎麼了呢？)", 3);
     } else if (status == 3) {
         cm.sendNextPrevS("(稍微整理一下整個情況。)", 3);
@@ -26,10 +26,10 @@ function action(mode, type, selection) {
     } else if (status == 6) {
         cm.sendNextPrevS("(在戰鬥的過程中弄丟了嗎？ 與家人相關的物品竟然一個也不剩了… 嗚嗯…)", 3);
     } else if (status == 7) {
-        cm.getDirectionInfo(3, 2);
-        cm.getDirectionInfo(1, 600);
+        cm.getDirectionEffect(3, "", [2]);
+        cm.getDirectionEffect(1, "", [600]);
     } else if (status == 8) {
-        cm.getDirectionInfo(3, 0);
+        cm.getDirectionEffect(3, "", [0]);
         cm.sendNextS("(為了向黑魔法師報仇而去時間神殿… 途中派遣了 #p2151009#。 若是還在的話，應該早就喪命在其他軍團長的手中了…  雖然有#p2159309#從中妨礙，但很快就撤退了…  仔細想想，當時英雄們好像有來？)", 3);
     } else if (status == 9) {
         cm.sendNextPrevS("(黑魔法師果然很強。 本以為只要賭上性命，至少可以讓他受到傷害的… 結果只是打破防護魔法，稍微碰到他的衣袖而已…  雖然剛開始還期待可以擊敗他的…)", 3);
@@ -38,14 +38,14 @@ function action(mode, type, selection) {
     } else if (status == 11) {
         cm.sendNextPrevS("(呼… 頭好痛。 光是靠推測根本就無法確定任何事情… 畢竟現在無法知道這裡到底是什麼地方… 在萬物都被破壞的楓之谷世界當中竟然還有這種地方，真是令人驚訝。 而且那些物品… 感覺好陌生。)", 3);
     } else if (status == 12) {
-        cm.getDirectionInfo(3, 1);
-        cm.getDirectionInfo(1, 600);
+        cm.getDirectionEffect(3, "", [1]);
+        cm.getDirectionEffect(1, "", [600]);
     } else if (status == 13) {
-        cm.getDirectionInfo(3, 0);
+        cm.getDirectionEffect(3, "", [0]);
         cm.sendNextS("(就先檢查一下身體狀態吧… 雖然不清楚怎麼回事，但為了應對必要情況，就必須擁有力量… 力量還有多少呢？)", 3);
     } else if (status == 14) {
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg0/13", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1500);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg0/13", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1500]);
     } else if (status == 15) {
         cm.sendNextS("(…可惡！ 力量幾乎已經所剩無幾了…！ 光是看減少的力量之盾，就可以知道我的身體狀況了。 幾乎所有能力都消失了。 就算是負傷，沒想到我的身體會虛弱到這種程度… 這樣像話嗎？)", 3);
     } else if (status == 16) {
@@ -53,11 +53,11 @@ function action(mode, type, selection) {
     } else if (status == 17) {
         cm.sendNextPrevS("(呼… 反正想要恢復力量，還需要好一段時間。 這樣待著根本就無法改變些什麼… 還不如起來多動一下。)", 3);
     } else if (status == 18) {
-        cm.getDirectionInfo(3, 1);
-        cm.getDirectionInfo("Effect/Direction6.img/effect/tuto/balloonMsg1/3", 2000, 0, -100, 0, 0);
-        cm.getDirectionInfo(1, 1000);
+        cm.getDirectionEffect(3, "", [1]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", [2000, 0, -100, 0, 0]);
+        cm.getDirectionEffect(1, "", [1000]);
     } else if (status == 19) {
-        cm.getDirectionInfo(3, 0);
+        cm.getDirectionEffect(3, "", [0]);
         cm.sendNextS("(好像有什麼聲音…)", 3);
     } else if (status == 20) {
         cm.sendNextPrevS("本來想確認過和發電所的能量傳送裝置一樣的物品與蛋連接在一起後就回來的。 至少埃德爾斯坦的能量應該沒有被帶走。 不過那時候，他打破了蛋，然後將黑色翅膀全都消滅了。", 5, 2159344);
@@ -74,17 +74,16 @@ function action(mode, type, selection) {
     } else if (status == 26) {
         cm.sendNextPrevS("他差不多也該醒了吧。 得去確認一下才行。", 5, 2159344);
     } else if (status == 27) {
-        cm.getDirectionInfo(3, 2);
-        cm.getDirectionInfo(1, 2000);
+        cm.getDirectionEffect(3, "", [2]);
+        cm.getDirectionEffect(1, "", [2000]);
     } else if (status == 28) {
-        cm.getDirectionInfo(3, 1);
+        cm.getDirectionEffect(3, "", [1]);
         cm.spawnNPCRequestController(2159344, -600, -20);
-        cm.setNPCSpecialAction(2159344, "summon");
-        cm.getDirectionInfo(1, 30);
+        cm.getDirectionEffect(1, "", [30]);
     } else if (status == 29) {
-        cm.getDirectionInfo(3, 0);
-        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", 1500, 0, -100, 1, 1, 0, 0, 36951913);
-        cm.getDirectionInfo(1, 1000);
+        cm.getDirectionEffect(3, "", [0]);
+        cm.getDirectionEffect(2, "Effect/Direction6.img/effect/tuto/balloonMsg1/3", [1500, 0, -100, 1, 1, 0, 36951913, 0]);
+        cm.getDirectionEffect(1, "", [1000]);
     } else if (status == 30) {
         cm.sendNextS("原來你已經醒來了。 身體還好吧？ 你的臉色還很差…", 5, 2159344);
     } else if (status == 31) {

@@ -129,12 +129,12 @@ function action(mode, type, selection) {
 	cm.sendYesNo("I guess you don't need to be here. Do you really want to move to #b#m" + maps[selection] + "##k? Well it'll cost you #b" + sCost + " mesos#k. What do you think?");
 	selectedMap = selection;
     } else if (status == 28) {
+        cm.dispose();
 	if (cm.getMeso() < sCost) {
 	    cm.sendNext("You don't have enough mesos. With your abilities, you should have more than that!");
 	} else {
 	    cm.gainMeso(-sCost);
 	    cm.warp(maps[selectedMap], 0);
 	}
-	cm.dispose();
     }
 }

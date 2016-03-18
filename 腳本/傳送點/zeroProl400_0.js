@@ -1,7 +1,5 @@
-/* RED 1st impact
-    Zero tut
-    Made by Daenerys
-*/
+/* global pi */
+
 function enter(pi) {
-   pi.warp(321000500,1);
+    pi.warp(321000500, 1);
 }

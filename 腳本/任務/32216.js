@@ -57,22 +57,22 @@ function start(mode, type, selection) {
         }
     } else if (status == 10) {
         qm.getDirectionStatus(true);
-        qm.EnableUI(1, 0);
+        qm.lockUI(true, 0);
         qm.environmentChange("advStory/whistle", 5);
-        qm.getDirectionInfo(1, 2000);
+        qm.getDirectionEffect(1, "", [2000]);
         qm.showWZEffect("Effect/Direction3.img/adventureStory/Scene2");
     } else if (status == 11) {
         qm.sendNextS("現在船好像要出發了!", 1);
     } else if (status == 12) {
-        qm.warp(4000004);
+        qm.forceStartQuest(1406, sel);
+        qm.forceStartQuest(17901);
         qm.forceCompleteQuest();
+        qm.dispose();
+        qm.warp(4000004);
         while (qm.getLevel() < 10) {
             qm.levelUp();
         }
-        qm.forceStartQuest(1406, sel);
-        qm.forceStartQuest(17901);
-        qm.introEnableUI(0);
-        qm.DisableUI(false);
-        qm.dispose();
+        qm.lockUI(false);
+        qm.disableOthers(false);
     }
 }

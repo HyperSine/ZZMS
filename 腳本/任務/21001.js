@@ -19,8 +19,8 @@ function start(mode, type, selection) {
             qm.gainItem(4001271, 1);
             qm.forceStartQuest();
         }
-        qm.warp(914000300, 0);
         qm.dispose();
+        qm.warp(914000300, 0);
     }
 }
 
@@ -59,7 +59,7 @@ function end(mode, type, selection) {
     } else if (status == 7) {
         qm.sendNextPrevS("赫麗娜，您先去維多利亞島吧！我絕對不會死的，我們後會有期。我要和同伴們一起對付黑魔法師！", 3);
     } else {
-        qm.warp(914090010, 0);
         qm.dispose();
+        qm.warp(914090010, 0);
     }
 }

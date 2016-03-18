@@ -12,7 +12,7 @@ function action(mode, type, selection) {
     if (status == 0) {
 	cm.sendYesNo("Would you like to head straight to Island of Sleeping Dragon?");
     } else if (status == 1) {
-	cm.warp(914100000);
 	cm.dispose();
+	cm.warp(914100000);
     }
 }

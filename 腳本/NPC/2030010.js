@@ -2,13 +2,15 @@
  * Last Mission : Zakum's Altar (280030000)
  */
 
+/* global cm */
+
 function start() {
-    cm.sendYesNo("如果你離開，你必須重新開始。你確定要離開嗎？");
+    cm.sendYesNo("浣犵従鍦ㄦ槸鎯抽洟闁嬮�欒！鍡庯紵");
 }
 
 function action(mode, type, selection) {
-    if (mode == 1) {
-	cm.warp(211042200);
+    if (mode === 1) {
+        cm.warp(211042300, 0);
     }
     cm.dispose();
 }

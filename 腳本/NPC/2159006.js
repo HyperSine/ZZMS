@@ -46,8 +46,8 @@ function action(mode, type, selection) {
             cm.sendNextPrev("…噓！小聲一點！傑利麥勒博士來了。");
         } else if (status == 7) {
             cm.updateInfoQuest(23007, "vel00=2");
-            cm.warp(931000011, 0);
             cm.dispose();
+            cm.warp(931000011, 0);
         }
     } else if (cm.getInfoQuest(23007).indexOf("vel01=1") != -1) {
         if (status == 0) {
@@ -64,8 +64,8 @@ function action(mode, type, selection) {
             cm.sendYesNo("#b（斐勒把眼睛閉了起來，就像放棄了一切，該怎麼辦？去關斐勒的實驗室看看！）#k");
         } else if (status == 6) {
             cm.gainExp(60);
-            cm.warp(931000013, 0);
             cm.dispose();
+            cm.warp(931000013, 0);
         }
     }
 }

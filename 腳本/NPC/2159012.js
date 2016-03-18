@@ -25,7 +25,8 @@ function action(mode, type, selection) {
     } else if (status == 9) {
 	cm.updateInfoQuest(23007, "vel00=2;vel01=1");
 	cm.trembleEffect(0,500);
-	cm.MovieClipIntroUI(true);
+        cm.lockUI(true);
+        cm.lockKey(true);
 	cm.showWZEffect("Effect/Direction4.img/Resistance/TalkInLab");
     	cm.dispose();
     }

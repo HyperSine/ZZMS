@@ -18,7 +18,7 @@ function action(mode, type, selection) {
     if (status == 0) {
         cm.sendYesNo("多虧你,所有出航準備都結束了.要上船嗎?");
     } else if (status == 1) {
-        cm.warp(4000032, 0);
         cm.dispose();
+        cm.warp(4000032, 0);
     }
 }

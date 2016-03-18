@@ -1,4 +1,7 @@
+/* global pi */
+
 function enter(pi) {
-    pi.getDirectionInfoTest(3, 0);
-    return true;
+    if (pi.getMap().getAllMonstersThreadsafe().size() === 0) {
+        pi.warp(931050990);
+    }
 }

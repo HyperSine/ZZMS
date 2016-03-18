@@ -1,3 +1,5 @@
+/* global cm */
+
 var status = -1;
 
 function start() {
@@ -6,7 +8,8 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getJob() >= 400 && cm.getJob() < 500) {
+    var jobGrade = cm.getJob() % 1000 / 100;
+    if (jobGrade === 4 || jobGrade === 6) {
         cm.sendSimple("你來這裡有什麼事嗎?#b\r\n#L0#我想挑戰殘暴炎魔。#l\r\n#L1#沒什麼事。#l");
     } else {
         cm.sendNext("你是想探索殘暴炎魔副本嗎？但是你不是盜賊，我沒辦法對你進行判斷。你去找職業對應的長老吧。");
@@ -15,22 +18,22 @@ function start() {
 }
 
 function action(mode, type, selection) {
-    if (mode == 1) {
+    if (mode === 1) {
         status++;
     } else {
         cm.dispose();
         return;
     }
 
-    if (status == 0) {
-        if (selection == 0) {
+    if (status === 0) {
+        if (selection === 0) {
             cm.sendNext("那麼，我現在就將你送往#b阿杜比斯#k所在的#b通往殘暴炎魔之門#k。");
-        } else if (selection == 1) {
+        } else if (selection === 1) {
             cm.sendOk("這樣啊。你可真無聊。如果有什麼事的話，隨時再來吧。");
             cm.dispose();
         }
-    } else if (status == 1) {
-        cm.warp(211042300);
+    } else if (status === 1) {
+        cm.warp(211042300, 0);
         cm.dispose();
     }
 }

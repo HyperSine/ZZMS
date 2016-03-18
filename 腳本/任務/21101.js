@@ -9,7 +9,8 @@ function start(mode, type, selection) {
 	    qm.dispose();
 	    return;
 	} else if (status == 2) {
-	    qm.MovieClipIntroUI(true);
+            qm.lockUI(true);
+            qm.lockKey(true);
 	    qm.warp(914090100, 0);
 	    qm.dispose();
 	    return;

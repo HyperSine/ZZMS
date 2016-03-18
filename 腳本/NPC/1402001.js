@@ -1,59 +1,73 @@
+/* global cm */
+
 var status = -1;
 
+function start() {
+    if (cm.getMapId() === 915000300) {
+        cm.dispose();
+    } else {
+        cm.sendNext("咿咦，沒看過的人。你是新人嗎?");
+    }
+}
+
 function action(mode, type, selection) {
-    //if (mode != 1) {
-    //    cm.dispose();
-    //    return;
-    //}
-    status++;
-    if (status == 0)
-        cm.sendNextS("Kidan! Old pa! You really don't remember me? We say hello all the time!", 2);
-    else if (status == 1)
-        cm.sendNextPrev("Oh, um, sorry about that...");
-    else if (status == 2)
-        cm.sendNextPrevS("It's okay old chum, I know you're seeing countless people coming through. It can't be easy to remember all of them, but I was hoping you'd ad least remember ME.", 2);
-    else if (status == 3)
-        cm.sendNextPrev("H-hey! I said I was sorry! This place is like a madhouse right now.\r\nYou can't blame a guy for missing a few faces.");
-    else if (status == 4)
-        cm.sendNextPrevS("It's really that bad?", 2);
-    else if (status == 5)
-        cm.sendNextPrev("Of course! We've got some new royal lady claiming that Empress Cygnus may be a fake! How could anyone feel at ease?!");
-    else if (status == 6)
-        cm.sendNextPrevS("That's a good point. That's why I'm here!", 2);
-    else if (status == 7)
-        cm.sendNextPrev("It's got me pretty worried too. Even the Empress looked worried.\r\nShe was white as a ghost when I saw her...");
-    else if (status == 8)
-        cm.sendNextPrevS("Not looking forward to having a new empress, Kidan?", 2);
-    else if (status == 9)
-        cm.sendNextPrev("I would never wish ill of Empress Cygnus! We could not be where we are today without her leadership. But if this new woman's claims are true...");
-    else if (status == 10)
-        cm.sendNextPrevS("Do you really think there is another member of the Empress's bloodline?", 2);
-    else if (status == 11)
-        cm.sendNextPrev("This Hilla woman insisted that she was a descendant to the last Empress.");
-    else if (status == 12)
-        cm.sendNextPrevS("That would explain the foul mood.", 2);
-    else if (status == 13)
-        cm.sendNextPrev("Indeed. If Shinsoo were here, she could clear this up.\r\nUnfortunately she is not.");
-    else if (status == 14)
-        cm.sendNextPrev("Why did that woman insist on holding the conference today of all days?!");
-    else if (status == 15)
-        cm.sendNextPrevS("It seems awfully convenient, doesn't it?", 2);
-    else if (status == 16)
-        cm.sendNextPrev("I hope this works out. What are we going to do if Cygnus isn't the real empress? I have devoted myself to her.");
-    else if (status == 17)
-        cm.sendNextPrev("Ereve can't split into two. It would be chaos.");
-    else if (status == 18)
-        cm.sendNextPrevS("Don't worry too much, Kidan. I have a feeling these things will all work out.", 2);
-    else if (status == 19)
-        cm.sendNextPrev("I wish I had your optimism. At any rate, this Hilla character must be quite confident to call all these people here.");
-    else if (status == 20)
-        cm.sendNextPrevS("Confidence is required of both truthsayers and liars. You never know. Maybe someone INCREDIBLE will come swooping in to clear this up.", 2);
-    else if (status == 21)
-        cm.sendNextPrev("What does that mean? Why are you talking like that?");
-    else if (status == 22)
-        cm.sendNextPrevS("Don't worry yourself! I'm sure I'll see you after everything is said and done.", 2);
-    else if (status == 23)
-        cm.sendPrev("Uh...okay, see you.");
+    if (mode === 1) {
+        status++;
+    } else {
+        status--;
+    }
+
+    var i = -1;
+    if (status <= i++)
+        ms.dispose();
+    else if (status === i++)
+        cm.sendNextPrevS("你在說些什麼呢，奇丹？難道你已經忘記我了嗎？上次明明已經向你打過招呼了！", 2);
+    else if (status === i++)
+        cm.sendNextPrev("哦…是這樣嗎？很抱歉，我沒什麼印象了…");
+    else if (status === i++)
+        cm.sendNextPrevS("雖然我知道來往的人很多，不過請你稍微記一下長相。我明明已經跟你打過招呼好幾次了…真是令人難過。", 2);
+    else if (status === i++)
+        cm.sendNextPrev("真、真是抱歉。就如同你所知道的，耶雷弗的氣氛本來就不是很好。騎士團全都聚集在一起，所以當然會讓人搞混。");
+    else if (status === i++)
+        cm.sendNextPrevS("…氣氛有這麼糟糕嗎？", 2);
+    else if (status === i++)
+        cm.sendNextPrev("這是理所當然的。一直以來伺候的西格諾斯女王竟然有可能不是真正女皇的血統…聽到這個消息後，誰高興得起來呢？");
+    else if (status === i++)
+        cm.sendNextPrevS("呼…也是，原來如此。因為我也是得知消息後才跑來的。", 2);
+    else if (status === i++)
+        cm.sendNextPrev("秉持堅定意志率領騎士團的西格諾斯同樣也深受打擊的樣子。她的臉色看起來相當慘白。唉…");
+    else if (status === i++)
+        cm.sendNextPrevS("奇丹似乎很討厭西格諾斯以外的其他女皇吧？", 2);
+    else if (status === i++)
+        cm.sendNextPrev("這是理所當然的。大家明明很清楚她是多麼地努力。騎士團之所以能夠如此壯大，也全都是透過她的努力。但是，卻突然冒出另一個女皇…");
+    else if (status === i++)
+        cm.sendNextPrevS("真是難以置信。除了西格諾斯以外，還有誰會是擁有真正女皇血統的人呢？", 2);
+    else if (status === i++)
+        cm.sendNextPrev("那個叫做希拉的女人主張自己擁有真正女皇的血統…那番話似乎不是沒有依據的。從騎士團長們如此驚訝這一點來看的話…");
+    else if (status === i++)
+        cm.sendNextPrevS("所以氣氛才會這麼的…", 2);
+    else if (status === i++)
+        cm.sendNextPrev("沒錯。這種時候，若是神獸能在就好了，偏偏這個時候卻不在…");
+    else if (status === i++)
+        cm.sendNextPrev("那個女人為何偏偏要挑這種時候證明血統呢？神獸在的時候證明不是比較好嗎？嘖嘖！");
+    else if (status === i++)
+        cm.sendNextPrevS("哈啊…就是說呀。", 2);
+    else if (status === i++)
+        cm.sendNextPrev("希望這件事情能順利解決…如果西格諾斯女王並未擁有真正女皇的血統，那會變成怎麼樣呢？我絕對不要伺候除了西格諾斯以外的女皇…");
+    else if (status === i++)
+        cm.sendNextPrev("耶雷弗也無法劃分為二…這樣下去一定會造成騷亂的…");
+    else if (status === i++)
+        cm.sendNextPrevS("請不要太擔心，奇丹。說不定事情能夠順利解決呀？", 2);
+    else if (status === i++)
+        cm.sendNextPrev("但願如此…既然事情會鬧這麼大，就表示那個叫做希拉的女人也有相當程度的自信。");
+    else if (status === i++)
+        cm.sendNextPrevS("大概是吧…這也不一定呀？說不定會突然出現關鍵人物…解決這件事情。", 2);
+    else if (status === i++)
+        cm.sendNextPrev("關鍵人物？…到底是誰呢？");
+    else if (status === i++)
+        cm.sendNextPrevS("誰知道呢…哈哈哈，總而言之，奇丹…請不要太擔心！那我也要去大會議場了。", 2);
+    else if (status === i++)
+        cm.sendNextPrev("對。再見。");
     else
         cm.dispose();
 }

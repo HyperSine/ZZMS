@@ -30,8 +30,9 @@ function action(mode, type, selection) {
     } else if (status == 1) {
         cm.sendYesNo("怎麼樣，要想體驗海盜嗎？");
     } else if (status == 2) {
-        cm.MovieClipIntroUI(true);
-        cm.warp(1020500, 0); // Effect/Direction3.img/pirate/Scene00
+        cm.lockUI(true);
+        cm.lockKey(true);
         cm.dispose();
+        cm.warp(1020500, 0); // Effect/Direction3.img/pirate/Scene00
     }
 }

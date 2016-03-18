@@ -14,11 +14,11 @@ public class InnerAbillity {
         return instance;
     }
 
-    public InnerSkillValueHolder renewSkill(int rank, int circulator, boolean locked) {
-        return renewSkill(rank, circulator, false, locked);
+    public InnerSkillValueHolder renewSkill(int rank, int circulator, boolean locked, byte position) {
+        return renewSkill(rank, circulator, false, locked, position);
     }
 
-    public InnerSkillValueHolder renewSkill(int rank, int circulator, boolean ultimateCirculatorPos, boolean locked) {
+    public InnerSkillValueHolder renewSkill(int rank, int circulator, boolean ultimateCirculatorPos, boolean locked, byte position) {
         if (ultimateCirculatorPos && circulator == 2701000) {
             int randomSkill = GameConstants.getInnerSkillbyRank(3)[(int) Math.floor(Math.random() * GameConstants.getInnerSkillbyRank(rank).length)];
             int random = Randomizer.nextInt(100);
@@ -30,7 +30,7 @@ public class InnerAbillity {
             } else {
                 skillLevel = Randomizer.rand(SkillFactory.getSkill(randomSkill).getMaxLevel() / 4, SkillFactory.getSkill(randomSkill).getMaxLevel() / 3);
             }
-            return new InnerSkillValueHolder(randomSkill, (byte) skillLevel, (byte) SkillFactory.getSkill(randomSkill).getMaxLevel(), (byte) 3, locked);
+            return new InnerSkillValueHolder(randomSkill, (byte) skillLevel, (byte) SkillFactory.getSkill(randomSkill).getMaxLevel(), (byte) 3, locked, position);
         }
 
         int circulatorRate = 0;
@@ -38,28 +38,42 @@ public class InnerAbillity {
             circulatorRate = 10;
         } else {
             int circulatorRank = getCirculatorRank(circulator);
-            if (circulatorRank == 0) {
-                circulatorRate = 10;
-            } else if (circulatorRank == 1) {
-                circulatorRate = 20;
-            } else if (circulatorRank == 2) {
-                circulatorRate = 30;
-            } else if (circulatorRank == 3) {
-                circulatorRate = 35;
-            } else if (circulatorRank == 4) {
-                circulatorRate = 40;
-            } else if (circulatorRank == 5) {
-                circulatorRate = 45;
-            } else if (circulatorRank == 6) {
-                circulatorRate = 50;
-            } else if (circulatorRank == 7) {
-                circulatorRate = 55;
-            } else if (circulatorRank == 8) {
-                circulatorRate = 60;
-            } else if (circulatorRank == 9) {
-                circulatorRate = 65;
-            } else if (circulatorRank == 10) {
-                circulatorRate = 70;
+            switch (circulatorRank) {
+                case 0:
+                    circulatorRate = 10;
+                    break;
+                case 1:
+                    circulatorRate = 20;
+                    break;
+                case 2:
+                    circulatorRate = 30;
+                    break;
+                case 3:
+                    circulatorRate = 35;
+                    break;
+                case 4:
+                    circulatorRate = 40;
+                    break;
+                case 5:
+                    circulatorRate = 45;
+                    break;
+                case 6:
+                    circulatorRate = 50;
+                    break;
+                case 7:
+                    circulatorRate = 55;
+                    break;
+                case 8:
+                    circulatorRate = 60;
+                    break;
+                case 9:
+                    circulatorRate = 65;
+                    break;
+                case 10:
+                    circulatorRate = 70;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -83,7 +97,7 @@ public class InnerAbillity {
         } else {
             skillLevel = Randomizer.rand(SkillFactory.getSkill(randomSkill).getMaxLevel() / 4, SkillFactory.getSkill(randomSkill).getMaxLevel() / 3);
         }
-        return new InnerSkillValueHolder(randomSkill, (byte) skillLevel, (byte) SkillFactory.getSkill(randomSkill).getMaxLevel(), (byte) rank, locked);
+        return new InnerSkillValueHolder(randomSkill, (byte) skillLevel, (byte) SkillFactory.getSkill(randomSkill).getMaxLevel(), (byte) rank, locked, position);
     }
 
     public int getCirculatorRank(int circulator) {

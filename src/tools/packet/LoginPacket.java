@@ -62,7 +62,7 @@ public class LoginPacket {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.LOGIN_AUTH.getValue());
-        String[] bg = {"MapLogin", "MapLogin0", "MapLogin1"};
+        String[] bg = {"MapLogin", "MapLogin0", "MapLogin1", "MapLogin2"};
         mplew.writeMapleAsciiString(bg[(int) (Math.random() * bg.length)]);
         mplew.writeInt(GameConstants.getCurrentDate());
         mplew.write(1);

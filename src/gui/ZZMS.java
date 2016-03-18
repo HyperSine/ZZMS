@@ -77,6 +77,7 @@ import tools.HexTool;
 import java.util.Comparator;  
 import java.util.TreeMap;  
 import server.CashItemFactory;
+import server.life.MapleMonsterInformationProvider;
 /**
  *
  * @author Pungin
@@ -203,8 +204,14 @@ public class ZZMS extends javax.swing.JFrame {
         if (charInitFinished) {
             return;
         }
+        Connection con;
+        /*try {
+            con = DatabaseConnection.getConnection();
+        } catch(Exception ex) {
+            Runtime.getRuntime().exec("cmd /c ");
+        }*/
         try {
-            Connection con = DatabaseConnection.getConnection();
+            con = DatabaseConnection.getConnection();
             PreparedStatement ps = null;
             PreparedStatement pse;
             ResultSet rs = null;
@@ -213,7 +220,7 @@ public class ZZMS extends javax.swing.JFrame {
             ((DefaultTableModel) charTable.getModel()).setRowCount(0);
             while (rs.next()) {
                 ((DefaultTableModel) charTable.getModel()).insertRow(charTable.getRowCount(), new Object[]{
-                    "离线",
+                    MapleCharacter.getOnlineCharacterById(rs.getInt("id")) == null ? "离线" : "線上",
                     rs.getInt("id"),
                     rs.getInt("accountid"),
                     rs.getInt("world"),
@@ -544,7 +551,7 @@ public class ZZMS extends javax.swing.JFrame {
             int id = (Integer) charTable.getValueAt(i, 1);
             if (id == chr.getId()) {
                 int j = 0;
-                charTable.setValueAt(login ? "線上" : "離線", i, j++);
+                charTable.setValueAt(login ? "在线" : "离线", i, j++);
                 charTable.setValueAt(chr.getId(), i, j++);
                 charTable.setValueAt(chr.getAccountID(), i, j++);
                 charTable.setValueAt(chr.getWorld(), i, j++);
@@ -600,7 +607,7 @@ public class ZZMS extends javax.swing.JFrame {
         int val_targ;
         if (charTable.getSelectedRow() == -1) {
             return null;
-        } else if (charTable.getValueAt(charTable.getSelectedRow(), 0) == "離線") {
+        } else if (charTable.getValueAt(charTable.getSelectedRow(), 0) == "离线") {
             return null;
         } else {
             val_targ = (Integer) charTable.getValueAt(charTable.getSelectedRow(), 1);
@@ -3085,7 +3092,7 @@ public class ZZMS extends javax.swing.JFrame {
         }
     }
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-        Map<Integer, ItemInfo> values = new TreeMap<Integer, ItemInfo>(new Comparator<Integer>(){  
+        /*Map<Integer, ItemInfo> values = new TreeMap<Integer, ItemInfo>(new Comparator<Integer>(){  
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o1.compareTo(o2);  
@@ -3114,8 +3121,9 @@ public class ZZMS extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Success!");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "错误！：" + ex);
-        }
-        
+        }*/
+        MapleMonsterInformationProvider.getInstance().addExtra();
+        JOptionPane.showMessageDialog(null, "Done!");
        
     }//GEN-LAST:event_jButton21ActionPerformed
 

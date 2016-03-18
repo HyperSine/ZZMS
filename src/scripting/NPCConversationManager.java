@@ -51,6 +51,7 @@ import provider.MapleDataDirectoryEntry;
 import provider.MapleDataFileEntry;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
+import server.ItemInformation;
 import server.MapleCarnivalChallenge;
 import server.MapleCarnivalParty;
 import server.MapleInventoryManipulator;
@@ -65,6 +66,7 @@ import server.Timer.CloneTimer;
 import server.life.*;
 import server.maps.Event_DojoAgent;
 import server.maps.Event_PyramidSubway;
+import server.maps.MapleFoothold;
 import server.maps.MapleMap;
 import server.quest.MapleQuest;
 import server.shops.MapleShopFactory;
@@ -79,6 +81,9 @@ import tools.packet.CField.UIPacket;
 import tools.packet.CWvsContext;
 import tools.packet.CWvsContext.GuildPacket;
 import tools.packet.CWvsContext.InfoPacket;
+import tools.packet.provider.SpecialEffectType;
+import extensions.temporary.DirectionType;
+import extensions.temporary.NPCTalk;
 
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
@@ -87,7 +92,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     private byte lastMsg = -1;
     public boolean pendingDisposal = false;
     private final Invocable iv;
-
+    private static final Map<Pair<Integer, MapleClient>, MapleNPC> npcRequestController = new HashMap<>();
+    
     public NPCConversationManager(MapleClient c, int npc, int questid, String npcscript, ScriptType type, Invocable iv) {
         super(c, npc, questid, npcscript);
         this.type = type;
@@ -215,7 +221,36 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getSession().write(NPCPacket.getNPCTalk(npcid, (byte) 0, text, "00 01", type, idd));
         lastMsg = 0;
     }
+    //New
+    public void sendOthersTalk(String text, int npcid, boolean[] bottom) {
+        sendOthersTalk(text, npcid, bottom, (byte) 1);
+    }
 
+    public void sendOthersTalk(String text, int npcid, boolean[] bottom, byte type) {
+        String str = "";
+        if (bottom.length >= 2) {
+            for (int i = 0 ; i < 2 ; i++) {
+                if (bottom[i]) {
+                    str += "01";
+                } else {
+                    str += "00";
+                }
+                if (i < bottom.length - 1) {
+                    str += " ";
+                }
+            }
+        } else {
+            str = "00 01";
+        }
+        if (text.contains("#L")) {
+            lastMsg = 5;
+            c.getSession().write(NPCPacket.getOthersTalk(id, (byte) 5, npcid, text, "", type));
+        } else {
+            lastMsg = 0;
+            c.getSession().write(NPCPacket.getOthersTalk(id, (byte) 0, npcid, text, str, type));
+        }
+    }
+    ////////////////////////////////
     public void sendNextSNew(String text, byte type, byte type2) {
         sendNextSNew(text, type, type2, id);
     }
@@ -241,7 +276,12 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getSession().write(NPCPacket.getNPCTalk(id, (byte) 0, text, "01 00", (byte) 0));
         lastMsg = 0;
     }
-
+    //New
+    public void getAdviceTalk(String[] wzinfo) {
+        c.getSession().write(NPCPacket.getAdviceTalk(wzinfo));
+        lastMsg = 1;
+    }
+    /////////////////////
     public void sendZeroTalk(String talk) {
         c.getSession().write(NPCPacket.getZeroNPCTalk(id, (byte) 0, talk, "01 00", (byte) 3, 0));
     }
@@ -263,19 +303,19 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void sendSangokuTalk(String talk, int type, int idd, boolean next, boolean prev) {
-        sendSangokuTalk(false, talk, (byte) 0x19, (byte) type, idd, next, prev, true);
+        sendSangokuTalk(false, talk, (byte) 0x1A/*0x19*/, (byte) type, idd, next, prev, true);
     }
 
     public void sendSangokuTalk(boolean unknown, String talk, int type, int idd, boolean next, boolean prev) {
-        sendSangokuTalk(unknown, talk, (byte) 0x19, (byte) type, idd, next, prev, true);
+        sendSangokuTalk(unknown, talk, (byte)  0x1A/*0x19*/, (byte) type, idd, next, prev, true);
     }
 
     public void sendSangokuTalk(String talk, int type, int idd, boolean next, boolean prev, boolean pic) {
-        sendSangokuTalk(false, talk, (byte) 0x19, (byte) type, idd, next, prev, pic);
+        sendSangokuTalk(false, talk, (byte)  0x1A/*0x19*/, (byte) type, idd, next, prev, pic);
     }
 
     public void sendSangokuTalk(boolean unknown, String talk, int type, int idd, boolean next, boolean prev, boolean pic) {
-        sendSangokuTalk(unknown, talk, (byte) 0x19, (byte) type, idd, next, prev, pic);
+        sendSangokuTalk(unknown, talk, (byte)  0x1A/*0x19*/, (byte) type, idd, next, prev, pic);
     }
 
     public void sendSangokuTalk(boolean unknown, String talk, int msgType, int type, int idd, boolean next, boolean prev, boolean pic) {
@@ -301,9 +341,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         lastMsg = (byte) msgType;
     }
 
-    public final void DisableUI(final boolean enabled) {
-        c.getSession().write(UIPacket.IntroDisableUI(enabled));
-    }
+    /*public final void DisableUI(final boolean enabled) {
+        c.getSession().write(UIPacket.disableOthers(enabled));
+    }*/
 
     public void sendPrevS(String text, byte type) {
         sendPrevS(text, type, id);
@@ -831,7 +871,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void startQuest(int idd) {
-        MapleQuest.getInstance(idd).start(getPlayer(), id);
+        //MapleQuest.getInstance(idd).start(getPlayer(), id);
+        startQuest(idd, id);
     }
 
     public void completeQuest(int idd) {
@@ -883,7 +924,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void gainAp(final int amount) {
         c.getPlayer().gainAp((short) amount);
     }
-
+    
+    public void gainHonor(final int honor, final boolean show) {
+        c.getPlayer().gainHonor(honor, show);
+    }
+    
     public void expandInventory(byte type, int amt) {
         c.getPlayer().expandInventory(type, amt);
     }
@@ -979,7 +1024,133 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             c.getSession().write(CField.showEffect(effect));
         }
     }
+    
+    public void spawnNPCRequestController(int npcid, int x, int y) {
+        spawnNPCRequestController(npcid, x, y, 0);
+    }
 
+    public void spawnNPCRequestController(int npcid, int x, int y, int f) {
+        spawnNPCRequestController(npcid, x, y, f, npcid);
+    }
+
+    public void spawnNPCRequestController(int npcid, int x, int y, int f, int oid) {
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npcRequestController.remove(new Pair(npcid, c));
+        }
+        MapleNPC npc;
+        npc = c.getPlayer().getMap().getNPCById(npcid);
+        if (npc == null) {
+            npc = MapleLifeFactory.getNPC(npcid);
+            if (npc == null) {
+                return;
+            }
+            npc.setPosition(new Point(x, y));
+            npc.setCy(y);
+            npc.setRx0(x - 50);
+            npc.setRx1(x + 50);
+            npc.setF(f);
+            MapleFoothold fh = c.getPlayer().getMap().getFootholds().findBelow(new Point(x, y), false);
+            npc.setFh(fh == null ? 0 : fh.getId());
+            npc.setCustom(true);
+            npc.setObjectId(oid);
+        }
+        npcRequestController.put(new Pair(npcid, c), npc);
+        c.getSession().write(NPCPacket.spawnNPCRequestController(npc, true));//isMiniMap
+        c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), "summon", 0, false));
+    }
+
+    public void getNPCBubble(int npcid, String data, int exclamation, int bubbleType, int time, int directionTime) {
+        c.getSession().write(CField.EffectPacket.showEffect(true, c.getPlayer(), SpecialEffectType.NPC_BUBBLE, new int[]{exclamation, bubbleType, 0, time, 1, 0, 0, 0, 4, npcid}, new String[]{data}, null, null));
+        if (directionTime > -1) {
+            wait(directionTime > 0 ? directionTime : time);
+        }
+    }
+
+    public void setNPCSpecialAction(int npcid, String action) {
+        setNPCSpecialAction(npcid, action, 0, false);
+    }
+
+    public void setNPCSpecialAction(int npcid, String action, int time, boolean unk) {
+        setNPCSpecialAction(npcid, action, time, unk, -1);
+    }
+
+    public void setNPCSpecialAction(int npcid, String action, int time, boolean unk, int directionTime) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), action, time, unk));
+        if (directionTime > -1) {
+            wait(directionTime > 0 ? directionTime : time);
+        }
+    }
+
+    public void updateNPCSpecialAction(int npcid, int value, int x, int y) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.NPCSpecialAction(npc.getObjectId(), value, x, y));
+    }
+
+    public void getNPCDirectionEffect(int npcid, String data, int value, int x, int y) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(CField.UIPacket.getDirectionEffect(2, data, new int[]{value, x, y, 1, 1, 0, 0, npc.getObjectId()}));
+    }
+
+    public void removeNPCRequestController(int npcid) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcid, c))) {
+            npc = npcRequestController.get(new Pair(npcid, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.spawnNPCRequestController(npc.getObjectId()));
+        c.getSession().write(NPCPacket.removeNPC(npc.getObjectId()));
+        npcRequestController.remove(new Pair(npcid, c));
+    }
+
+    public final void resetNPCController(final int npcId) {
+        final MapleNPC npc;
+        if (npcRequestController.containsKey(new Pair(npcId, c))) {
+            npc = npcRequestController.get(new Pair(npcId, c));
+        } else {
+            return;
+        }
+        c.getSession().write(NPCPacket.resetNPC(npc.getObjectId()));
+    }
+    
+    public void showEffect(int eff, int[] value, String[] str) {
+        showEffect(false, eff, value, str);
+    }
+
+    public void showEffect(boolean broadcast, int eff, int[] value, String[] str) {
+        SpecialEffectType effect = SpecialEffectType.LEVEL_UP;
+        for (SpecialEffectType i : SpecialEffectType.values()) {
+            if (i.getValue() == eff) {
+                effect = i;
+            }
+        }
+        if (broadcast) {
+            c.getPlayer().getMap().broadcastMessage(CField.EffectPacket.showEffect(false, c.getPlayer(), effect, value, str, null, null));
+        } else {
+            c.getSession().write(CField.EffectPacket.showEffect(true, c.getPlayer(), effect, value, str, null, null));
+        }
+    }
+    
+    public void playSound(String sound) {
+        playSound(false, sound);
+    }
+    
     public void playSound(boolean broadcast, String sound) {
         if (broadcast) {
             c.getPlayer().getMap().broadcastMessage(CField.playSound(sound));
@@ -988,7 +1159,18 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
     }
 
-    public void getDirectionInfo(byte type, int value) {
+    public final void hidePlayer(boolean hide) {
+        getDirectionEffect(9, null, new int[]{hide ? 1 : 0});
+    }
+
+    public void wait(int time) {
+        getDirectionEffect(1, null, new int[]{time});
+    }
+
+    public void sendTellStory(String data, boolean canNext) {
+        getDirectionEffect(11, data, new int[]{canNext ? 1 : 0});
+    }
+    /*public void getDirectionInfo(byte type, int value) {
         getDirectionInfo(type, value, 0);
     }
 
@@ -1006,13 +1188,34 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void getDirectionInfoNew(byte type, int value, int a, int b) {
         getDirectionEffect(5, "", type, value, a, b, 0, 0, 0, 0);
+    }*/
+    
+    public void getDirectionEffect(int mod, String data, int[] values/*int value, int value2, int value3, int a1, int a2, int a3, int a4, int npc*/) {
+        c.getSession().write(UIPacket.getDirectionEffect(mod, data, values/*value, value2, value3, a1, a2, a3, a4, npc*/));
+        //lastMsg = 0x12;
+        if (lastMsg != -1) {
+            return;
+        }
+        DirectionType dt = DirectionType.getType(mod);
+        switch (dt) {
+            case EXEC_TIME:
+            case ACTION:
+            case UNK4:
+            case UNK5:
+                lastMsg = NPCTalk.DIRECTION_SCRIPT_ACTION.getType();
+                break;
+            case TELL_STORY:
+                if (values[0] == 1) {
+                    lastMsg = NPCTalk.TELL_STORY.getType();
+                }
+                break;
+        }
     }
-
-    public void getDirectionEffect(int mod, String data, int value, int value2, int value3, int a1, int a2, int a3, int a4, int npc) {
-        c.getSession().write(UIPacket.getDirectionEffect(mod, data, value, value2, value3, a1, a2, a3, a4, npc));
-        lastMsg = 0x12;
+    
+    public void getDirectionFacialExpression(int expression, int duration) {
+        c.getSession().write(UIPacket.getDirectionFacialExpression(expression, duration));
     }
-
+    
     public void playMovie(String data) {
         playMovie(data, true);
     }
@@ -1882,13 +2085,13 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getSession().write(UIPacket.getDirectionEffect(data, value, x, y, npc));
     }
 
-    public void introEnableUI(boolean enable) {
-        introEnableUI(enable ? 1 : 0);
+    /*public void lockUI(boolean enable) {
+        lockUI(enable ? 1 : 0);
     }
 
-    public void introEnableUI(boolean enable, boolean enable2) {
-        introEnableUI(enable ? 1 : 0, enable2 ? 1 : 0);
-    }
+    public void lockUI(boolean enable, boolean enable2) {
+        lockUI(enable ? 1 : 0, enable2 ? 1 : 0);
+    }*/
 
     public MapleStatEffect getEffect(int buff) {
         return MapleItemInformationProvider.getInstance().getItemEffect(buff);
@@ -2582,7 +2785,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         MapleQuest.getInstance(25000).forceComplete(c.getPlayer(), 1402000);
         c.getSession().write(CField.UIPacket.getDirectionStatus(false));
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
     }
 
     public void mihileNeinheartDisappear() {
@@ -2603,7 +2806,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             Thread.sleep(800);
         } catch (InterruptedException e) {
         }
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
         while (c.getPlayer().getLevel() < 2) {
             c.getPlayer().levelUp();
         }
@@ -2922,7 +3125,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             c.getSession().write(UIPacket.getDirectionInfo("Effect/DirectionNewPirate.img/newPirate/attack_tuto", 2000, 0, -80, 0, 0));
         } catch (InterruptedException ex) {
         }
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
         c.getSession().write(CWvsContext.getTopMsg("Eliminate all Guards."));
         forceStartQuest(53245);
         spawnMob(9420564, 3, 600, -120);
@@ -2948,26 +3151,26 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         } catch (InterruptedException e) {
         }
         c.getSession().write(CField.UIPacket.getDirectionStatus(false));
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
     }
 
     public void showMapleLeafScene() {
         try {
             c.getSession().write(UIPacket.getDirectionStatus(true));
-            c.getSession().write(CField.UIPacket.IntroEnableUI(1));
+            c.getSession().write(CField.UIPacket.lockUI(true));
             c.getSession().write(CField.environmentChange("adventureStory/mapleLeaf/0", 13));
             c.getSession().write(CField.UIPacket.getDirectionInfo(1, 1800));
             Thread.sleep(1800);
         } catch (InterruptedException ex) {
         }
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
         NPCScriptManager.getInstance().dispose(c);
         c.removeClickedNPC();
         NPCScriptManager.getInstance().start(c, 10306, "ExplorerTut08");
     }
 
     public void showBeastTamerTutScene() {
-        c.getSession().write(CField.UIPacket.IntroEnableUI(0));
+        c.getSession().write(CField.UIPacket.lockUI(false));
         NPCScriptManager.getInstance().dispose(c);
         c.removeClickedNPC();
         NPCScriptManager.getInstance().start(c, 9390305, "BeastTamerTut01");
@@ -3140,5 +3343,38 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 c.getSession().write(CWvsContext.showQuestMsg("稱號- " + String.valueOf(m) + "挑戰中" + number + "/" + m.maps.length + "完成"));
             }
         }
+    }
+    
+    public Map<Integer, String> findMapleObjectByName(String objName) {
+        Map<Integer, String> values = new HashMap();
+        for (ItemInformation itemInfo : MapleItemInformationProvider.getInstance().getAllItems()) {
+            if(itemInfo.name.contains(objName) || String.valueOf(itemInfo.itemId).contains(objName)) values.put(itemInfo.itemId, itemInfo.name);
+        }
+        return values;
+    }
+    
+    public String MapleObjectIDMapToString(Map<Integer, String> objID) {     //呃呃呃，为一个脚本写的特殊的函数。
+        if(objID == null || objID.isEmpty()) return "找不到物品。";
+        String ret = "目前找到的物品有：\\r\\n";
+        int i = 0;
+        for(Integer key : objID.keySet()) {
+            ret += "#i"+ key + "##b" + "#L" + i + "#" + objID.get(key) + "#l\\r\\n";
+            i++;
+        }
+        return ret;
+    }
+    
+    public int[] MapleObjectIDMapToIntArray(Map<Integer, String> objID) {
+        int ret[] = new int[objID.size()];
+        int i = 0;
+        for(Integer tmp : objID.keySet()) {
+            ret[i] = tmp;
+            i++;
+        }
+        return ret;
+    }
+    
+    public void unlockInnerAbility(int ordinal) {
+        c.getPlayer().unlockInnerAbility(ordinal);
     }
 }

@@ -766,6 +766,12 @@ public class MapleItemInformationProvider {
         if (level + supremacy >= 0xFF) {
             supremacy = 0xFF - level;
         }
+        if(MapleJob.is惡魔復仇者(job)) {   //修复恶魔复仇者无法无视装备属性要求的问题
+            if ((level + supremacy) >= (reqLevel != 0 ? reqLevel : stats.containsKey("reqLevel") ? stats.get("reqLevel") : 0)) {  
+                final Integer fameReq = stats.get("reqPOP");
+                return fameReq == null || fame >= fameReq;
+            }
+        }
         if ((level + supremacy) >= (reqLevel != 0 ? reqLevel : stats.containsKey("reqLevel") ? stats.get("reqLevel") : 0) && str >= (stats.containsKey("reqSTR") ? stats.get("reqSTR") : 0) && dex >= (stats.containsKey("reqDEX") ? stats.get("reqDEX") : 0) && luk >= (stats.containsKey("reqLUK") ? stats.get("reqLUK") : 0) && int_ >= (stats.containsKey("reqINT") ? stats.get("reqINT") : 0)) {
             final Integer fameReq = stats.get("reqPOP");
             return fameReq == null || fame >= fameReq;

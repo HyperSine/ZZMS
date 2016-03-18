@@ -920,13 +920,15 @@ public class PlayerHandler {
         int skillLevel = slea.readByte();
 //        System.err.println(skillLevel);
         Skill skill = SkillFactory.getSkill(skillid);
-        int checkSkilllevel = chr.getTotalSkillLevel(GameConstants.getLinkedAttackSkill(skillid));
+        int checkSkilllevel = 0;
+        
         if (chr.isShowInfo()) {
             chr.showMessage(25, "[SpecialSkill] - 技能ID：" + skill.getName() + "(" + skillid + ") 技能等級：" + skillLevel);
             if (GameConstants.getLinkedAttackSkill(skillid) != skillid) {
                 chr.showMessage(25, "[SpecialSkill] - 連接技能ID：" + GameConstants.getLinkedAttackSkill(skillid) + " 連接技能等級：" + checkSkilllevel);
             }
         }
+        
         if ((skill == null) || ((GameConstants.isAngel(skillid)) && (chr.getStat().equippedSummon % 10000 != skillid % 10000)) || ((chr.inPVP()) && (skill.isPVPDisabled()))) {
             c.getSession().write(CWvsContext.enableActions());
             return;
@@ -944,8 +946,16 @@ public class PlayerHandler {
                 levelCheckSkill = 24121001;
             }
         }
-        if ((levelCheckSkill == 0) && ((chr.getTotalSkillLevel(GameConstants.getLinkedAttackSkill(skillid)) <= 0) || (chr.getTotalSkillLevel(GameConstants.getLinkedAttackSkill(skillid)) != skillLevel))) {
+        
+        if (checkSkilllevel == 0) {
+            checkSkilllevel = chr.getTotalSkillLevel(GameConstants.getLinkedAttackSkill(skillid));
+        }
+        
+        if ((levelCheckSkill <= 0) || checkSkilllevel != skillLevel) {
             if ((!GameConstants.isMulungSkill(skillid)) && (!GameConstants.isPyramidSkill(skillid)) && (chr.getTotalSkillLevel(GameConstants.getLinkedAttackSkill(skillid)) <= 0) && !GameConstants.isAngel(skillid)) {
+                if (chr.isShowErr()) {
+                    chr.showMessage(25, new StringBuilder().append("[SpecialSkill] 使用技能出現異常 技能ID：").append(skillid).append(" 角色技能等級：").append(checkSkilllevel).append(" 封包獲取等級：").append(skillLevel).append(" 是否相同：").append(checkSkilllevel == skillLevel).toString());
+                }
                 c.getSession().write(CWvsContext.enableActions());
                 return;
             }
@@ -1138,18 +1148,18 @@ public class PlayerHandler {
                     chr.getMap().broadcastMessage(SkillPacket.getTrialFlame(chr.getId(), mons.get(0).getObjectId()));
                 }
                 break;
-            case 11101120:
-            case 11101220:
-            case 11101121:
-            case 11101221:
-            case 11111120:
-            case 11111220:
-            case 11111121:
-            case 11111221:
-            case 11121101:
-            case 11121201:
-            case 11121103:
-            case 11121203:
+            case 11101120: // 潛行突襲
+            case 11101220: // 皇家衝擊
+            case 11101121: // 殘像追擊
+            case 11101221: // 焚影
+            case 11111120: // 月影
+            case 11111220: // 光芒四射
+            case 11111121: // 月光十字架
+            case 11111221: // 日光十字架
+            case 11121101: // 月光之舞
+            case 11121201: // 疾速黃昏
+            case 11121103: // 新月分裂
+            case 11121203: // 太陽穿刺
                 if (chr.getBuffSource(MapleBuffStat.SOLUNA_EFFECT) == 11121005) {
                     if (chr.getBuffedValue(MapleBuffStat.SOLUNA_EFFECT) == 1) {
 
@@ -1537,7 +1547,7 @@ public class PlayerHandler {
                     if ((e.isRunning()) && (!chr.isGM())) {
                         for (int i : e.getType().mapids) {
                             if (chr.getMapId() == i) {
-                                chr.dropMessage(5, "You may not use that here.");
+                                chr.dropMessage(5, "無法在這裡使用。");
                                 return;
                             }
                         }
@@ -2366,8 +2376,9 @@ public class PlayerHandler {
                     warp = true;
                 }
                 if (unlock) {
-                    c.getSession().write(CField.UIPacket.IntroEnableUI(0));
-                    c.getSession().write(CField.UIPacket.IntroLock(false));
+                    c.getSession().write(CField.UIPacket.lockUI(false));
+                    c.getSession().write(CField.UIPacket.disableOthers(false));
+                    c.getSession().write(CField.UIPacket.lockKey(false));
                     c.getSession().write(CWvsContext.enableActions());
                 }
                 if (warp) {

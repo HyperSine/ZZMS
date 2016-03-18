@@ -41,20 +41,21 @@ import tools.packet.CWvsContext;
 public class CashShopOperation {
 
     public static void LeaveCS(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        CashShopServer.getPlayerStorage().deregisterPlayer(chr);
+        //CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
         
         try {
-
             World.ChannelChange_Data(new CharacterTransfer(chr), chr.getId(), c.getChannel());
-            c.getSession().write(CField.getChannelChange(c, Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getIP().split(":")[1])));
+            CashShopServer.getPlayerStorage().deregisterPlayer(chr);
+            c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
         } finally {
             final String s = c.getSessionIPAddress();
             LoginServer.addIPAuth(s.substring(s.indexOf('/') + 1, s.length()));
+            c.getSession().write(CField.getChannelChange(c, Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getIP().split(":")[1])));
             chr.saveToDB(false, true);
             c.setPlayer(null);
             c.setReceiving(false);
-            c.getSession().close(true);
+            //c.getSession().close(true);
         }
     }
 

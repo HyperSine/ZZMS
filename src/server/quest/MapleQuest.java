@@ -37,7 +37,7 @@ public class MapleQuest implements Serializable {
     protected final List<MapleQuestAction> completeActs = new LinkedList<>();
     protected final Map<String, List<Pair<String, Pair<String, Integer>>>> partyQuestInfo = new LinkedHashMap<>(); //[rank, [more/less/equal, [property, value]]]
     protected final Map<Integer, Integer> relevantMobs = new LinkedHashMap<>();
-    private boolean autoStart = false, autoPreComplete = false, repeatable = false, customend = false, blocked = false, autoAccept = false, autoComplete = false, scriptedStart = false;
+    private boolean autoStart = false, autoPreComplete = false, repeatable = false, customend = false, blocked = false, autoAccept = false, autoComplete = false, scriptedStart = false, selfComplete = false;
     private int viewMedalItem = 0, selectedSkillID = 0;
     protected String name = "";
 
@@ -55,6 +55,7 @@ public class MapleQuest implements Serializable {
         ret.viewMedalItem = rs.getInt("viewMedalItem");
         ret.selectedSkillID = rs.getInt("selectedSkillID");
         ret.blocked = rs.getInt("blocked") > 0; //ult.explorer quests will dc as the item isn't there...
+        ret.selfComplete = rs.getInt("selfComplete") > 0;
 
         psr.setInt(1, ret.id);
         ResultSet rse = psr.executeQuery();
@@ -321,7 +322,7 @@ public class MapleQuest implements Serializable {
     }
 
     public void complete(MapleCharacter c, int npc, Integer selection) {
-        if (c.getMap() != null && (autoPreComplete || checkNPCOnMap(c, npc)) && canComplete(c, npc)) {
+        if (c.getMap() != null && (selfComplete || autoPreComplete || checkNPCOnMap(c, npc)) && canComplete(c, npc)) {
             for (MapleQuestAction a : completeActs) {
                 if (!a.checkEnd(c, selection)) {
                     return;
@@ -372,8 +373,6 @@ public class MapleQuest implements Serializable {
         final MapleQuestStatus newStatus = new MapleQuestStatus(this, (byte) 2, npc);
         newStatus.setForfeited(c.getQuest(this).getForfeited());
         c.updateQuest(newStatus);
-        c.getClient().getSession().write(EffectPacket.showQuetCompleteEffect());
-        c.getMap().broadcastMessage(c, EffectPacket.showQuetCompleteEffect(c), false);
     }
 
     public int getId() {

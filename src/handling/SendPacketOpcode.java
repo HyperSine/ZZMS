@@ -1197,11 +1197,11 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x27E
     
     // 鎖定玩家按鍵動作[完成]
-    INTRO_LOCK((short) 0x27F),
+    LOCK_KEY((short) 0x27F),
     // 劇情鎖定介面[完成]
-    INTRO_ENABLE_UI((short) 0x280),
-    // 劇情鎖定介面2[完成]
-    INTRO_DISABLE_UI((short) 0x281),
+    LOCK_UI((short) 0x280),
+    // 不顯示其他玩家[完成]
+    DISABLE_OTHERS((short) 0x281),
     // 召喚初心者幫手[完成]
     SUMMON_HINT((short) 0x282),
     // 初心者幫手訊息[完成]
@@ -1610,7 +1610,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     // 0x37C
     // 0x37D
     // 0x37E
-    // 0x37F
+    RESET_NPC((short) 0x37F),
     // 0x380
     // 0x381
     // 0x382

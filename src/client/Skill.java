@@ -579,6 +579,11 @@ public class Skill implements Comparator<Skill> {
     public boolean isTimeLimited() {
         return timeLimited;
     }
+    
+    public boolean isInnerSkill() {
+        int jobId = this.id / 10000;
+        return jobId == 7000;
+    }
 /*
     public boolean isFourthJobSkill(int skillid) {
         switch (skillid / 10000) {

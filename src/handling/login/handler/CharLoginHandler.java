@@ -305,7 +305,8 @@ public class CharLoginHandler {
             return;
         }
         int keymapType = slea.readInt(); //按鍵模式: 0-基本模式; 1-進階模式
-        slea.readInt(); //
+        slea.readInt(); // 還不知道是什麼
+        
         int job_type = slea.readInt();
         job = JobType.getByType(job_type);
         if (job == null) {
@@ -321,9 +322,37 @@ public class CharLoginHandler {
             }
         }
         subcategory = slea.readShort();
+        if ((subcategory != 0 && job != JobType.影武者) || (subcategory != 1 && job == JobType.影武者)) {
+            System.err.println("創建職業子類別異常:" + subcategory);
+            return;
+        }
         gender = slea.readByte();
         skin = slea.readByte();
+        boolean skinOk = skin == 0;
+        switch (job) {
+            case 皇家騎士團:
+            case 米哈逸:
+                skin = 10;
+                skinOk = true;
+                break;
+            case 狂狼勇士:
+                skin = 11;
+                skinOk = true;
+                break;
+            case 精靈遊俠:
+                skin = 12;
+                skinOk = true;
+                break;
+            case 惡魔:
+                skinOk = skinOk || skin == 13;
+                break;
+        }
+        if (!skinOk) {
+            System.err.println("創建職業皮膚顏色錯誤, 職業:" + job.name() + " 皮膚:" + skin);
+            return;
+        }
         unk = slea.readByte(); //6/7/8/9
+        // 驗證創建角色的可選項是否正確
         face = slea.readInt();
         hair = slea.readInt();
         if (job.faceMark) {
@@ -528,7 +557,11 @@ public class CharLoginHandler {
             newchar.setRemainingAp(45);
             newchar.setRemainingSp(3, 0);
         }
-
+        
+        if (job == JobType.隱月) {
+            newchar.getInventory(MapleInventoryType.EQUIP).addItem(new Item(1353100, (byte) 0, (short) 1, (byte) 0));
+        }
+        
         if (ServerConfig.LOG_PACKETS) {
             FileoutputUtil.log(FileoutputUtil.Create_Character,
                     "\r\n\r\n名字: " + name

@@ -257,8 +257,11 @@ public class SummonHandler {
         }
         final MapleSummon summon = (MapleSummon) obj;
         if (summon.getOwnerId() != c.getPlayer().getId() || summon.getSkillLevel() <= 0) {
-            c.getPlayer().dropMessage(5, "Error.");
+            c.getPlayer().dropMessage(5, "移除召喚獸出現錯誤。");
             return;
+        }
+        if (c.getPlayer().isShowInfo()) {
+            c.getPlayer().showMessage(10, "收到移除召喚獸信息 - 召喚獸技能ID: " + summon.getSkill() + " 技能名字 " + SkillFactory.getSkillName(summon.getSkill()));
         }
         if (summon.getSkill() == 35111002 || summon.getSkill() == 35121010) { //rock n shock, amp
             return;
@@ -303,8 +306,8 @@ public class SummonHandler {
                     return;
                 }
                 chr.addHP((int) (chr.getStat().getCurrentMaxHp() * SkillFactory.getSkill(sum.getSkill()).getEffect(sum.getSkillLevel()).getHp() / 100.0));
-                chr.getClient().getSession().write(EffectPacket.showBuffEffect(sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), sum.getSkillLevel()));
-                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), sum.getSkillLevel()), false);
+                chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), sum.getSkillLevel()));
+                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), sum.getSkillLevel()), false);
                 break;
             case 1321007: //beholder
                 Skill bHealing = SkillFactory.getSkill(slea.readInt());
@@ -321,13 +324,13 @@ public class SummonHandler {
                     }
                     chr.addHP(healEffect.getHp());
                 }
-                chr.getClient().getSession().write(EffectPacket.showBuffEffect(sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), bHealingLvl));
+                chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), bHealingLvl));
                 chr.getMap().broadcastMessage(SummonPacket.summonSkill(chr.getId(), sum.getSkill(), bHealing.getId() == 1320008 ? 5 : (Randomizer.nextInt(3) + 6)));
-                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), bHealingLvl), false);
+                chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sum.getSkill(), SpecialEffectType.REMOTE_SKILL, chr.getLevel(), bHealingLvl), false);
                 break;
         }
         if (GameConstants.isAngel(sum.getSkill())) {
-            if (sum.getSkill() % 10000 == 1087) {
+            /*if (sum.getSkill() % 10000 == 1087) {
                 MapleItemInformationProvider.getInstance().getItemEffect(2022747).applyTo(chr);
             } else if (sum.getSkill() % 10000 == 1179) {
                 MapleItemInformationProvider.getInstance().getItemEffect(2022823).applyTo(chr);
@@ -335,7 +338,48 @@ public class SummonHandler {
                 MapleItemInformationProvider.getInstance().getItemEffect(2022746).applyTo(chr);
             }
             chr.getClient().getSession().write(EffectPacket.showBuffEffect(sum.getSkill(), SpecialEffectType.REMOTE_SKILL, 2, 1));
-            chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), SpecialEffectType.REMOTE_SKILL, 2, 1), false);
+            chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sum.getSkill(), SpecialEffectType.REMOTE_SKILL, 2, 1), false);*/
+            int itemEffect = 0;
+            switch (sum.getSkill() % 10000) {
+                case 86: // 大天使祝福 [等級上限：1]\n得到大天使的祝福。
+                case 1085: // 大天使 [等級上限：1]\n召喚被大天使祝福封印的大天使。
+                case 1090: // 大天使 [等級上限：1]\n召喚被大天使祝福封印的大天使。
+                    itemEffect = 2022746; // 天使祝福
+                    break;
+                case 1087: // 黑天使 [等級上限：1]\n召喚被黑天使祝福封印的大天使。
+                    itemEffect = 2022747; // 黑天使祝福
+                    break;
+                case 1179: // 白色天使 [最高等級： 1]\n召喚出被封印的聖潔天使。
+                    itemEffect = 2022823; // 白色精靈祝福
+                    break;
+                default:
+                    switch (sum.getSkill()) {
+                        case 80001154: // 白色天使 [最高等級：1]\n召喚被白天使的祝福封印的白天使。
+                            itemEffect = 2022823; // 白色精靈祝福
+                            break;
+                        case 80000086: // 戰神祝福 [等級上限：1]\n得到戰神的祝福。
+                        case 80001262: // 戰神祝福 [等級上限：1]\n召喚戰神
+                            itemEffect = 2023189; // 戰神的祝福
+                            break;
+                        case 80000054: // 恶魔契约 获得恶魔的力量，攻击力和魔法攻击力增加15，HP、MP增加20%，可以和其他增益叠加。
+                            itemEffect = 2023150;
+                            break;
+                        case 80000052: // 恶魔之息 获得恶魔的力量，攻击力和魔法攻击力增加6，HP、MP增加5%，可以和其他增益叠加。
+                            itemEffect = 2023148;
+                            break;
+                        case 80000053: // 恶魔召唤 获得恶魔的力量，攻击力和魔法攻击力增加13，HP、MP增加10%，可以和其他增益叠加。
+                            itemEffect = 2023159; // 豚骨蛇湯
+                            break;
+                        default:
+                            itemEffect = 2022746; // 天使祝福
+                            if (chr.isShowErr()) {
+                                chr.showInfo("天使戒指", true, "itemEffect未設定");
+                            }
+                    }
+            }
+            MapleItemInformationProvider.getInstance().getItemEffect(itemEffect).applyTo(chr);
+            chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sum.getSkill(), SpecialEffectType.ZERO, 2, 1));
+            chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sum.getSkill(), SpecialEffectType.ZERO, 2, 1), false);
         }
     }
 

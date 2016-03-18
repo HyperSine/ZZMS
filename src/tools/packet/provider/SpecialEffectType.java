@@ -50,10 +50,10 @@ public enum SpecialEffectType {
     RESURRECTION_INFO(0x1A),
     UNK_1B(0x1B),
     // 顯示WZ的效果2[182-完成]
-    WZ_NEW(0x1C),
+    WZ2(0x1C),
     UNK_1D(0x1D),
     UNK_1E(0x1E),
-    UNK_1F(0x1F),
+    SOUND(0x1F),
     UNK_20(0x20),
     UNK_21(0x21),
     // 商城道具效果[182-完成]
@@ -76,11 +76,11 @@ public enum SpecialEffectType {
     UNK_30(0x30),
     UNK_31(0x31),
     UNK_32(0x32),
-    UNK_33(0x33),
+    BLACK_BACKGROUND(0x33),
     UNSEAL_BOX(0x34),
     UNK_35(0x35),
     // 影武者出生劇情背景黑暗特效[182-完成]
-    DUBL_START(0x36),
+    DARK(0x36),
     UNK_37(0x37),
     // 天使技能充能效果[182-完成]
     ANGELIC_RECHARGE(0x38),
@@ -89,12 +89,13 @@ public enum SpecialEffectType {
     UNK_3B(0x3B),
     UNK_3C(0x3C),
     UNK_3D(0x3D),
-    UNK_3E(0x3E),
+    WZ3(0x3E),
     UNK_3F(0x3F),
     UNK_40(0x40),
     UNK_41(0x41),
     UNK_42(0x42),
-    UNK_43(0x43),
+    //NPC說話特效
+    NPC_BUBBLE(0x43),
     UNK_44(0x44),
     // 暗夜行者技能特效[182-完成]
     FIRE(0x45),
@@ -102,7 +103,8 @@ public enum SpecialEffectType {
     UNK_47(0x47),
     UNK_48(0x48),
     UNK_49(0x49),
-    UNK_4A(0x4A),
+    // 獲得道具頂部提示
+    ITEM_TOP_MSG(0x4A),
     UNK_4B(0x4B),
     ;
 

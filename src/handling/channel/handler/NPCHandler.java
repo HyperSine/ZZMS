@@ -33,13 +33,13 @@ import tools.Pair;
 import tools.data.LittleEndianAccessor;
 import tools.data.MaplePacketLittleEndianWriter;
 import tools.packet.CWvsContext;
-
+import extensions.temporary.NPCTalk;
 public class NPCHandler {
 
     public static void NPCAnimation(LittleEndianAccessor slea, MapleClient c) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.NPC_ACTION.getValue());
-        int length = (int) slea.available();
+        /*int length = (int) slea.available();
         if (length == 10) {
             mplew.writeInt(slea.readInt());
             mplew.writeShort(slea.readShort());
@@ -48,7 +48,25 @@ public class NPCHandler {
             mplew.write(slea.read(length - 9));
         } else {
             return;
+        }*/
+        
+        int npcid = slea.readInt();
+        byte u1 = slea.readByte();
+        byte u2 = slea.readByte();
+        int u3 = slea.readInt();
+        
+        mplew.writeInt(npcid);
+        mplew.write(u1);
+        mplew.write(u2);
+        mplew.writeInt(u3);
+        
+        int length = (int) slea.available();
+        if (length > 0) {
+//            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + slea.toString(true));
+            mplew.write(slea.read(length));
+//            FileoutputUtil.log(FileoutputUtil.Movement_Log, "NPC" + "(" + npcid + ")" + ", 封包: " + mplew.toString());
         }
+        
         c.getSession().write(mplew.getPacket());
     }
 
@@ -176,7 +194,7 @@ public class NPCHandler {
                     return;
                 }
                 if (slea.available() >= 4) {
-                    q.complete(chr, npc, slea.readInt());
+                        q.complete(chr, npc, slea.readInt());
                 } else {
                     q.complete(chr, npc);
                 }
@@ -425,7 +443,23 @@ public class NPCHandler {
             }
             return;
         }
-
+        
+        if (lastMsg == NPCTalk.TELL_STORY.getType()) {
+            final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+            if (cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
+                return;
+            }
+            cm.setLastMsg((byte) -1);
+            if (cm.getType() == ScriptType.QUEST_START) {
+                NPCScriptManager.getInstance().startQuest(c, (byte) 1, lastMsg, -1);
+            } else if (cm.getType() == ScriptType.QUEST_END) {
+                NPCScriptManager.getInstance().endQuest(c, (byte) 1, lastMsg, -1);
+            } else {
+                NPCScriptManager.getInstance().action(c, (byte) 1, lastMsg, -1);
+            }
+            return;
+        }
+        
         if (lastMsg == 9 && slea.available() >= 4) {
             slea.readShort();
         }
@@ -456,9 +490,10 @@ public class NPCHandler {
                 cm.dispose();
             }
         } else {
-            if (lastMsg == 0x13 && action == 0) {
+            if (lastMsg == NPCTalk.DIRECTION_PLAYMOVE.getType() && action == 0) {
                 c.getSession().write(CWvsContext.getTopMsg("影片播放失敗。"));
             }
+            
             int selection = -1;
             if (slea.available() >= 4) {
                 selection = slea.readInt();

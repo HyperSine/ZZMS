@@ -220,7 +220,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void playPortalSE() {
-        c.getSession().write(EffectPacket.showBuffEffect(0, SpecialEffectType.UNK_47, 1, 0));
+        c.getSession().write(EffectPacket.showBuffEffect(true, null, 0, SpecialEffectType.UNK_47, 1, 0));
     }
 
     private MapleMap getWarpMap(final int map) {
@@ -384,7 +384,15 @@ public abstract class AbstractPlayerInteraction {
     public final void showQuestMsg(final String msg) {
         c.getSession().write(CWvsContext.showQuestMsg(msg));
     }
-
+    
+    public void startQuest(int questId, int npcid) {
+        MapleQuest.getInstance(questId).start(getPlayer(), npcid);
+    }
+    
+    public final void forceStartQuest(final int id, final int npc, final String data) {
+        MapleQuest.getInstance(id).forceStart(c.getPlayer(), npc, data);
+    }
+    
     public final void forceStartQuest(final int id, final String data) {
         MapleQuest.getInstance(id).forceStart(c.getPlayer(), 0, data);
     }
@@ -581,10 +589,6 @@ public abstract class AbstractPlayerInteraction {
             return true;
         }
         return false;
-    }
-
-    public final void changeMusic(final String songName) {
-        getPlayer().getMap().broadcastMessage(CField.musicChange(songName));
     }
 
     public final void worldMessage(final int type, final String message) {
@@ -1191,23 +1195,43 @@ public abstract class AbstractPlayerInteraction {
     public void showWZEffectNew(final String data) {
         c.getSession().write(EffectPacket.showWZEffectNew(data));
     }
+    
+    public void playSoundEffect(final String data) {
+        c.getSession().write(EffectPacket.playSoundEffect(data));
+    }
+
+    public void showBlackBGEffect(int value, int value2, int value3, byte value4) {
+        c.getSession().write(EffectPacket.showBlackBGEffect(value, value2, value3, value4));
+    }
+
+    public void showDarkEffect(final boolean dark) {
+        c.getSession().write(EffectPacket.showDarkEffect(dark));
+    }
+
+    public void showWZEffect3(final String data, int[] value) {
+        c.getSession().write(EffectPacket.showWZEffect3(data, value));
+    }
+    
+    public void startMapEffect(String msg, int itemid, boolean active) {
+        c.getSession().write(CField.startMapEffect(msg, itemid, active));
+    }
 
     public final void EarnTitleMsg(final String data) {
         c.getSession().write(CWvsContext.getTopMsg(data));
     }
 
-    public final void EnableUI(final short i) {
-        introEnableUI(i);
+    /*public final void EnableUI(final short i) {
+        lockUI(i);
     }
 
     public final void EnableUI(final short i, final short i2) {
-        introEnableUI(i, i2);
-    }
+        lockUI(i, i2);
+    }*/
 
-    public final void MovieClipIntroUI(final boolean enabled) {
-        c.getSession().write(UIPacket.IntroEnableUI(1));
-        c.getSession().write(UIPacket.IntroLock(enabled));
-    }
+    /*public final void MovieClipIntroUI(final boolean enabled) {
+        c.getSession().write(UIPacket.lockUI(true));
+        c.getSession().write(UIPacket.lockKey(enabled));
+    }*/
 
     public MapleInventoryType getInvType(int i) {
         return MapleInventoryType.getByType((byte) i);
@@ -1396,7 +1420,11 @@ public abstract class AbstractPlayerInteraction {
     public int randInt(int arg0) {
         return Randomizer.nextInt(arg0);
     }
-
+    
+    public void sendRemoveNPC(int oid) {
+        c.getSession().write(NPCPacket.removeNPC(oid));
+    }
+    
     public void sendDirectionStatus(int key, int value) {
         c.getSession().write(UIPacket.getDirectionInfo(key, value));
         c.getSession().write(UIPacket.getDirectionStatus(true));
@@ -1444,7 +1472,7 @@ public abstract class AbstractPlayerInteraction {
         c.getSession().write(NPCPacket.spawnNPCRequestController(npc, true));//isMiniMap
     }
 
-    public void setNPCSpecialAction(int npcid, String action) {
+    /*public void setNPCSpecialAction(int npcid, String action) {
         final MapleNPC npc;
         if (npcRequestController.containsKey(new Pair(npcid, c))) {
             npc = npcRequestController.get(new Pair(npcid, c));
@@ -1452,7 +1480,7 @@ public abstract class AbstractPlayerInteraction {
             return;
         }
         c.getSession().write(NPCPacket.setNPCSpecialAction(npc.getObjectId(), action));
-    }
+    }*/
 
     public void updateNPCSpecialAction(int npcid, int value, int x, int y) {
         final MapleNPC npc;
@@ -1486,22 +1514,34 @@ public abstract class AbstractPlayerInteraction {
         npcRequestController.remove(new Pair(npcid, c));
     }
 
-    public void sendRemoveNPC(int oid) {
-        c.getSession().write(NPCPacket.removeNPC(oid));
-    }
-
     public void sendDirectionFacialExpression(int expression, int duration) {
         c.getSession().write(UIPacket.getDirectionFacialExpression(expression, duration));
     }
-
-    public void introEnableUI(int wtf) {
-        c.getSession().write(CField.UIPacket.IntroEnableUI(wtf));
+    
+    public final void lockKey(final boolean enabled) {
+        c.getSession().write(UIPacket.lockKey(enabled));
     }
 
-    public void introEnableUI(int wtf, int enable) {
-        c.getSession().write(CField.UIPacket.IntroEnableUI(wtf, enable));
+    public void lockUI(boolean enable) {
+        c.getSession().write(CField.UIPacket.lockUI(enable));
     }
 
+    public void lockUI(boolean enable, int enable2) {
+        lockUI(enable ? 1 : 0, enable2);
+    }
+    
+    public void lockUI(int enable, int enable2) {
+        c.getSession().write(CField.UIPacket.lockUI(enable, enable2));
+    }
+
+    public final void disableOthers(final boolean enabled) {
+        c.getSession().write(UIPacket.disableOthers(enabled));
+    }
+
+    public final void disableOthers(final boolean enabled, final int enable2) {
+        c.getSession().write(UIPacket.disableOthers(enabled, enable2));
+    }
+    
     public void getDirectionStatus(boolean enable) {
         c.getSession().write(CField.UIPacket.getDirectionStatus(enable));
     }
@@ -1585,6 +1625,33 @@ public abstract class AbstractPlayerInteraction {
         getPlayer().setPQLog(pqid);
     }
 
+    public void changeDamageSkinByItem(int itemId) {
+        if (!ItemConstants.傷害字型.isDamageSkin(itemId)) {
+            return;
+        }
+        changeDamageSkin(ItemConstants.傷害字型.getDamageSkinNumberByItem(itemId), true);
+    }
+
+    public void changeDamageSkin(int skinid) {
+        changeDamageSkin(skinid, false);
+    }
+
+    public void changeDamageSkin(int skinid, boolean show) {
+        if (MapleJob.is神之子(c.getPlayer().getJob())) {
+            c.getPlayer().dropMessage(-9, "神之子無法套用傷害字型。");
+            return;
+        }
+        if (skinid == -1) {
+            c.getPlayer().dropMessage(-9, "出現未知錯誤");
+            return;
+        }
+        c.getPlayer().setDamageSkin(skinid);
+        if (show) {
+            c.getPlayer().dropMessage(-9, "傷害字型已更變。");
+        }
+        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), CField.showForeignDamageSkin(c.getPlayer(), skinid), false);
+    }
+    
     public void environmentChange(String env) {
         environmentChange(env, 2);
     }
@@ -1604,4 +1671,25 @@ public abstract class AbstractPlayerInteraction {
             c.getSession().write(CField.environmentChange(env, info));
         }
     }
+    
+    public void showEnvironment(int mode, String env, int[] info) {
+        showEnvironment(false, mode, env, info);
+    }
+
+    public void darkEnv(boolean on, int brightness, int unk) {
+        showEnvironment(false, 15, null, new int[]{on ? 1 : 0, brightness, 0, 0, 0, unk});
+    }
+
+    public final void changeMusic(final String songName) {
+        getPlayer().getMap().broadcastMessage(CField.musicChange(songName));
+    }
+
+    public void showEnvironment(boolean broadcast, int mode, String env, int[] info) {
+        if (broadcast) {
+            c.getPlayer().getMap().broadcastMessage(CField.showEnvironment(mode, env, info));
+        } else {
+            c.getSession().write(CField.showEnvironment(mode, env, info));
+        }
+    }
+    
 }

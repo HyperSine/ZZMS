@@ -74,7 +74,7 @@ public class ReactorScriptManager extends AbstractScriptManager {
     public final List<ReactorDropEntry> getDrops(final int rid) {
         List<ReactorDropEntry> ret = drops.get(rid);
         if (ret != null) {
-            return ret;
+            //return ret;
         }
         ret = new LinkedList<>();
 

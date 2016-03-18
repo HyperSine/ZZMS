@@ -1691,6 +1691,7 @@ public class CWvsContext {
         mplew.writeShort(SendPacketOpcode.MULUNG_DOJO_RANKING.getValue());
         DojoRankingsData data = DojoRankingsData.loadLeaderboard();
         mplew.writeInt(data.totalCharacters); // size
+        mplew.write(0);
         for (int i = 0; i < data.totalCharacters; i++) {
             mplew.writeShort(data.ranks[i]); // rank
             mplew.writeMapleAsciiString(data.names[i]); // Character name
@@ -3546,7 +3547,7 @@ public class CWvsContext {
             mplew.write(3);
             mplew.write(white ? 1 : 0);
             mplew.writeInt(gain);
-            mplew.write(inChat ? 1 : 0);
+            mplew.write(inChat ? 1 : 0);   //在聊天栏显示
             int expMask = 0;
             for (final Pair<ExpMasks, Object[]> maskupdate : masks) {
                 Object i = maskupdate.getRight()[0];

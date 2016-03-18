@@ -3252,9 +3252,9 @@ public class InventoryHandler {
             for (InnerSkillValueHolder isvh : c.getPlayer().getInnerSkills()) {
                 if (!isvh.isLocked()) {
                     if (i == 0 && c.getPlayer().getInnerSkills().size() > 1 && itemid == 2701000) { //Ultimate Circulator
-                        newValues.add(InnerAbillity.getInstance().renewSkill(isvh.getRank(), itemid, true, false));
+                        newValues.add(InnerAbillity.getInstance().renewSkill(isvh.getRank(), itemid, true, false, isvh.getPosition()));
                     } else {
-                        newValues.add(InnerAbillity.getInstance().renewSkill(isvh.getRank(), itemid, false, false));
+                        newValues.add(InnerAbillity.getInstance().renewSkill(isvh.getRank(), itemid, false, false, isvh.getPosition()));
                     }
                     //c.getPlayer().changeSkillLevel(SkillFactory.getSkill(isvh.getSkillId()), (byte) 0, (byte) 0);
                 } else {
@@ -3263,17 +3263,17 @@ public class InventoryHandler {
                 i++;
             }
             c.getPlayer().getInnerSkills().clear();
-            byte ability = 1;
+            //byte ability = 1;
             for (InnerSkillValueHolder isvh : newValues) {
                 c.getPlayer().getInnerSkills().add(isvh);
-                c.getSession().write(CField.updateInnerPotential(ability, isvh.getSkillId(), isvh.getSkillLevel(), isvh.getRank()));
-                ability++;
+                c.getSession().write(CField.updateInnerPotential(isvh.getPosition(), isvh.getSkillId(), isvh.getSkillLevel(), isvh.getRank()));
+                //ability++;
                 //c.getPlayer().changeSkillLevel(SkillFactory.getSkill(isvh.getSkillId()), isvh.getSkillLevel(), isvh.getSkillLevel());
             }
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (short) 1, false);
 
             //c.getSession().write(CField.gameMsg("Inner Potential has been reconfigured.")); //not sure if it's working
-            c.getPlayer().dropMessage(5, "Inner Potential has been reconfigured.");
+            c.getPlayer().dropMessage(5, "內在能力已被重置。");
         }
         c.getSession().write(CWvsContext.enableActions());
     }

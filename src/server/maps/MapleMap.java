@@ -659,8 +659,8 @@ public final class MapleMap {
                             case 8810018:
                             case 8810122:
                             case 8820001:
-                                mc.getClient().getSession().write(EffectPacket.showBuffEffect(buffid, SpecialEffectType.MULUNG_DOJO_UP, mc.getLevel(), 1)); // HT nine spirit
-                                broadcastMessage(mc, EffectPacket.showBuffeffect(mc.getId(), buffid, SpecialEffectType.MULUNG_DOJO_UP, mc.getLevel(), 1), false); // HT nine spirit
+                                mc.getClient().getSession().write(EffectPacket.showBuffEffect(true, mc, buffid, SpecialEffectType.MULUNG_DOJO_UP, mc.getLevel(), 1)); // HT nine spirit
+                                broadcastMessage(mc, EffectPacket.showBuffEffect(false, mc, buffid, SpecialEffectType.MULUNG_DOJO_UP, mc.getLevel(), 1), false); // HT nine spirit
                                 break;
                         }
                     }
@@ -1410,6 +1410,34 @@ public final class MapleMap {
         return (MonsterFamiliar) mmo;
     }
 
+    public MapleMist getMistByChr(int cid, int skillid) {
+        for (MapleMist mist : getAllMistsThreadsafe()) {
+            if (mist.getOwnerId() == cid && mist.getSource().getSourceId() == skillid) {
+                return mist;
+            }
+        }
+        return null;
+    }
+
+    public void removeMist(final MapleMist Mist) {
+        this.removeMapObject(Mist);
+        this.broadcastMessage(CField.removeMist(Mist.getObjectId(), false));
+    }
+
+    public void removeSummon(final int summonid) {
+        MapleSummon summon = (MapleSummon) getMapObject(summonid, MapleMapObjectType.SUMMON);
+        this.removeMapObject(summon);
+        this.broadcastMessage(SummonPacket.removeSummon(summon, false));
+    }
+
+    public MapleMist getMistByOid(int oid) {
+        MapleMapObject mmo = getMapObject(oid, MapleMapObjectType.MIST);
+        if (mmo == null) {
+            return null;
+        }
+        return (MapleMist) mmo;
+    }
+    
     public final MapleReactor getReactorByName(final String name) {
         mapobjectlocks.get(MapleMapObjectType.REACTOR).readLock().lock();
         try {
@@ -2740,6 +2768,12 @@ public final class MapleMap {
                 break;
             case 300030310:
                 em = "FairyBossBattle";
+                break;
+            case 105200310:
+                em = "BloodyBoss";
+                break;
+            case 105200710:
+                em = "BloodyJBoss";
                 break;
             case 955000100:
             case 955000200:

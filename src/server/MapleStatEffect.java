@@ -1151,8 +1151,8 @@ public class MapleStatEffect implements Serializable {
                         if (absorbMp > 0) {
                             mob.setMp(mob.getMp() - absorbMp);
                             applyto.getStat().setMp(applyto.getStat().getMp() + absorbMp, applyto);
-                            applyto.getClient().getSession().write(EffectPacket.showBuffEffect(sourceid, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level));
-                            applyto.getMap().broadcastMessage(applyto, EffectPacket.showBuffeffect(applyto.getId(), sourceid, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level), false);
+                            applyto.getClient().getSession().write(EffectPacket.showBuffEffect(true, applyto, sourceid, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level));
+                            applyto.getMap().broadcastMessage(applyto, EffectPacket.showBuffEffect(false, applyto, sourceid, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level), false);
                         }
                     }
                     break;
@@ -1412,8 +1412,8 @@ public class MapleStatEffect implements Serializable {
                 }
             } else {
                 if (sourceid == 2910000 || sourceid == 2910001) { //red flag
-                    applyto.getClient().getSession().write(EffectPacket.showBuffEffect(sourceid, SpecialEffectType.MULUNG_DOJO_UP, applyto.getLevel(), level));
-                    applyto.getMap().broadcastMessage(applyto, EffectPacket.showBuffeffect(applyto.getId(), sourceid, SpecialEffectType.MULUNG_DOJO_UP, applyto.getLevel(), level), false);
+                    applyto.getClient().getSession().write(EffectPacket.showBuffEffect(true, applyto, sourceid, SpecialEffectType.MULUNG_DOJO_UP, applyto.getLevel(), level));
+                    applyto.getMap().broadcastMessage(applyto, EffectPacket.showBuffEffect(false, applyto, sourceid, SpecialEffectType.MULUNG_DOJO_UP, applyto.getLevel(), level), false);
 
                     applyto.getClient().getSession().write(EffectPacket.showCraftingEffect("UI/UIWindow2.img/CTF/Effect", (byte) applyto.getDirection(), 0, 0));
                     applyto.getMap().broadcastMessage(applyto, EffectPacket.showCraftingEffect(applyto, "UI/UIWindow2.img/CTF/Effect", (byte) applyto.getDirection(), 0, 0), false);
@@ -1636,6 +1636,145 @@ public class MapleStatEffect implements Serializable {
         return true;
     }
 
+    public void handle綠水靈病毒(final MapleCharacter applyto, final int time) {
+        final java.util.Timer timer = new java.util.Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                for (MapleSummon x : applyto.getAllLinksummon()) {
+                    applyto.getMap().removeSummon(x.getObjectId());
+                }
+                applyto.getAllLinksummon().clear();
+                timer.cancel();
+            }
+        };
+        timer.schedule(task, time);
+    }
+    
+    /**
+     * 處理召喚獸效果
+     *
+     * @param applyto 角色
+     * @param primary
+     * @param pos 坐標
+     * @param newDuration 時間
+     * @param monid 怪物的ID
+     * @return boolean
+     */
+    public boolean applySummonEffect(MapleCharacter applyto, boolean primary, Point pos, int newDuration, int monid) {
+        final SummonMovementType summonMovementType = getSummonMovementType();
+        if (summonMovementType == null || (this.sourceid == 32111006 && applyto.getBuffedValue(MapleBuffStat.REAPER) == null) || applyto.isClone()) {
+            return false;
+        }
+        byte[] buff = null;
+        int summId = sourceid;
+        int localDuration = newDuration;
+        Map<MapleBuffStat, Integer> localstatups = statups;
+        summId = GameConstants.getMountSkill(summId, applyto);
+        if (applyto.isShowInfo()) {
+            applyto.showMessage(10, "開始召喚召喚獸 - 召喚獸技能: " + summId + " 持續時間: " + newDuration);
+        }
+        if (this.sourceid == 32111006) {
+            localstatups.put(MapleBuffStat.REAPER, 1);
+        }
+        if (this.sourceid != 35111002) {
+            applyto.cancelEffect(this, true, -1L, localstatups);
+        }
+        if (is集合船员()) {
+            int skilllevel = applyto.getTotalSkillLevel(5220019);
+            if (skilllevel > 0) {
+                SkillFactory.getSkill(5220019).getEffect(skilllevel).applyBuffEffect(applyto, applyto, primary, newDuration);
+            }
+        }
+        final MapleSummon tosummon = new MapleSummon(applyto, summId, getLevel(), new Point(pos == null ? applyto.getTruePosition() : pos), summonMovementType);
+        if (!tosummon.isPuppet()) {
+            applyto.getCheatTracker().resetSummonAttack();
+        }
+        applyto.cancelEffect(this, true, -1, statups);
+        applyto.getMap().spawnSummon(tosummon);
+        applyto.addSummon(tosummon);
+        if ((info.get(MapleStatInfo.hcSummonHp)) > 0) {
+            tosummon.addHP(info.get(MapleStatInfo.hcSummonHp).shortValue());
+        } else if (this.sourceid == 3221014) {
+            tosummon.addHP(info.get(MapleStatInfo.x).shortValue());
+        }
+
+        Map<MapleBuffStat, Integer> stat = new HashMap();
+        if (sourceid == 13120007) {
+            applyto.dispelSkill(13111024);
+        } else if (sourceid == 4341006) {
+            applyto.cancelEffectFromBuffStat(MapleBuffStat.SHADOWPARTNER);
+        } else if (this.sourceid == 14111024) {
+            stat.put(MapleBuffStat.暗影僕從, 1);   /////////
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        } else if (this.sourceid == 1301013) {
+            stat.put(MapleBuffStat.BEHOLDER, Integer.valueOf(level));
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        } else if (this.sourceid == 12000022 || this.sourceid == 12100026 || this.sourceid == 12110024 || this.sourceid == 12120007) {
+            stat.put(MapleBuffStat.INDIE_MAD, getX());
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        } else if (this.sourceid == 12120013 || this.sourceid == 12120014) {
+            stat.put(MapleBuffStat.IGNORE_DEF, getY());
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        } else if (this.sourceid == 22171052) {
+            stat.put(MapleBuffStat.INDIE_ASR_R, getASRRate());
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        } else if (this.sourceid == 35121010) {
+            stat.put(MapleBuffStat.DAMAGE_BUFF, getX());
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        } else if (this.sourceid >= 33001007 && this.sourceid <= 33001015) {
+            localDuration = 2100000000;
+            stat.put(MapleBuffStat.SUMMON_JAGUAR, (info.get(MapleStatInfo.asrR) << 8) + info.get(MapleStatInfo.criticaldamageMin));
+            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
+        }
+
+        long startTime = System.currentTimeMillis();
+        if (localDuration > 0) {
+            CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, startTime, localstatups);
+            ScheduledFuture schedule = Timer.BuffTimer.getInstance().schedule(cancelAction, localDuration);
+            applyto.registerEffect(this, startTime, schedule, localstatups, false, localDuration, applyto.getId());
+        }
+        if (this.sourceid == 2111010) {
+            applyto.addLinksummon(tosummon);
+        }
+        int cooldown = getCooldown(applyto);
+        if (cooldown > 0) {
+            if (sourceid == 35111002) {
+                List<Integer> count = new ArrayList<>();
+                final List<MapleSummon> summons = applyto.getSummonsReadLock();
+                try {
+                    for (MapleSummon summon : summons) {
+                        if (summon.getSkill() == sourceid) {
+                            count.add(summon.getObjectId());
+                        }
+                    }
+                } finally {
+                    applyto.unlockSummonsReadLock();
+                }
+                if (count.size() == 3) {
+                    applyto.addCooldown(sourceid, startTime, cooldown * 1000);
+                    applyto.getMap().broadcastMessage(SkillPacket.teslaTriangle(applyto.getId(), count.get(0), count.get(1), count.get(2)));
+                }
+            } else {
+                applyto.addCooldown(sourceid, startTime, cooldown * 1000);
+            }
+        }
+        if (buff != null) {
+            applyto.getClient().getSession().write(buff);
+        }
+        return true;
+    }
+
+    public boolean isMultiSummon() {//TODO 添加可以召唤多个召唤兽
+        switch (sourceid) {
+            case 35111002: // 磁場
+            case 2111010: // 綠水靈病毒
+                return true;
+            default:
+                return false;
+        }
+    }
+    
     public final boolean applyReturnScroll(final MapleCharacter applyto) {
         if (moveTo != -1) {
             if (applyto.getMap().getReturnMapId() != applyto.getMapId() || sourceid == 2031010 || sourceid == 2030021) {
@@ -1682,8 +1821,8 @@ public class MapleStatEffect implements Serializable {
                 }
                 for (MapleCharacter chr : awarded) {
                     applyTo(applyfrom, chr, false, null, newDuration);
-                    chr.getClient().getSession().write(EffectPacket.showBuffEffect(sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level));
-                    chr.getMap().broadcastMessage(chr, EffectPacket.showBuffeffect(chr.getId(), sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level), false);
+                    chr.getClient().getSession().write(EffectPacket.showBuffEffect(true, chr, sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level));
+                    chr.getMap().broadcastMessage(chr, EffectPacket.showBuffEffect(false, chr, sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level), false);
                 }
             }
         } else if (isPartyBuff() && (applyfrom.getParty() != null || isGmBuff() || applyfrom.inPVP())) {
@@ -1696,8 +1835,8 @@ public class MapleStatEffect implements Serializable {
                 if (affected.getId() != applyfrom.getId() && (isGmBuff() || (applyfrom.inPVP() && affected.getTeam() == applyfrom.getTeam() && Integer.parseInt(applyfrom.getEventInstance().getProperty("type")) != 0) || (applyfrom.getParty() != null && affected.getParty() != null && applyfrom.getParty().getId() == affected.getParty().getId()))) {
                     if ((isResurrection() && !affected.isAlive()) || (!isResurrection() && affected.isAlive())) {
                         applyTo(applyfrom, affected, false, null, newDuration);
-                        affected.getClient().getSession().write(EffectPacket.showBuffEffect(sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level));
-                        affected.getMap().broadcastMessage(affected, EffectPacket.showBuffeffect(affected.getId(), sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level), false);
+                        affected.getClient().getSession().write(EffectPacket.showBuffEffect(true, affected, sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level));
+                        affected.getMap().broadcastMessage(affected, EffectPacket.showBuffEffect(false, affected, sourceid, SpecialEffectType.REMOTE_SKILL, applyfrom.getLevel(), level), false);
                     }
                     if (isTimeLeap()) {
                         for (MapleCoolDownValueHolder i : affected.getCooldowns()) {
@@ -2558,10 +2697,10 @@ public class MapleStatEffect implements Serializable {
                 break;
         }
         if (showEffect && !applyto.isHidden()) {
-            applyto.getMap().broadcastMessage(applyto, EffectPacket.showBuffeffect(applyto.getId(), sourceid, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level), false);
+            applyto.getMap().broadcastMessage(applyto, EffectPacket.showBuffEffect(false, applyto, sourceid, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level), false);
         }
         if (isMechPassive()) {
-            applyto.getClient().getSession().write(EffectPacket.showBuffEffect(sourceid - 1000, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level, (byte) 1));
+            applyto.getClient().getSession().write(EffectPacket.showBuffEffect(true, applyto, sourceid - 1000, SpecialEffectType.LOCAL_SKILL, applyto.getLevel(), level, (byte) 1));
         }
         if (!isMonsterRiding() && !isMechDoor() && getSummonMovementType() == null) {
             applyto.cancelEffect(this, true, -1, localstatups);
@@ -3757,110 +3896,6 @@ public class MapleStatEffect implements Serializable {
                 return this.skill;
         }
         return false;
-    }
-    
-    public boolean applySummonEffect(MapleCharacter applyto, boolean primary, Point pos, int newDuration, int monid) {
-        final SummonMovementType summonMovementType = getSummonMovementType();
-        if (summonMovementType == null || (this.sourceid == 32111006 && applyto.getBuffedValue(MapleBuffStat.REAPER) == null) || applyto.isClone()) {
-            return false;
-        }
-        byte[] buff = null;
-        int summId = sourceid;
-        int localDuration = newDuration;
-        Map<MapleBuffStat, Integer> localstatups = statups;
-        summId = GameConstants.getMountSkill(summId, applyto);
-        if (applyto.isShowInfo()) {
-            applyto.showMessage(10, "開始召喚召喚獸 - 召喚獸技能: " + summId + " 持續時間: " + newDuration);
-        }
-        if (this.sourceid == 32111006) {
-            localstatups.put(MapleBuffStat.REAPER, 1);
-        }
-        if (this.sourceid != 35111002) {
-            applyto.cancelEffect(this, true, -1L, localstatups);
-        }
-        if (is集合船员()) {
-            int skilllevel = applyto.getTotalSkillLevel(5220019);
-            if (skilllevel > 0) {
-                SkillFactory.getSkill(5220019).getEffect(skilllevel).applyBuffEffect(applyto, applyto, primary, newDuration);
-            }
-        }
-        final MapleSummon tosummon = new MapleSummon(applyto, summId, getLevel(), new Point(pos == null ? applyto.getTruePosition() : pos), summonMovementType);
-        if (!tosummon.isPuppet()) {
-            applyto.getCheatTracker().resetSummonAttack();
-        }
-        applyto.cancelEffect(this, true, -1, statups);
-        applyto.getMap().spawnSummon(tosummon);
-        applyto.addSummon(tosummon);
-        if ((info.get(MapleStatInfo.hcSummonHp)) > 0) {
-            tosummon.addHP(info.get(MapleStatInfo.hcSummonHp).shortValue());
-        } else if (this.sourceid == 3221014) {
-            tosummon.addHP(info.get(MapleStatInfo.x).shortValue());
-        }
-
-        Map<MapleBuffStat, Integer> stat = new HashMap();
-        if (sourceid == 13120007) {
-            applyto.dispelSkill(13111024);
-        } else if (sourceid == 4341006) {
-            applyto.cancelEffectFromBuffStat(MapleBuffStat.SHADOWPARTNER);
-        } else if (this.sourceid == 14111024) {
-            stat.put(MapleBuffStat.暗影僕從, 1);
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        } else if (this.sourceid == 1301013) {
-            stat.put(MapleBuffStat.BEHOLDER, Integer.valueOf(level));
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        } else if (this.sourceid == 12000022 || this.sourceid == 12100026 || this.sourceid == 12110024 || this.sourceid == 12120007) {
-            stat.put(MapleBuffStat.INDIE_MAD, getX());
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        } else if (this.sourceid == 12120013 || this.sourceid == 12120014) {
-            stat.put(MapleBuffStat.IGNORE_DEF, getY());
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        } else if (this.sourceid == 22171052) {
-            stat.put(MapleBuffStat.INDIE_ASR_R, getASRRate());
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        } else if (this.sourceid == 35121010) {
-            stat.put(MapleBuffStat.DAMAGE_BUFF, getX());
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        } else if (this.sourceid >= 33001007 && this.sourceid <= 33001015) {
-            localDuration = 2100000000;
-            stat.put(MapleBuffStat.SUMMON_JAGUAR, (info.get(MapleStatInfo.asrR) << 8) + info.get(MapleStatInfo.criticaldamageMin));
-            buff = BuffPacket.giveBuff(this.sourceid, localDuration, stat, this, applyto);
-        }
-
-        long startTime = System.currentTimeMillis();
-        if (localDuration > 0) {
-            CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, startTime, localstatups);
-            ScheduledFuture schedule = Timer.BuffTimer.getInstance().schedule(cancelAction, localDuration);
-            applyto.registerEffect(this, startTime, schedule, localstatups, false, localDuration, applyto.getId());
-        }
-        if (this.sourceid == 2111010) {
-            applyto.addLinksummon(tosummon);
-        }
-        int cooldown = getCooldown(applyto);
-        if (cooldown > 0) {
-            if (sourceid == 35111002) {
-                List<Integer> count = new ArrayList<>();
-                final List<MapleSummon> summons = applyto.getSummonsReadLock();
-                try {
-                    for (MapleSummon summon : summons) {
-                        if (summon.getSkill() == sourceid) {
-                            count.add(summon.getObjectId());
-                        }
-                    }
-                } finally {
-                    applyto.unlockSummonsReadLock();
-                }
-                if (count.size() == 3) {
-                    applyto.addCooldown(sourceid, startTime, cooldown * 1000);
-                    applyto.getMap().broadcastMessage(SkillPacket.teslaTriangle(applyto.getId(), count.get(0), count.get(1), count.get(2)));
-                }
-            } else {
-                applyto.addCooldown(sourceid, startTime, cooldown * 1000);
-            }
-        }
-        if (buff != null) {
-            applyto.getClient().getSession().write(buff);
-        }
-        return true;
     }
     
     public void applyQuiverKartrige(final MapleCharacter applyfrom) {

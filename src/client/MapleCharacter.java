@@ -939,11 +939,11 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                 rs.close();
                 // END
 
-                ps = con.prepareStatement("SELECT skill_id, skill_level, max_level, rank, locked FROM inner_ability_skills WHERE player_id = ?");
+                ps = con.prepareStatement("SELECT skill_id, skill_level, max_level, rank, locked ,position FROM inner_ability_skills WHERE player_id = ?");
                 ps.setInt(1, charid);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    ret.innerSkills.add(new InnerSkillValueHolder(rs.getInt("skill_id"), rs.getByte("skill_level"), rs.getByte("max_level"), rs.getByte("rank"), rs.getBoolean("locked")));
+                    ret.innerSkills.add(new InnerSkillValueHolder(rs.getInt("skill_id"), rs.getByte("skill_level"), rs.getByte("max_level"), rs.getByte("rank"), rs.getBoolean("locked"), rs.getByte("position")));
                 }
                 ps = con.prepareStatement("SELECT * FROM skillmacros WHERE characterid = ?");
                 ps.setInt(1, charid);
@@ -1625,7 +1625,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             if (innerskill_changed) {
                 if (innerSkills != null) {
                     deleteWhereCharacterId(con, "DELETE FROM inner_ability_skills WHERE player_id = ?");
-                    ps = con.prepareStatement("INSERT INTO inner_ability_skills (player_id, skill_id, skill_level, max_level, rank, locked) VALUES (?, ?, ?, ?, ?, ?)");
+                    ps = con.prepareStatement("INSERT INTO inner_ability_skills (player_id, skill_id, skill_level, max_level, rank, locked, position) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     ps.setInt(1, id);
 
                     for (int i = 0; i < innerSkills.size(); ++i) {
@@ -1634,6 +1634,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                         ps.setInt(4, innerSkills.get(i).getMaxLevel());
                         ps.setInt(5, innerSkills.get(i).getRank());
                         ps.setBoolean(6, innerSkills.get(i).isLocked());
+                        ps.setInt(7, innerSkills.get(i).getPosition());
                         ps.executeUpdate();
                     }
                     ps.close();
@@ -1976,6 +1977,9 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             if (quest.getStatus() == 1 && !update) {
                 client.getSession().write(CField.updateQuestInfo(this, quest.getQuest().getId(), quest.getNpc(), (byte) 11));//was10
             }
+            if (quest.getStatus() == 2 && !update) {   // 我不知道为什么updateQuestInfo的参数有点多余
+                client.getSession().write(CField.updateQuestInfo(this, quest.getQuest().getId(), quest.getNpc(), (byte) 11));//was10
+            }
         }
     }
 
@@ -2087,8 +2091,8 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
 
         } else {
             addHP(-bloodEffect.getX());
-            client.getSession().write(EffectPacket.showBuffEffect(bloodEffect.getSourceId(), SpecialEffectType.ITEM_OPERATION, getLevel(), bloodEffect.getLevel()));
-            map.broadcastMessage(MapleCharacter.this, EffectPacket.showBuffeffect(getId(), bloodEffect.getSourceId(), SpecialEffectType.ITEM_OPERATION, getLevel(), bloodEffect.getLevel()), false);
+            client.getSession().write(EffectPacket.showBuffEffect(true, this, bloodEffect.getSourceId(), SpecialEffectType.ITEM_OPERATION, getLevel(), bloodEffect.getLevel()));
+            map.broadcastMessage(MapleCharacter.this, EffectPacket.showBuffEffect(false, this, bloodEffect.getSourceId(), SpecialEffectType.ITEM_OPERATION, getLevel(), bloodEffect.getLevel()), false);
         }
     }
 
@@ -2681,8 +2685,8 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                         if (energyLevel < 10000) {
                             energyLevel = energyLevel + echeff.getX() * targets;
 
-                            this.client.getSession().write(CField.EffectPacket.showBuffEffect(skillid, SpecialEffectType.REMOTE_SKILL, getLevel(), skilllevel));
-                            this.map.broadcastMessage(this, CField.EffectPacket.showBuffeffect(this.id, skillid, SpecialEffectType.REMOTE_SKILL, getLevel(), skilllevel), false);
+                            this.client.getSession().write(CField.EffectPacket.showBuffEffect(true, this ,skillid, SpecialEffectType.REMOTE_SKILL, getLevel(), skilllevel));
+                            this.map.broadcastMessage(this, CField.EffectPacket.showBuffEffect(false, this, skillid, SpecialEffectType.REMOTE_SKILL, getLevel(), skilllevel), false);
 
                             if (energyLevel >= 10000) {
                                 energyLevel = 10000;
@@ -3648,7 +3652,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         if (linkId > 0) {
             int nowLinkLevel = 0;
             if (!MapleJob.is神之子(job)) {
-                nowLinkLevel = level < 70 ? 0 : level < 120 ? 1 : level < 200 ? 2 : 3;
+                nowLinkLevel = level < 10 ? 0 : (level < 120 ? 1 : (level < 210 ? 2 : 3));
             }
             if (SkillFactory.getSkill(linkId) == null) {
                 System.out.println("client.MapleCharacter.baseSkills::get(" + linkId + ")");
@@ -3910,9 +3914,8 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         }
         final Map<Skill, SkillEntry> newL = new HashMap<>();
         for (final Entry<Skill, SkillEntry> z : skill.entrySet()) {
-            if (z.getKey() == null) {
-                continue;
-            }
+            if (z.getKey() == null) continue;
+            
             newL.put(z.getKey(), z.getValue());
             if (z.getValue().skillLevel < 0 && z.getValue().masterlevel == 0) {
                 if (skills.containsKey(z.getKey())) {
@@ -4742,16 +4745,27 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         return Collections.unmodifiableMap(skills);
     }
 
+    public int getPassiveLevel(final Skill skill) {
+        if (skill == null || !skill.canBeLearnedBy(job)) {
+            return 0;
+        }
+        return getTotalSkillLevel(skill);
+    }
+        
     public int getTotalSkillLevel(final Skill skill) {
         if (skill == null) {
             return 0;
         }
-        int itemLevel = GameConstants.getItemSkillLevel(this, skill.getId());
+        /*int itemLevel = GameConstants.getItemSkillLevel(this, skill.getId());
         if (itemLevel > 0) {
             return itemLevel;
+        }*/
+        int linkAttack = GameConstants.getLinkedAttackSkill(skill.getId());
+        if (linkAttack != skill.getId()) {
+            return getTotalSkillLevel(SkillFactory.getSkill(linkAttack));
         }
-        int skillLevel;
-        if (getJob() >= skill.getId() / 10000 && getJob() < skill.getId() / 10000 + 3) {
+        int skillLevel = getSkillLevel(skill);
+        /*if (getJob() >= skill.getId() / 10000 && getJob() < skill.getId() / 10000 + 3) {
             skillLevel = skill.getFixLevel();
         } else {
             skillLevel = 0;
@@ -4762,7 +4776,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             return skillLevel;
         } else {
             skillLevel += ret.skillLevel;
-        }
+        }*/
         return Math.min(skill.getTrueMax(), skillLevel + (skill.isBeginnerSkill() ? 0 : (stats.combatOrders + (skill.getMaxLevel() > 10 ? stats.incAllskill : 0) + stats.getSkillIncrement(skill.getId()))));
     }
 
@@ -4795,18 +4809,27 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         if (itemLevel > 0) {
             return itemLevel;
         }
+        int linkAttack = GameConstants.getLinkedAttackSkill(skill.getId());
+        if (linkAttack != skill.getId()) {
+            return getSkillLevel(SkillFactory.getSkill(linkAttack));
+        }
         int skillLevel;
-        if (getJob() >= skill.getId() / 10000 && getJob() < skill.getId() / 10000 + 3) {
+        SkillEntry ret = (SkillEntry) this.skills.get(skill);
+        /*if (getJob() >= skill.getId() / 10000 && getJob() < skill.getId() / 10000 + 3) {
             skillLevel = skill.getFixLevel();
         } else {
             skillLevel = 0;
-        }
-        SkillEntry ret = (SkillEntry) this.skills.get(skill);
+        }*/
         if (ret == null || ret.skillLevel <= 0) {
-            return skillLevel;
+            return 0;
         } else {
-            skillLevel += ret.skillLevel;
+            skillLevel = ret.skillLevel;
         }
+        
+        if (getLevel() < skill.getReqLevel()) {
+            skillLevel = 0;
+        }
+        
         return skillLevel;
     }
 
@@ -4950,7 +4973,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         silentPartyUpdate();
         guildUpdate();
         familyUpdate();
-        autoJob();
+        //autoJob();  禁止自动转职
         if (MapleJob.is神之子(job)) {
             checkZeroWeapon();
             checkZeroTranscendent();
@@ -4965,7 +4988,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             //sb.append(getName()).append(" on such an amazing achievement!");
             World.Broadcast.broadcastMessage(CWvsContext.broadcastMsg(6, sb.toString()));
         }
-        setExp(0);
+        //setExp(0);
         //if (map.getForceMove() > 0 && map.getForceMove() <= getLevel()) {
         //    changeMap(map.getReturnMap(), map.getReturnMap().getPortal(0));
         //    dropMessage(-1, "You have been expelled from the map.");
@@ -6859,8 +6882,8 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             lastBerserkTime = System.currentTimeMillis();
             final MapleStatEffect ampStat = BerserkX.getEffect(skilllevel);
             stats.Berserk = stats.getHp() * 100 / stats.getCurrentMaxHp() >= ampStat.getX();
-            client.getSession().write(EffectPacket.showBuffEffect(1320006, SpecialEffectType.LOCAL_SKILL, getLevel(), skilllevel, (byte) (stats.Berserk ? 1 : 0)));
-            map.broadcastMessage(this, EffectPacket.showBuffeffect(getId(), 1320006, SpecialEffectType.LOCAL_SKILL, getLevel(), skilllevel, (byte) (stats.Berserk ? 1 : 0)), false);
+            client.getSession().write(EffectPacket.showBuffEffect(true, this, 1320006, SpecialEffectType.LOCAL_SKILL, getLevel(), skilllevel, (byte) (stats.Berserk ? 1 : 0)));
+            map.broadcastMessage(this, EffectPacket.showBuffEffect(false, this, 1320006, SpecialEffectType.LOCAL_SKILL, getLevel(), skilllevel, (byte) (stats.Berserk ? 1 : 0)), false);
         } else {
             lastBerserkTime = -1; // somebody thre? O_O
         }
@@ -7079,12 +7102,12 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
     }
 
     //0 - 白(普聊)
-    //1 - 綠(悄悄話)
+    //1 - 灰蓝底 + 深蓝色字体   -[183.2] comfirmed.
     //2 - 粉紅(隊伍聊天)
     //3 - 橙(好友聊天)
     //4 - 淺紫(公會聊天)
-    //5 - 淺綠(聯盟聊天)
-    //6 - 灰(訊息)
+    //5 - 普通底 + 粉色字体   -[183.2] comfirmed.
+    //6 - 普通底 + 天蓝色字体   -[183.2] comfirmed.
     //7 - 亮黃
     //8 - 淡黃
     //9 - 藍
@@ -7553,6 +7576,20 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
         linkMobs.put(lm, x);
     }
 
+     public List<MapleSummon> getAllLinksummon() {
+        return this.linksummon;
+    }
+
+    public void addLinksummon(MapleSummon x) {
+        this.linksummon.add(x);
+    }
+
+    public void removeLinksummon(MapleSummon x) {
+        if (this.linksummon.size() > 0) {
+            this.linksummon.remove(x);
+        }
+    }
+    
     public int getDamageIncrease(int lm) {
         if (linkMobs.containsKey(lm)) {
             return linkMobs.get(lm);
@@ -9690,7 +9727,7 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
     }
 
     public void addHonorExp(int amount, boolean show) {
-        if (getHonorLevel() < 1) {
+        /*if (getHonorLevel() < 1) {
             setHonorLevel(1);
         }
         if (getHonourExp() + amount >= getHonorLevel() * 500) {
@@ -9699,12 +9736,12 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             leftamount = Math.min(leftamount, ((getHonorLevel()) * 500) - 1);
             setHonourExp(leftamount);
             return;
-        }
+        }*/
         setHonourExp(getHonourExp() + amount);
-        client.getSession().write(CWvsContext.updateAzwanFame(getHonorLevel(), getHonourExp(), true));
+        client.getSession().write(CField.updateHonour(getHonorLevel(), getHonourExp(), false));
         client.getSession().write(CWvsContext.updateSpecialStat("honorLeveling", 0, getHonorLevel(), getHonourNextExp()));
         if (show) {
-            dropMessage(5, "You obtained " + amount + " Honor EXP.");
+            dropMessage(5, "您獲得了" + amount + "點名聲值。");
         }
     }
 
@@ -9733,20 +9770,71 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
                 break;
         }
         if (getHonorLevel() == 2 || getHonorLevel() == 30 || getHonorLevel() == 70 && inner != null && ability >= 1 && ability <= 3) {
-            inner = new InnerSkillValueHolder(70000015, (byte) 1, (byte) 1, (byte) 0, false);
+            //inner = new InnerSkillValueHolder(70000015, (byte) 1, (byte) 1, (byte) 0, false);
             innerSkills.add(inner);
             changeSkillLevel(SkillFactory.getSkill(inner.getSkillId()), inner.getSkillLevel(), inner.getSkillLevel());
             client.getSession().write(CField.getCharInfo(this));
             client.getSession().write(CField.updateInnerPotential(ability, inner.getSkillId(), inner.getSkillLevel(), inner.getRank()));
         }
     }
-
-    public void gainHonor(int honor, boolean show) {
-        addHonorExp(honor, false);
-        if (show) {
-            client.getSession().write(InfoPacket.showInfo(honor + " Honor EXP obtained."));
+    
+    public void unlockInnerAbility(int ordinal) {
+        InnerSkillValueHolder inner;
+        switch(ordinal) {
+            case 1:
+                if(this.level < 30) {dropMessage(5, "等級不足30級，請確認等級再試。"); break;}
+                if(innerSkills.size() != 0) {dropMessage(5, "內在能力數量出錯，請聯繫管理員。");break;}
+                inner = new InnerSkillValueHolder(70000015, (byte)1, (byte)1, (byte)0, false, (byte)1);
+                changeInnerSkill(inner);
+                break;
+            case 2:
+                if(this.level < 50) {dropMessage(5, "等級不足50級，請確認等級再試。"); break;}
+                if(innerSkills.size() != 1) {dropMessage(5, "內在能力數量出錯，請聯繫管理員。");break;}
+                inner = new InnerSkillValueHolder(70000015, (byte)3, (byte)3, (byte)0, false, (byte)2);
+                changeInnerSkill(inner);
+                break;
+            case 3:
+                if(this.level < 70) {dropMessage(5, "等級不足70級，請確認等級再試。"); break;}
+                if(innerSkills.size() != 2) {dropMessage(5, "內在能力數量出錯，請聯繫管理員。");break;}
+                inner = new InnerSkillValueHolder(70000015, (byte)5, (byte)5, (byte)0, false, (byte)3);
+                changeInnerSkill(inner);
+                break;
+            default:
+                System.out.println("unlockInnerAbility函数出错：参数不正确。 ordinal = " + ordinal);
         }
     }
+    
+    public void changeInnerSkill(InnerSkillValueHolder inner) {
+        changeInnerSkillLevel(inner.getSkillId(), inner.getSkillLevel(), inner.getPosition(), inner.getRank());
+    }
+    
+    public void changeInnerSkillLevel(int skillId, int skillevel, byte position, byte rank) {
+        Skill skill = SkillFactory.getSkill(skillId);
+        if ((skill == null) || (!skill.isInnerSkill()) || (skillevel <= 0) || (position > 3) || (position < 1)) {
+            return;
+        }
+        if (skillevel > skill.getMaxLevel()) {
+            skillevel = skill.getMaxLevel();
+        }
+        InnerSkillValueHolder InnerSkill = new InnerSkillValueHolder(skillId, (byte)skillevel, (byte)skillevel, rank ,false, position);
+        for(InnerSkillValueHolder tmp : this.innerSkills) {
+            if(tmp.getPosition() == position) {
+                this.innerSkills.remove(tmp);
+                innerSkills.add(InnerSkill);
+                this.client.getSession().write(CField.updateInnerPotential(position, skillId, skillevel, rank));
+            }
+        }
+        if(this.innerSkills.size() < position && position >= 1 && position <= 3) {
+            innerSkills.add(InnerSkill);
+            this.client.getSession().write(CField.updateInnerPotential(position, skillId, skillevel, rank));
+        }
+        
+        this.innerskill_changed = true;
+    }
+    
+    public void gainHonor(int honor, boolean show) {
+        addHonorExp(honor, show);
+    } 
 
     public void azwanReward(final int map, final int portal) {
         client.getSession().write(CField.UIPacket.openUIOption(0x45, 0));
@@ -11235,10 +11323,6 @@ public class MapleCharacter extends AnimatedMapleMapObject implements Serializab
             }
         }
         return null;
-    }
-    
-    public void addLinksummon(MapleSummon x) {
-        this.linksummon.add(x);
     }
     
     public void handleAccurateRocket(List<Integer> Oid, int skillId) { //處理追縱火箭
